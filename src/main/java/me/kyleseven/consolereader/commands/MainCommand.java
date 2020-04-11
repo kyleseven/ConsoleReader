@@ -5,24 +5,14 @@ import co.aikar.commands.annotation.*;
 import me.kyleseven.consolereader.ConsoleReader;
 import me.kyleseven.consolereader.Utils;
 import me.kyleseven.consolereader.config.MainConfig;
-import me.kyleseven.consolereader.logreader.LogReader;
+import me.kyleseven.consolereader.logreader.LogReaderManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.UUID;
-
 @CommandAlias("consolereader|cr")
 public class MainCommand extends BaseCommand {
-
-    private static final HashMap<UUID, LogReader> listeningPlayers = new HashMap<>();
-
-    public static HashMap<UUID, LogReader> getListeningPlayers() {
-        return listeningPlayers;
-    }
-
     @CatchUnknown
     public void onInvalid(CommandSender sender) {
         Utils.sendPrefixMsg(sender, "&cUnknown subcommand.");
@@ -49,14 +39,12 @@ public class MainCommand extends BaseCommand {
     @CommandPermission("consolereader.read")
     @Description("Toggle monitoring of the console in game.")
     public void onEnable(Player player) {
-        if (listeningPlayers.get(player.getUniqueId()) == null) {
-            listeningPlayers.put(player.getUniqueId(), new LogReader(player));
-            listeningPlayers.get(player.getUniqueId()).startReading();
+        if (!LogReaderManager.isReading(player)) {
+            LogReaderManager.startReading(player);
             Utils.sendPrefixMsg(player, "Console monitoring enabled!");
         }
         else {
-            listeningPlayers.get(player.getUniqueId()).stopReading();
-            listeningPlayers.remove(player.getUniqueId());
+            LogReaderManager.stopReading(player);
             Utils.sendPrefixMsg(player, "Console monitoring disabled.");
         }
     }
