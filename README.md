@@ -29,8 +29,7 @@ Place the `ConsoleReader.jar` file into your `plugins/` directory and start the 
 ## Usage
 
 - `/cr help` displays a list of commands.
-- `/cr enable` starts showing the console in chat.
-- `/cr disable` stops showing the console in chat.
+- `/cr monitor` starts/stop showing the console in chat.
 - `/cr execute <command>` executes a command as console.
 - `/cr version` shows the plugin version.
 

@@ -33,10 +33,9 @@ public class MainCommand extends BaseCommand {
     @HelpCommand
     @Default
     public void onHelp(CommandSender sender) {
-        String[] help = {"&8-----===== &3ConsoleReader Help &8=====-----",
+        String[] help = {"&8------====== &3ConsoleReader Help &8======------",
                 "&3/cr help &8- &7Shows this help menu.",
-                "&3/cr enable &8- &7Enable reading console in chat.",
-                "&3/cr disable &8- &7Disable reading console in chat.",
+                "&3/cr monitor &8- &Toggle console monitoring in chat.",
                 "&3/cr execute <command> &8- &7Execute a command as console.",
                 "&3/cr reload &8- &7Reload the plugin config.",
                 "&3/cr version &8- &7Show plugin version"};
@@ -46,32 +45,20 @@ public class MainCommand extends BaseCommand {
         }
     }
 
-    @Subcommand("enable|on")
+    @Subcommand("monitor|mon")
     @CommandPermission("consolereader.read")
-    @Description("Enable reading of the console in game.")
+    @Description("Toggle monitoring of the console in game.")
     public void onEnable(Player player) {
-        if (listeningPlayers.get(player.getUniqueId()) != null) {
-            Utils.sendPrefixMsg(player, "Console reading is already enabled.");
-            return;
-        }
-
-        listeningPlayers.put(player.getUniqueId(), new LogReader(player));
-        listeningPlayers.get(player.getUniqueId()).startReading();
-        Utils.sendPrefixMsg(player, "Console reading enabled!");
-    }
-
-    @Subcommand("disable|off")
-    @CommandPermission("consolereader.read")
-    @Description("Disable reading of the console in game.")
-    public void onDisable(Player player) {
         if (listeningPlayers.get(player.getUniqueId()) == null) {
-            Utils.sendPrefixMsg(player, "Console reading is already disabled.");
-            return;
+            listeningPlayers.put(player.getUniqueId(), new LogReader(player));
+            listeningPlayers.get(player.getUniqueId()).startReading();
+            Utils.sendPrefixMsg(player, "Console monitoring enabled!");
         }
-
-        listeningPlayers.get(player.getUniqueId()).stopReading();
-        listeningPlayers.remove(player.getUniqueId());
-        Utils.sendPrefixMsg(player, "Console reading disabled.");
+        else {
+            listeningPlayers.get(player.getUniqueId()).stopReading();
+            listeningPlayers.remove(player.getUniqueId());
+            Utils.sendPrefixMsg(player, "Console monitoring disabled.");
+        }
     }
 
     @Subcommand("execute|exec")
