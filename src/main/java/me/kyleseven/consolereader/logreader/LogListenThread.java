@@ -41,7 +41,7 @@ public class LogListenThread implements Runnable {
             }
         }
         catch (IOException | InterruptedException e) {
-            Utils.sendPrefixMsg(player, "&4Exception" + e.getMessage());
+            Utils.sendPrefixMsg(player, "&4Exception: " + e.getMessage());
         }
     }
 
