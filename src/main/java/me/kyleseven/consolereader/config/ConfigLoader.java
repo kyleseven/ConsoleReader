@@ -26,11 +26,11 @@ public abstract class ConfigLoader {
 
     protected void loadFile() {
         if (!configFile.exists()) {
-            plugin.getServer().getLogger().info("Creating " + fileName + " file...");
+            plugin.getLogger().info("Creating " + fileName + " file...");
             plugin.saveResource(fileName, false);
         }
         else {
-            plugin.getServer().getLogger().info("Loading " + fileName + " file...");
+            plugin.getLogger().info("Loading " + fileName + " file...");
         }
 
         config = YamlConfiguration.loadConfiguration(configFile);

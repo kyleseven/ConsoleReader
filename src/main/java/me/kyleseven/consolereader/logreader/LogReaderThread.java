@@ -22,6 +22,7 @@ public class LogReaderThread implements Runnable {
         t.start();
     }
 
+    // TODO Find a better method of capturing console output rather than just reading latest.log
     @Override
     public void run() {
         String logPath = Bukkit.getServer().getWorldContainer().toString() + File.separator + "logs" + File.separator + "latest.log";
