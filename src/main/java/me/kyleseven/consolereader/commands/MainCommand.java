@@ -61,6 +61,7 @@ public class MainCommand extends BaseCommand {
         }
     }
 
+    @CommandAlias("cexec")
     @Subcommand("execute|exec")
     @CommandPermission("consolereader.execute")
     @Description("Execute a command as console.")
