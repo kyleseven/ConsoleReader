@@ -2,6 +2,7 @@ package me.kyleseven.consolereader.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import me.kyleseven.consolereader.ConsoleReader;
 import me.kyleseven.consolereader.Utils;
 import me.kyleseven.consolereader.config.MainConfig;
 import me.kyleseven.consolereader.logreader.LogReader;
@@ -97,6 +98,7 @@ public class MainCommand extends BaseCommand {
     @CommandPermission("consolereader.use")
     @Description("See the plugin version.")
     public void onVersion(CommandSender sender) {
-        Utils.sendPrefixMsg(sender, "ConsoleReader " + MainConfig.getInstance().getVersion() + " by kyleseven");
+        String version = ConsoleReader.getPlugin().getDescription().getVersion();
+        Utils.sendPrefixMsg(sender, "ConsoleReader " + version + " by kyleseven");
     }
 }
