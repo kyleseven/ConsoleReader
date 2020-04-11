@@ -4,7 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import me.kyleseven.consolereader.Utils;
 import me.kyleseven.consolereader.config.MainConfig;
-import me.kyleseven.consolereader.logreader.LogListener;
+import me.kyleseven.consolereader.logreader.LogReader;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -16,9 +16,9 @@ import java.util.UUID;
 @CommandAlias("consolereader|cr")
 public class MainCommand extends BaseCommand {
 
-    private static final HashMap<UUID, LogListener> listeningPlayers = new HashMap<>();
+    private static final HashMap<UUID, LogReader> listeningPlayers = new HashMap<>();
 
-    public static HashMap<UUID, LogListener> getListeningPlayers() {
+    public static HashMap<UUID, LogReader> getListeningPlayers() {
         return listeningPlayers;
     }
 
@@ -54,7 +54,7 @@ public class MainCommand extends BaseCommand {
             return;
         }
 
-        listeningPlayers.put(player.getUniqueId(), new LogListener(player));
+        listeningPlayers.put(player.getUniqueId(), new LogReader(player));
         listeningPlayers.get(player.getUniqueId()).startReading();
         Utils.sendPrefixMsg(player, "Console reading enabled!");
     }
