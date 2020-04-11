@@ -15,7 +15,9 @@ public class removeFromListening implements Listener {
     @EventHandler
     public void removeListeningPlayer(PlayerQuitEvent e) {
         HashMap<UUID, LogReader> listeningPlayers = MainCommand.getListeningPlayers();
-        listeningPlayers.get(e.getPlayer().getUniqueId()).stopReading();
-        listeningPlayers.remove(e.getPlayer().getUniqueId());
+        if (listeningPlayers.get(e.getPlayer().getUniqueId()) != null) {
+            listeningPlayers.get(e.getPlayer().getUniqueId()).stopReading();
+            listeningPlayers.remove(e.getPlayer().getUniqueId());
+        }
     }
 }
