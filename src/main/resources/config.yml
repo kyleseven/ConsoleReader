@@ -5,3 +5,7 @@ version: "${project.version}"
 
 # Prefix for all messages
 prefix: "&8[&3CR&8] &7"
+
+# Color of console log in chat
+# Use Minecraft Color Codes [a-f] or [0-9]
+log_color: "7"

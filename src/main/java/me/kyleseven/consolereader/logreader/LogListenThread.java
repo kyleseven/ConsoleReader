@@ -1,6 +1,7 @@
 package me.kyleseven.consolereader.logreader;
 
 import me.kyleseven.consolereader.Utils;
+import me.kyleseven.consolereader.config.MainConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -35,7 +36,7 @@ public class LogListenThread implements Runnable {
                     Thread.sleep(500);
                 }
                 else {
-                    Utils.sendMsg(player, line);
+                    Utils.sendMsg(player, MainConfig.getInstance().getLogColor() + line);
                 }
             }
         }

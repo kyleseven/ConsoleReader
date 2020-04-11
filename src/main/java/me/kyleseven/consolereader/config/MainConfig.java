@@ -30,4 +30,8 @@ public class MainConfig extends ConfigLoader {
     public String getPrefix() {
         return config.getString("prefix");
     }
+
+    public String getLogColor() {
+        return "&" + config.getString("log_color");
+    }
 }
