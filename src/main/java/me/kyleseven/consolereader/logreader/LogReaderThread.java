@@ -13,11 +13,13 @@ import java.io.IOException;
 public class LogReaderThread implements Runnable {
     private boolean exit;
     private final Player player;
+    private final int refreshTime;
     Thread t;
 
     LogReaderThread(Player player) {
         this.player = player;
         this.exit = false;
+        this.refreshTime = MainConfig.getInstance().getRefreshTime();
         t = new Thread(this);
         t.start();
     }
@@ -34,7 +36,7 @@ public class LogReaderThread implements Runnable {
             while (!exit) {
                 line = br.readLine();
                 if (line == null) {
-                    Thread.sleep(500);
+                    Thread.sleep(refreshTime);
                 }
                 else {
                     Utils.sendMsg(player, MainConfig.getInstance().getLogColor() + line);
