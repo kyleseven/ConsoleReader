@@ -34,8 +34,4 @@ public class MainConfig extends ConfigLoader {
     public String getLogColor() {
         return "&" + config.getString("log_color");
     }
-
-    public int getRefreshTime() {
-        return config.getInt("refresh_time");
-    }
 }
