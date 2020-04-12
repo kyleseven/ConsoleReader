@@ -5,7 +5,7 @@ import co.aikar.commands.annotation.*;
 import me.kyleseven.consolereader.ConsoleReader;
 import me.kyleseven.consolereader.Utils;
 import me.kyleseven.consolereader.config.MainConfig;
-import me.kyleseven.consolereader.logreader.LogReaderManager;
+import me.kyleseven.consolereader.logreader.LogAppenderManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -39,12 +39,12 @@ public class MainCommand extends BaseCommand {
     @CommandPermission("consolereader.read")
     @Description("Toggle monitoring of the console in game.")
     public void onEnable(Player player) {
-        if (!LogReaderManager.isReading(player)) {
-            LogReaderManager.startReading(player);
+        if (!LogAppenderManager.isReading(player)) {
+            LogAppenderManager.startReading(player);
             Utils.sendPrefixMsg(player, "Console monitoring enabled!");
         }
         else {
-            LogReaderManager.stopReading(player);
+            LogAppenderManager.stopReading(player);
             Utils.sendPrefixMsg(player, "Console monitoring disabled.");
         }
     }
