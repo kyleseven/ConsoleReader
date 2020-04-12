@@ -37,7 +37,7 @@ Place the `ConsoleReader.jar` file into your `plugins/` directory and start the 
 ## Permissions
 
 - `consolereader.use` allows access to `help` and `version` subcommands.
-- `consolereader.read` allows access to `enable` and `disable` subcommands.
+- `consolereader.read` allows access to `monitor` subcommands.
 - `consolereader.execute` allows access to the `execute` subcommand.
     - WARNING! Only give this permission to people you trust 100%!
 - `consolereader.reload` allows access to the `reload` subcommand.
