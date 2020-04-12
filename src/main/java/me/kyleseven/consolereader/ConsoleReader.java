@@ -4,7 +4,9 @@ import co.aikar.commands.PaperCommandManager;
 import me.kyleseven.consolereader.commands.MainCommand;
 import me.kyleseven.consolereader.config.MainConfig;
 import me.kyleseven.consolereader.listeners.removeFromListening;
-import me.kyleseven.consolereader.logreader.LogReaderManager;
+import me.kyleseven.consolereader.logreader.LogAppenderManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ConsoleReader extends JavaPlugin {
@@ -18,12 +20,12 @@ public final class ConsoleReader extends JavaPlugin {
         loadConfigs();
         registerCommands();
         registerEvents();
-        LogReaderManager.setup();
+        LogAppenderManager.setup((Logger) LogManager.getRootLogger());
     }
 
     @Override
     public void onDisable() {
-        LogReaderManager.stopReadingAll();
+        LogAppenderManager.stopReadingAll();
     }
 
     public static ConsoleReader getPlugin() {
