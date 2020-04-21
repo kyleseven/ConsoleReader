@@ -34,6 +34,6 @@ public class LogAppender extends AbstractAppender {
         else if (logLevel.equals("FATAL") || logLevel.equals("ERROR")) {
             completeMessage = "&c" + completeMessage;
         }
-        Utils.sendMsg(player, completeMessage);
+        Utils.sendMsg(player, MainConfig.getInstance().getLogColor() + completeMessage);
     }
 }
