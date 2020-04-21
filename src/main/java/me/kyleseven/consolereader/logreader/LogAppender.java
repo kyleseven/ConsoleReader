@@ -20,8 +20,14 @@ public class LogAppender extends AbstractAppender {
     @Override
     public void append(LogEvent event) {
         LogEvent log = event.toImmutable();
-        String message = log.getMessage().getFormattedMessage();
-        message = "[" + DateFormatUtils.format(log.getTimeMillis(), "HH:mm:ss") + " " + log.getLevel().toString() + "]: " + message;
-        Utils.sendMsg(player, MainConfig.getInstance().getLogColor() + message);
+        String logMessage = log.getMessage().getFormattedMessage();
+        String logLevel = log.getLevel().toString();
+        String loggerName = log.getLoggerName();
+        String completeMessage = "[" + DateFormatUtils.format(log.getTimeMillis(), "HH:mm:ss") + " " + logLevel + "]: ";
+        if (loggerName != null && !(loggerName.contains("net.minecraft") || loggerName.equals("Minecraft") || loggerName.isEmpty())) {
+            completeMessage += "[" + loggerName + "] ";
+        }
+        completeMessage += logMessage;
+        Utils.sendMsg(player, completeMessage);
     }
 }
