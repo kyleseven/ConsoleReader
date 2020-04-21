@@ -28,6 +28,12 @@ public class LogAppender extends AbstractAppender {
             completeMessage += "[" + loggerName + "] ";
         }
         completeMessage += logMessage;
+        if (logLevel.equals("WARN")) {
+            completeMessage = "&e" + completeMessage;
+        }
+        else if (logLevel.equals("FATAL") || logLevel.equals("ERROR")) {
+            completeMessage = "&c" + completeMessage;
+        }
         Utils.sendMsg(player, completeMessage);
     }
 }
