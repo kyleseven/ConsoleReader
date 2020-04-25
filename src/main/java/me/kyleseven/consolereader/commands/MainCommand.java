@@ -54,6 +54,11 @@ public class MainCommand extends BaseCommand {
     @CommandPermission("consolereader.execute")
     @Description("Execute a command as console.")
     public void onExecute(Player player, String[] args) {
+        if (args.length == 0) {
+            Utils.sendPrefixMsg(player, "&cError: You need to specify a command.");
+            return;
+        }
+        
         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
         StringBuilder command = new StringBuilder();
         for (String s : args) {
