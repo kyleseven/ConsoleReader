@@ -74,8 +74,7 @@ public class MainCommand extends BaseCommand {
                         isForbiddenCommand = true;
                         break;
                     }
-                }
-                else {
+                } else {
                     break;
                 }
             }
