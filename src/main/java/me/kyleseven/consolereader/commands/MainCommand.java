@@ -18,7 +18,7 @@ public class MainCommand extends BaseCommand {
     }
 
     @Subcommand("help|h")
-    @CommandPermission("consolereader.use")
+    @CommandPermission("consolereader.read")
     @HelpCommand
     @Default
     public void onHelp(CommandSender sender) {
@@ -90,7 +90,7 @@ public class MainCommand extends BaseCommand {
     }
 
     @Subcommand("version|ver")
-    @CommandPermission("consolereader.use")
+    @CommandPermission("consolereader.read")
     @Description("See the plugin version.")
     public void onVersion(CommandSender sender) {
         String version = ConsoleReader.getPlugin().getDescription().getVersion();
