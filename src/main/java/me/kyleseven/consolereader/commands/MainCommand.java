@@ -24,7 +24,7 @@ public class MainCommand extends BaseCommand {
     public void onHelp(CommandSender sender) {
         String[] help = {"&8------====== &3ConsoleReader Help &8======------",
                 "&3/cr help &8- &7Shows this help menu.",
-                "&3/cr monitor &8- &7Toggle console monitoring in chat.",
+                "&3/cr read &8- &7Toggle console monitoring in chat.",
                 "&3/cr execute <command> &8- &7Execute a command as console.",
                 "&3/cr reload &8- &7Reload the plugin config.",
                 "&3/cr version &8- &7Show plugin version"};
@@ -34,17 +34,17 @@ public class MainCommand extends BaseCommand {
         }
     }
 
-    @Subcommand("monitor|mon")
+    @Subcommand("read|r")
     @CommandPermission("consolereader.read")
     @Description("Toggle monitoring of the console in game.")
     public void onEnable(Player player) {
         if (!LogAppenderManager.isReading(player)) {
             LogAppenderManager.startReading(player);
-            Utils.sendPrefixMsg(player, "Console monitoring enabled!");
+            Utils.sendPrefixMsg(player, "Console reading enabled!");
         }
         else {
             LogAppenderManager.stopReading(player);
-            Utils.sendPrefixMsg(player, "Console monitoring disabled.");
+            Utils.sendPrefixMsg(player, "Console reading disabled.");
         }
     }
 
