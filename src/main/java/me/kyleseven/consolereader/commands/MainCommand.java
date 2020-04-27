@@ -51,6 +51,7 @@ public class MainCommand extends BaseCommand {
     @CommandAlias("cexec")
     @Subcommand("execute|exec")
     @CommandPermission("consolereader.execute")
+    @CommandCompletion("<command>")
     @Description("Execute a command as console.")
     public void onExecute(Player player, @Optional String command) {
         boolean needsTemporaryRead = !LogAppenderManager.isReading(player);
