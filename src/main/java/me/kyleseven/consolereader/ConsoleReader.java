@@ -3,7 +3,7 @@ package me.kyleseven.consolereader;
 import co.aikar.commands.PaperCommandManager;
 import me.kyleseven.consolereader.commands.MainCommand;
 import me.kyleseven.consolereader.config.MainConfig;
-import me.kyleseven.consolereader.listeners.removeFromListening;
+import me.kyleseven.consolereader.listeners.playerListener;
 import me.kyleseven.consolereader.logreader.LogAppenderManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -42,6 +42,6 @@ public final class ConsoleReader extends JavaPlugin {
     }
 
     private void registerEvents() {
-        this.getServer().getPluginManager().registerEvents(new removeFromListening(), this);
+        this.getServer().getPluginManager().registerEvents(new playerListener(), this);
     }
 }
