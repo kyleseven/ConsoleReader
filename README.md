@@ -1,8 +1,8 @@
 # ConsoleReader
-Spigot plugin that allows players to access the console in game.
+Spigot plugin that allows players to access the console in game. [View on SpigotMC](https://www.spigotmc.org/resources/consolereader.78041/)
 
 ## Disclaimer
-This plugin is in ALPHA stage, and you most likely will experience bugs.
+This plugin is in ALPHA stage, so you may experience bugs.
 Things like the config.yml, commands, and permission nodes are subject to change.
 
 ## Building
@@ -31,7 +31,7 @@ Place the `ConsoleReader.jar` file into your `plugins/` directory and start the 
 ## Usage
 
 - `/cr help` displays a list of commands.
-- `/cr monitor` starts/stop showing the console in chat.
+- `/cr read` starts/stop showing the console in chat.
 - `/cr execute <command>` executes a command as console.
     - `/cexec <command>` alternatively.
 - `/cr version` shows the plugin version.
