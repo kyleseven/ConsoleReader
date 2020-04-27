@@ -8,7 +8,6 @@ import me.kyleseven.consolereader.config.MainConfig;
 import me.kyleseven.consolereader.logreader.LogAppenderManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 @CommandAlias("consolereader|cr")
@@ -53,10 +52,10 @@ public class MainCommand extends BaseCommand {
     @Subcommand("execute|exec")
     @CommandPermission("consolereader.execute")
     @Description("Execute a command as console.")
-    public void onExecute(Player player, String[] args) {
+    public void onExecute(Player player, @Optional String command) {
         boolean needsTemporaryRead = !LogAppenderManager.isReading(player);
 
-        if (args.length == 0) {
+        if (command == null || command.isEmpty()) {
             Utils.sendPrefixMsg(player, "&cError: You need to specify a command.");
             return;
         }
@@ -65,13 +64,8 @@ public class MainCommand extends BaseCommand {
             Utils.sendPrefixMsg(player, "Temporarily enabling console reading for 5 seconds.");
             LogAppenderManager.startReading(player);
         }
-        
-        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-        StringBuilder command = new StringBuilder();
-        for (String s : args) {
-            command.append(s).append(" ");
-        }
-        Bukkit.dispatchCommand(console, command.toString());
+
+        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
 
         if (needsTemporaryRead) {
             new Thread(() -> {
