@@ -26,6 +26,7 @@ Place the `ConsoleReader.jar` file into your `plugins/` directory and start the 
 - `config.yml`
     - `prefix`: The prefix that most plugin messages will have.
     - `log_color`: The color of the console in the chat. Accepts a Minecraft color code 0-9 or a-f.
+    - `forbidden_commands`: A list of commands that will be blocked if used with `/cr exec`
 
 ## Usage
 

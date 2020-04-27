@@ -4,7 +4,7 @@
   <groupId>me.kyleseven</groupId>
   <artifactId>ConsoleReader</artifactId>
   <name>ConsoleReader</name>
-  <version>1.1-ALPHA</version>
+  <version>1.2-ALPHA</version>
   <description>Look at the server console in game.</description>
   <build>
     <defaultGoal>clean package</defaultGoal>
