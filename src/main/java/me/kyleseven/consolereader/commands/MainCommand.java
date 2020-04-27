@@ -41,8 +41,7 @@ public class MainCommand extends BaseCommand {
         if (!LogAppenderManager.isReading(player)) {
             LogAppenderManager.startReading(player);
             Utils.sendPrefixMsg(player, "Console reading enabled!");
-        }
-        else {
+        } else {
             LogAppenderManager.stopReading(player);
             Utils.sendPrefixMsg(player, "Console reading disabled.");
         }
@@ -59,6 +58,32 @@ public class MainCommand extends BaseCommand {
         if (command == null || command.isEmpty()) {
             Utils.sendPrefixMsg(player, "&cError: You need to specify a command.");
             return;
+        }
+
+        // Check if command is forbidden
+        for (String forbiddenCommand : MainConfig.getInstance().getForbiddenCommands()) {
+            String[] args = command.split(" ");
+            String[] forbidden = forbiddenCommand.split(" ");
+            boolean isForbiddenCommand = false;
+
+            int i = 0;
+            while (i < args.length && i < forbidden.length) {
+                if (args[i].equals(forbidden[i])) {
+                    i++;
+                    if (i == forbidden.length) {
+                        isForbiddenCommand = true;
+                        break;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+
+            if (isForbiddenCommand) {
+                Utils.sendPrefixMsg(player, "That command must be executed using the actual console.");
+                return;
+            }
         }
 
         if (needsTemporaryRead) {
