@@ -1,9 +1,14 @@
 # ConsoleReader
-Spigot plugin that allows players to access the console in game. [View on SpigotMC](https://www.spigotmc.org/resources/consolereader.78041/)
+Spigot plugin that allows players to access the console in game. [View on SpigotMC.](https://www.spigotmc.org/resources/consolereader.78041/)
 
 ## Disclaimer
 This plugin is in ALPHA stage, so you may experience bugs.
 Things like the config.yml, commands, and permission nodes are subject to change.
+
+## Compatibility
+ConsoleReader is built on Spigot API version 1.13.
+
+It is compatible with 1.12, 1.13, 1.14, and 1.15.
 
 ## Building
 
