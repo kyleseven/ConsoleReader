@@ -30,6 +30,8 @@ public class LogAppenderManager {
         for (LogAppender appender : logAppenders.values()) {
             logger.removeAppender(appender);
         }
+
+        logAppenders.clear();
     }
 
     public static boolean isReading(Player player) {
