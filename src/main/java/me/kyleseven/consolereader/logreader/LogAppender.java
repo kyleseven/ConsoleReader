@@ -34,8 +34,7 @@ public class LogAppender extends AbstractAppender {
 
         if (logLevel.equals("WARN")) {
             completeMessage = "&e" + completeMessage;
-        }
-        else if (logLevel.equals("FATAL") || logLevel.equals("ERROR")) {
+        } else if (logLevel.equals("FATAL") || logLevel.equals("ERROR")) {
             completeMessage = "&c" + completeMessage;
         }
 

@@ -28,8 +28,7 @@ public abstract class ConfigLoader {
         if (!configFile.exists()) {
             plugin.getLogger().info("Creating " + fileName + " file...");
             plugin.saveResource(fileName, false);
-        }
-        else {
+        } else {
             plugin.getLogger().info("Loading " + fileName + " file...");
         }
 
