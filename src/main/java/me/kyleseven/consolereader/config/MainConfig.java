@@ -39,6 +39,10 @@ public class MainConfig extends ConfigLoader {
         return ChatColor.valueOf(config.getString("log_color"));
     }
 
+    public boolean getShowChat() {
+        return config.getBoolean("show_chat");
+    }
+
     public List<String> getForbiddenCommands() {
         return config.getStringList("forbidden_commands");
     }
