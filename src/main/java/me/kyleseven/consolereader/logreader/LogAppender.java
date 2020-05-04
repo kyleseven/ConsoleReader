@@ -24,6 +24,7 @@ public class LogAppender extends AbstractAppender {
     public void append(LogEvent event) {
         LogEvent log = event.toImmutable();
 
+        // Log components
         ChatColor logColor = MainConfig.getInstance().getLogColor();
         String logMessage = logColor + log.getMessage().getFormattedMessage();
         String logDate = DateFormatUtils.format(log.getTimeMillis(), "yyyy-MM-dd");
@@ -32,6 +33,13 @@ public class LogAppender extends AbstractAppender {
         String loggerName = log.getLoggerName();
         String threadName = log.getThreadName();
         String messagePrefix = logColor + "[" + logTime + " " + logLevel + "]: ";
+
+        /*
+        Filtering console messages here.
+        - Enable showing chat or not.
+        - Showing logger name if it is not from the game itself.
+        - Adding color to WARN, FATAL, and ERROR messages.
+         */
 
         if (!MainConfig.getInstance().getShowChat()) {
             if (threadName.contains("Async Chat Thread")) {
@@ -49,6 +57,7 @@ public class LogAppender extends AbstractAppender {
             messagePrefix = ChatColor.RED + messagePrefix;
         }
 
+        // Creating Hover Text
         TextComponent chatLogPrefix = new TextComponent(TextComponent.fromLegacyText(messagePrefix));
         TextComponent chatLogMessage = new TextComponent(TextComponent.fromLegacyText(logMessage));
         ComponentBuilder hoverText = new ComponentBuilder()
