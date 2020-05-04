@@ -62,24 +62,7 @@ public class MainCommand extends BaseCommand {
 
         // Check if command is forbidden
         for (String forbiddenCommand : MainConfig.getInstance().getForbiddenCommands()) {
-            String[] args = command.split(" ");
-            String[] forbidden = forbiddenCommand.split(" ");
-            boolean isForbiddenCommand = false;
-
-            int i = 0;
-            while (i < args.length && i < forbidden.length) {
-                if (args[i].equals(forbidden[i])) {
-                    i++;
-                    if (i == forbidden.length) {
-                        isForbiddenCommand = true;
-                        break;
-                    }
-                } else {
-                    break;
-                }
-            }
-
-            if (isForbiddenCommand) {
+            if (command.startsWith(forbiddenCommand)) {
                 Utils.sendPrefixMsg(player, "That command must be executed using the actual console.");
                 return;
             }
