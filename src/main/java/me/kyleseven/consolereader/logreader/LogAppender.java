@@ -24,7 +24,7 @@ public class LogAppender extends AbstractAppender {
     public void append(LogEvent event) {
         LogEvent log = event.toImmutable();
 
-        ChatColor logColor = ChatColor.valueOf(MainConfig.getInstance().getLogColor());
+        ChatColor logColor = MainConfig.getInstance().getLogColor();
         String logMessage = logColor + log.getMessage().getFormattedMessage();
         String logDate = DateFormatUtils.format(log.getTimeMillis(), "yyyy-MM-dd");
         String logTime = DateFormatUtils.format(log.getTimeMillis(), "HH:mm:ss");

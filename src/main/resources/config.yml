@@ -7,8 +7,8 @@ version: "${project.version}"
 prefix: "&8[&3CR&8] &7"
 
 # Color of console log in chat
-# Use Minecraft Color Codes [a-f] or [0-9]
-log_color: "7"
+# Use Spigot color constants. Refer to "Enum Constants" at https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/ChatColor.html
+log_color: "GRAY"
 
 # Commands that cannot be executed with /cr exec
 forbidden_commands:

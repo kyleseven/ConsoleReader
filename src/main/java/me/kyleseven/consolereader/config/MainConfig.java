@@ -1,5 +1,7 @@
 package me.kyleseven.consolereader.config;
 
+import net.md_5.bungee.api.ChatColor;
+
 import java.util.List;
 
 public class MainConfig extends ConfigLoader {
@@ -33,8 +35,8 @@ public class MainConfig extends ConfigLoader {
         return config.getString("prefix");
     }
 
-    public String getLogColor() {
-        return config.getString("log_color");
+    public ChatColor getLogColor() {
+        return ChatColor.valueOf(config.getString("log_color"));
     }
 
     public List<String> getForbiddenCommands() {
