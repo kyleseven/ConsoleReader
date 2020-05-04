@@ -33,6 +33,12 @@ public class LogAppender extends AbstractAppender {
         String threadName = log.getThreadName();
         String messagePrefix = logColor + "[" + logTime + " " + logLevel + "]: ";
 
+        if (!MainConfig.getInstance().getShowChat()) {
+            if (threadName.contains("Async Chat Thread")) {
+                return;
+            }
+        }
+
         if (loggerName != null && !(loggerName.contains("net.minecraft") || loggerName.equals("Minecraft") || loggerName.isEmpty())) {
             messagePrefix += "[" + loggerName + "] ";
         }
