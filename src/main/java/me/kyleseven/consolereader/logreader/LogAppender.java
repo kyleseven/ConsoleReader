@@ -37,12 +37,19 @@ public class LogAppender extends AbstractAppender {
         /*
         Filtering console messages here.
         - Enable showing chat or not.
+        - Show own commands in chat or not.
         - Showing logger name if it is not from the game itself.
         - Adding color to WARN, FATAL, and ERROR messages.
          */
 
         if (!MainConfig.getInstance().getShowChat()) {
             if (threadName.contains("Async Chat Thread")) {
+                return;
+            }
+        }
+
+        if (!MainConfig.getInstance().getShowOwnCommands()) {
+            if (logMessage.contains(player.getName() + " issued server command") && loggerName.contains("net.minecraft.server")) {
                 return;
             }
         }
