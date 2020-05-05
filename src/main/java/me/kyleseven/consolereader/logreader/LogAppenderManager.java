@@ -21,6 +21,7 @@ public class LogAppenderManager {
         logger.addAppender(appender);
     }
 
+    // Does not add player UUID to HashMap and enables reading for specified time in ms
     public static void startReadingTemp(Player player, Long milliseconds) {
         LogAppender appender = new LogAppender(player);
         logger.addAppender(appender);
@@ -39,6 +40,7 @@ public class LogAppenderManager {
         logAppenders.remove(player.getUniqueId());
     }
 
+    // Does not remove player UUID from HashMap but removes their appender.
     public static void stopReadingTemp(Player player) {
         logger.removeAppender(logAppenders.get(player.getUniqueId()));
     }
