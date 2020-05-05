@@ -75,7 +75,7 @@ public class LogAppender extends AbstractAppender {
             logMessage = ChatColor.RED + logMessage;
         } else {
             messagePrefix = logColor + messagePrefix;
-            logMessage = logColor + messagePrefix;
+            logMessage = logColor + logMessage;
         }
 
         // Creating Hover Text
