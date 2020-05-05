@@ -26,13 +26,13 @@ public class LogAppender extends AbstractAppender {
 
         // Log components
         ChatColor logColor = MainConfig.getInstance().getLogColor();
-        String logMessage = logColor + log.getMessage().getFormattedMessage();
+        String logMessage = log.getMessage().getFormattedMessage();
         String logDate = DateFormatUtils.format(log.getTimeMillis(), "yyyy-MM-dd");
         String logTime = DateFormatUtils.format(log.getTimeMillis(), "HH:mm:ss");
         String logLevel = log.getLevel().toString();
         String loggerName = log.getLoggerName();
         String threadName = log.getThreadName();
-        String messagePrefix = logColor + "[" + logTime + " " + logLevel + "]: ";
+        String messagePrefix = "[" + logTime + " " + logLevel + "]: ";
 
         /*
         Filtering console messages here.
@@ -69,8 +69,13 @@ public class LogAppender extends AbstractAppender {
 
         if (logLevel.equals("WARN")) {
             messagePrefix = ChatColor.YELLOW + messagePrefix;
+            logMessage = ChatColor.YELLOW + logMessage;
         } else if (logLevel.equals("FATAL") || logLevel.equals("ERROR")) {
             messagePrefix = ChatColor.RED + messagePrefix;
+            logMessage = ChatColor.RED + logMessage;
+        } else {
+            messagePrefix = logColor + messagePrefix;
+            logMessage = logColor + messagePrefix;
         }
 
         // Creating Hover Text
