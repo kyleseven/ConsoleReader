@@ -24,7 +24,7 @@ public class MainCommand extends BaseCommand {
     public void onHelp(CommandSender sender) {
         String[] help = {"&8------====== &3ConsoleReader Help &8======------",
                 "&3/cr help &8- &7Shows this help menu.",
-                "&3/cr read <player>&8- &7Toggle console monitoring in chat.",
+                "&3/cr read [player]&8- &7Toggle console monitoring in chat.",
                 "&3/cr execute <command> &8- &7Execute a command as console.",
                 "&3/cr reload &8- &7Reload the plugin config.",
                 "&3/cr version &8- &7Show plugin version"};
