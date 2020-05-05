@@ -6,7 +6,7 @@ This plugin is in ALPHA stage, so you may experience bugs.
 Things like the config.yml, commands, and permission nodes are subject to change.
 
 ## Compatibility
-ConsoleReader is built on Spigot API version 1.13.
+ConsoleReader is built on Spigot API version 1.15.
 
 It is compatible with 1.12, 1.13, 1.14, and 1.15.
 
@@ -18,7 +18,7 @@ ConsoleReader uses Maven to handle dependencies and building.
 
     git clone https://github.com/kyleseven/ConsoleReader.git
     cd ConsoleReader/
-    mvn install
+    mvn clean package
     
 The jars can be found in the `target` directory.
 
@@ -30,13 +30,15 @@ Place the `ConsoleReader.jar` file into your `plugins/` directory and start the 
 
 - `config.yml`
     - `prefix`: The prefix that most plugin messages will have.
-    - `log_color`: The color of the console in the chat. Accepts a Minecraft color code 0-9 or a-f.
+    - `log_color`: The color of the console in the chat. Supports the colors listed [here](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/ChatColor.html).
+    - `show_chat`: Whether to show chat in /cr read.
+    - `show_own_commands`: Whether you want to see your own commands in /cr read.
     - `forbidden_commands`: A list of commands that will be blocked if used with `/cr exec`
 
 ## Usage
 
 - `/cr help` displays a list of commands.
-- `/cr read` starts/stop showing the console in chat.
+- `/cr read [player]` starts/stop showing the console in chat for yourself or a specified player.
 - `/cr execute <command>` executes a command as console.
     - `/cexec <command>` alternatively.
 - `/cr version` shows the plugin version.
