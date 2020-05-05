@@ -12,7 +12,7 @@ public class playerListener implements Listener {
     public void removeReadingPlayer(PlayerQuitEvent e) {
         // Remove the appender if player is offline
         if (LogAppenderManager.isReading(e.getPlayer())) {
-            LogAppenderManager.stopReadingOffline(e.getPlayer());
+            LogAppenderManager.stopReadingTemp(e.getPlayer());
         }
     }
 

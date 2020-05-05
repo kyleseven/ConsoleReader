@@ -21,12 +21,25 @@ public class LogAppenderManager {
         logger.addAppender(appender);
     }
 
+    public static void startReadingTemp(Player player, Long milliseconds) {
+        LogAppender appender = new LogAppender(player);
+        logger.addAppender(appender);
+        new Thread(() -> {
+            try {
+                Thread.sleep(milliseconds);
+                logger.removeAppender(appender);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public static void stopReading(Player player) {
         logger.removeAppender(logAppenders.get(player.getUniqueId()));
         logAppenders.remove(player.getUniqueId());
     }
 
-    public static void stopReadingOffline(Player player) {
+    public static void stopReadingTemp(Player player) {
         logger.removeAppender(logAppenders.get(player.getUniqueId()));
     }
 

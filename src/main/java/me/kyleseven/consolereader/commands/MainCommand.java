@@ -53,8 +53,6 @@ public class MainCommand extends BaseCommand {
     @CommandCompletion("<command>")
     @Description("Execute a command as console.")
     public void onExecute(Player player, @Optional String command) {
-        boolean needsTemporaryRead = !LogAppenderManager.isReading(player);
-
         if (command == null || command.isEmpty()) {
             Utils.sendPrefixMsg(player, "&cError: You need to specify a command.");
             return;
@@ -68,24 +66,12 @@ public class MainCommand extends BaseCommand {
             }
         }
 
-        if (needsTemporaryRead) {
+        if (!LogAppenderManager.isReading(player)) {
             Utils.sendPrefixMsg(player, "Temporarily enabling console reading for 5 seconds.");
-            LogAppenderManager.startReading(player);
+            LogAppenderManager.startReadingTemp(player, (long) 5000);
         }
 
         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
-
-        if (needsTemporaryRead) {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                LogAppenderManager.stopReading(player);
-            }).start();
-        }
     }
 
     @Subcommand("reload")
