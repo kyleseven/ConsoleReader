@@ -43,6 +43,10 @@ public class MainConfig extends ConfigLoader {
         return config.getBoolean("show_chat");
     }
 
+    public boolean getShowOwnCommands() {
+        return config.getBoolean("show_own_commands");
+    }
+
     public List<String> getForbiddenCommands() {
         return config.getStringList("forbidden_commands");
     }
