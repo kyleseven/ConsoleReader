@@ -39,6 +39,7 @@ public class LogAppender extends AbstractAppender {
         - Enable showing chat or not.
         - Show own commands in chat or not.
         - Showing logger name if it is not from the game itself.
+        - Don't show own login message
         - Adding color to WARN, FATAL, and ERROR messages.
          */
 
@@ -54,7 +55,15 @@ public class LogAppender extends AbstractAppender {
             }
         }
 
-        if (loggerName != null && !(loggerName.contains("net.minecraft") || loggerName.equals("Minecraft") || loggerName.isEmpty())) {
+        if (loggerName.contains("net.minecraft.server") && loggerName.contains("PlayerList") && logMessage.contains(player.getName())) {
+            return;
+        }
+
+        if (loggerName.contains("net.minecraft.server") && logMessage.contains(player.getName()) && logMessage.contains("joined the game")) {
+            return;
+        }
+
+        if (!(loggerName.contains("net.minecraft") || loggerName.equals("Minecraft") || loggerName.isEmpty())) {
             messagePrefix += "[" + loggerName + "] ";
         }
 
@@ -70,7 +79,7 @@ public class LogAppender extends AbstractAppender {
         ComponentBuilder hoverText = new ComponentBuilder()
                 .append("Time: ").color(ChatColor.GRAY).append(logDate + " " + logTime + "\n").color(ChatColor.WHITE)
                 .append("Log Level: ").color(ChatColor.GRAY).append(logLevel + "\n").color(ChatColor.WHITE)
-                .append("Logger: ").color(ChatColor.GRAY).append(((loggerName == null || loggerName.isEmpty()) ? "None" : loggerName) + "\n").color(ChatColor.WHITE)
+                .append("Logger: ").color(ChatColor.GRAY).append((loggerName.isEmpty() ? "None" : loggerName) + "\n").color(ChatColor.WHITE)
                 .append("Thread: ").color(ChatColor.GRAY).append(threadName).color(ChatColor.WHITE);
         chatLogPrefix.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.create()));
 
