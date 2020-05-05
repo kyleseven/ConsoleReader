@@ -26,6 +26,10 @@ public class LogAppenderManager {
         logAppenders.remove(player.getUniqueId());
     }
 
+    public static void stopReadingOffline(Player player) {
+        logger.removeAppender(logAppenders.get(player.getUniqueId()));
+    }
+
     public static void stopReadingAll() {
         for (LogAppender appender : logAppenders.values()) {
             logger.removeAppender(appender);
