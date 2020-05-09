@@ -49,6 +49,10 @@
                                     <pattern>co.aikar.commands</pattern>
                                     <shadedPattern>me.kyleseven.consolereader.acf</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>co.aikar.locales</pattern>
+                                    <shadedPattern>me.kyleseven.consolereader.locales</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
