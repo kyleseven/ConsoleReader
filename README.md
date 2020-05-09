@@ -1,5 +1,10 @@
 # ConsoleReader
-Spigot plugin that allows players to access the console in game. [View on SpigotMC.](https://www.spigotmc.org/resources/consolereader.78041/)
+
+![Java CI with Maven](https://github.com/kyleseven/ConsoleReader/workflows/Java%20CI%20with%20Maven/badge.svg)
+[![GitHub tag](https://img.shields.io/github/tag/kyleseven/ConsoleReader.svg)](https://GitHub.com/kyleseven/ConsoleReader/tags/)
+[![SpigotMC](https://pluginbadges.glitch.me/api/v1/dl/View%20ConsoleReader%20on%20SpigotMC-limegreen.svg?spigot=consolereader.78041&style=flat)](https://www.spigotmc.org/resources/consolereader.78041/)
+
+Spigot plugin that allows players to access the console in game.
 
 ## Disclaimer
 This plugin is in ALPHA stage, so you may experience bugs.
