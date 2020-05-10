@@ -44,6 +44,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <minimizeJar>true</minimizeJar>
                             <relocations>
                                 <relocation>
                                     <pattern>co.aikar.commands</pattern>
