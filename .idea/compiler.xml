@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ConsoleReader" target="1.8" />
+      <module name="ConsoleReader" target="11.0.6" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
