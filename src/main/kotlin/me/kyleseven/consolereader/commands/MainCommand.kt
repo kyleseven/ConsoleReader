@@ -11,6 +11,8 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
+@CommandAlias("cr|consolereader")
+@Description("Use the ConsoleReader plugin.")
 class MainCommand : BaseCommand() {
     @CatchUnknown
     fun onInvalid(sender: CommandSender) {
