@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class playerListener implements Listener {
+public class PlayerListener implements Listener {
     @EventHandler
     public void removeReadingPlayer(PlayerQuitEvent e) {
         // Remove the appender if player is offline
