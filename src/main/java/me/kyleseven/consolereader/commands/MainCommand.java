@@ -10,7 +10,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("consolereader|cr")
+@CommandAlias("cr|consolereader")
+@Description("Use the ConsoleReader plugin.")
 public class MainCommand extends BaseCommand {
     @CatchUnknown
     public void onInvalid(CommandSender sender) {
