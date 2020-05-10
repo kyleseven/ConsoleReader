@@ -10,6 +10,7 @@ import org.apache.logging.log4j.core.LogEvent
 import org.apache.logging.log4j.core.appender.AbstractAppender
 import org.bukkit.entity.Player
 
+@Suppress("DEPRECATION") // Paper/Spigot uses an older version of Log4J that does not have the new constructor
 class LogAppender(private val player: Player) : AbstractAppender("LogReader", null, null, false) {
     init {
         start()
