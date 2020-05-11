@@ -45,7 +45,7 @@ class LogAppender(private val player: Player) : AbstractAppender("LogReader", nu
         }
 
         if (!MainConfig.showOwnCommands) {
-            if (logMessage.contains(player.name + " issued server command") && loggerName.contains("net.minecraft.server")) {
+            if (logMessage.contains("${player.name} issued server command") && loggerName.contains("net.minecraft.server")) {
                 return
             }
         }

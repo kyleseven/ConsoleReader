@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin
 class ConsoleReader : JavaPlugin() {
     companion object {
         var instance: ConsoleReader? = null
-        private set
+            private set
     }
 
     override fun onEnable() {
