@@ -5,8 +5,8 @@ import co.aikar.commands.annotation.*
 import me.kyleseven.consolereader.ConsoleReader
 import me.kyleseven.consolereader.config.MainConfig
 import me.kyleseven.consolereader.logreader.LogAppenderManager
-import me.kyleseven.consolereader.sendColorMsg
-import me.kyleseven.consolereader.sendPrefixMsg
+import me.kyleseven.consolereader.utils.sendColorMsg
+import me.kyleseven.consolereader.utils.sendPrefixMsg
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player

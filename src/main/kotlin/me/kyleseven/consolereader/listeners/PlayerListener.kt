@@ -1,7 +1,7 @@
 package me.kyleseven.consolereader.listeners
 
 import me.kyleseven.consolereader.logreader.LogAppenderManager
-import me.kyleseven.consolereader.sendPrefixMsg
+import me.kyleseven.consolereader.utils.sendPrefixMsg
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent

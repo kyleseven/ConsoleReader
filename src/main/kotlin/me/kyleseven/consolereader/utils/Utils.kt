@@ -1,4 +1,4 @@
-package me.kyleseven.consolereader
+package me.kyleseven.consolereader.utils
 
 import me.kyleseven.consolereader.config.MainConfig
 import org.bukkit.ChatColor
