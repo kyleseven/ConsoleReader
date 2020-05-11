@@ -76,7 +76,7 @@ class LogAppender(private val player: Player) : AbstractAppender("LogReader", nu
         // Creating Hover Text
         val chatLogPrefix = TextComponent(*TextComponent.fromLegacyText(messagePrefix))
         val chatLogMessage = TextComponent(*TextComponent.fromLegacyText(logMessage))
-        val hoverText = ComponentBuilder()
+        val hoverText = ComponentBuilder("")
                 .append("Time: ").color(ChatColor.GRAY).append("$logDate $logTime\n").color(ChatColor.WHITE)
                 .append("Log Level: ").color(ChatColor.GRAY).append(logLevel.trimIndent() + "\n").color(ChatColor.WHITE)
                 .append("Logger: ").color(ChatColor.GRAY).append((if (loggerName.isEmpty()) "None" else loggerName).trimIndent() + "\n").color(ChatColor.WHITE)
