@@ -1,6 +1,6 @@
 # ConsoleReader
 
-![Java CI with Maven](https://github.com/kyleseven/ConsoleReader/workflows/Java%20CI%20with%20Maven/badge.svg)
+![CI with Maven](https://github.com/kyleseven/ConsoleReader/workflows/CI%20with%20Maven/badge.svg)
 [![GitHub tag](https://img.shields.io/github/tag/kyleseven/ConsoleReader.svg)](https://GitHub.com/kyleseven/ConsoleReader/tags/)
 [![SpigotMC](https://pluginbadges.glitch.me/api/v1/dl/View%20ConsoleReader%20on%20SpigotMC-limegreen.svg?spigot=consolereader.78041&style=flat)](https://www.spigotmc.org/resources/consolereader.78041/)
 

@@ -27,6 +27,8 @@ jobs:
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
     - uses: actions/upload-artifact@v2
       name: Upload artifact
       if: success()
