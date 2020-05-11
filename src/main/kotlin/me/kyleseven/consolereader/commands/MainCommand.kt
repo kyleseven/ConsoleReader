@@ -83,7 +83,7 @@ class MainCommand : BaseCommand() {
         }
 
         for (forbiddenCommand in MainConfig.forbiddenCommands) {
-            if (command.startsWith(forbiddenCommand)) {
+            if (command.startsWith(forbiddenCommand, ignoreCase = true)) {
                 player.sendPrefixMsg("&cError: The /$forbiddenCommand command may only be used in the real console.")
                 return
             }
