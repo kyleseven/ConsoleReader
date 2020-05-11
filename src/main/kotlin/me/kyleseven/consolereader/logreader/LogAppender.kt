@@ -25,7 +25,7 @@ class LogAppender(private val player: Player) : AbstractAppender("LogReader", nu
         val logDate = DateFormatUtils.format(log.timeMillis, "yyyy-MM-dd")
         val logTime = DateFormatUtils.format(log.timeMillis, "HH:mm:ss")
         val logLevel = log.level.toString()
-        val loggerName = log.loggerName
+        var loggerName = log.loggerName
         val threadName = log.threadName
         var messagePrefix = "[$logTime $logLevel]: "
 
@@ -50,6 +50,7 @@ class LogAppender(private val player: Player) : AbstractAppender("LogReader", nu
             }
         }
 
+        // Don't show join message
         if (loggerName.contains("net.minecraft.server") && loggerName.contains("PlayerList") && logMessage.contains(player.name)) {
             return
         }
@@ -58,8 +59,11 @@ class LogAppender(private val player: Player) : AbstractAppender("LogReader", nu
             return
         }
 
+        // Only add logger name if necessary
         if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft" || loggerName.isEmpty())) {
             messagePrefix += "[$loggerName] "
+        } else {
+            loggerName = "None"
         }
 
         if (logLevel == "WARN") {
@@ -79,7 +83,7 @@ class LogAppender(private val player: Player) : AbstractAppender("LogReader", nu
         val hoverText = ComponentBuilder("")
                 .append("Time: ").color(ChatColor.GRAY).append("$logDate $logTime\n").color(ChatColor.WHITE)
                 .append("Log Level: ").color(ChatColor.GRAY).append(logLevel.trimIndent() + "\n").color(ChatColor.WHITE)
-                .append("Logger: ").color(ChatColor.GRAY).append((if (loggerName.isEmpty()) "None" else loggerName).trimIndent() + "\n").color(ChatColor.WHITE)
+                .append("Logger: ").color(ChatColor.GRAY).append(loggerName.trimIndent() + "\n").color(ChatColor.WHITE)
                 .append("Thread: ").color(ChatColor.GRAY).append(threadName).color(ChatColor.WHITE)
         chatLogPrefix.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.create())
 
