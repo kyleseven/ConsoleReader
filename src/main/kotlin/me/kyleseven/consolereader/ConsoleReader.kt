@@ -10,7 +10,13 @@ import org.apache.logging.log4j.core.Logger
 import org.bukkit.plugin.java.JavaPlugin
 
 class ConsoleReader : JavaPlugin() {
+    companion object {
+        var instance: ConsoleReader? = null
+            private set
+    }
+
     override fun onEnable() {
+        instance = this
         loadConfigs()
         registerCommands()
         registerEvents()

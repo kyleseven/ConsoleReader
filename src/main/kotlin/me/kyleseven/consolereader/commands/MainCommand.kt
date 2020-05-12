@@ -10,15 +10,10 @@ import me.kyleseven.consolereader.utils.sendPrefixMsg
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
 
 @CommandAlias("cr|consolereader")
 @Description("Use the ConsoleReader plugin.")
 class MainCommand : BaseCommand() {
-
-    @Dependency
-    private lateinit var plugin: Plugin
-
     @CatchUnknown
     fun onInvalid(sender: CommandSender) {
         sender.sendPrefixMsg("&cUnknown subcommand.")
@@ -114,6 +109,6 @@ class MainCommand : BaseCommand() {
     @CommandPermission("consolereader.read")
     @Description("See the plugin version.")
     fun onVersion(sender: CommandSender) {
-        sender.sendPrefixMsg("ConsoleReader ${plugin.description.version} by kyleseven")
+        sender.sendPrefixMsg("ConsoleReader ${ConsoleReader.instance?.description?.version} by kyleseven")
     }
 }
