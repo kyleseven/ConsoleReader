@@ -22,14 +22,11 @@ object MainConfig : ConfigLoader("config.yml") {
             }
         }
 
-    val showChat: Boolean
-        get() = config!!.getBoolean("show_chat")
-
-    val showOwnCommands: Boolean
-        get() = config!!.getBoolean("show_own_commands")
-
     val forbiddenCommands: List<String>
         get() = config!!.getStringList("forbidden_commands")
+
+    val regexFilters: List<String>
+        get() = config!!.getStringList("filters")
 
     fun reload() {
         loadFile()

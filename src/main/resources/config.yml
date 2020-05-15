@@ -10,13 +10,21 @@ prefix: "&8[&3CR&8] &7"
 # Use a color code or ChatColor enum.
 log_color: "GRAY"
 
-# Show player chat in /cr read
-show_chat: false
-
-# Show your own commands in /cr read
-show_own_commands: false
-
 # Commands that cannot be executed with /cr exec
 forbidden_commands:
   - "op"
   - "deop"
+
+# Log messages that will not be shown in ConsoleReader
+# Uses Regex to match log messages. Messages are only filtered on FULL matches. Test your regex at https://regex101.com/
+# Make sure to use single quotes here! Do NOT use double quotes!
+# %PLAYERNAME% is replaced with the player that is reading the console, it will not match all players.
+# The default options below will filter:
+#  - Chat messages in the default format, i.e "<Playername> Message"
+#  - Your own commands, but not other players.
+#  - Your own join messages, but not other players.
+filters:
+  - '<[a-zA-Z0-9_]*> .*'
+  - '%PLAYERNAME% issued server command: .*'
+  - '%PLAYERNAME%\[\/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+\] logged in with entity id [0-9]+ at \(\[[a-zA-Z0-9_]+\]-?[0-9]+\.[0-9]+, [0-9]+\.[0-9]+, [0-9]+\.[0-9]+\)'
+  - '%PLAYERNAME% joined the game'

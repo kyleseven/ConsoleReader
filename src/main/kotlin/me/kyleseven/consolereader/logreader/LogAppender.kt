@@ -31,32 +31,17 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
 
         /*
         Filtering console messages here.
-        - Enable showing chat or not.
-        - Show own commands in chat or not.
+        - Go through regex filter.
         - Showing logger name if it is not from the game itself.
-        - Don't show own login message
         - Adding color to WARN, FATAL, and ERROR messages.
          */
 
-        if (!MainConfig.showChat) {
-            if (threadName.contains("Async Chat Thread")) {
+        for (regexString in MainConfig.regexFilters) {
+            val strippedMsg = ChatColor.stripColor(logMessage)
+            val regexToMatch = regexString.replace("%PLAYERNAME%", player.name).toRegex()
+            if (regexToMatch.matches(strippedMsg)) {
                 return
             }
-        }
-
-        if (!MainConfig.showOwnCommands) {
-            if (logMessage.contains("${player.name} issued server command") && loggerName.contains("net.minecraft.server")) {
-                return
-            }
-        }
-
-        // Don't show join message
-        if (loggerName.contains("net.minecraft.server") && loggerName.contains("PlayerList") && logMessage.contains(player.name)) {
-            return
-        }
-
-        if (loggerName.contains("net.minecraft.server") && logMessage.contains(player.name) && logMessage.contains("joined the game")) {
-            return
         }
 
         // Only add logger name if necessary
