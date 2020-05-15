@@ -17,13 +17,14 @@ forbidden_commands:
 
 # Log messages that will not be shown in ConsoleReader
 # Uses Regex to match log messages. Messages are only filtered on FULL matches. Test your regex at https://regex101.com/
+# Make sure to use single quotes here! Do NOT use double quotes!
 # %PLAYERNAME% is replaced with the player that is reading the console, it will not match all players.
 # The default options below will filter:
 #  - Chat messages in the default format, i.e "<Playername> Message"
 #  - Your own commands, but not other players.
 #  - Your own join messages, but not other players.
 filters:
-  - "<[a-zA-Z0-9_]*> .*"
-  - "%PLAYERNAME% issued server command: .*"
-  - "%PLAYERNAME%\[\/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+\] logged in with entity id [0-9]+ at \(\[[a-zA-Z0-9]+\]-?[0-9]+\.[0-9]+, [0-9]+\.[0-9]+, [0-9]+\.[0-9]+\)"
-  - "%PLAYERNAME% joined the game."
+  - '<[a-zA-Z0-9_]*> .*'
+  - '%PLAYERNAME% issued server command: .*'
+  - '%PLAYERNAME%\[\/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+\] logged in with entity id [0-9]+ at \(\[[a-zA-Z0-9_]+\]-?[0-9]+\.[0-9]+, [0-9]+\.[0-9]+, [0-9]+\.[0-9]+\)'
+  - '%PLAYERNAME% joined the game'
