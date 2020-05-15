@@ -7,7 +7,7 @@ version: "${project.version}"
 prefix: "&8[&3CR&8] &7"
 
 # Color of console log in chat
-# Use Spigot color constants. Refer to "Enum Constants" at https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/ChatColor.html
+# Use a color code or ChatColor enum.
 log_color: "GRAY"
 
 # Show player chat in /cr read

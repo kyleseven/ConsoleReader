@@ -13,7 +13,14 @@ object MainConfig : ConfigLoader("config.yml") {
         get() = config!!.getString("prefix")!!
 
     val logColor: ChatColor
-        get() = ChatColor.valueOf(config!!.getString("log_color")!!)
+        get() {
+            val colorString = config!!.getString("log_color")!!
+            return if (colorString.length == 1) {
+                ChatColor.getByChar(colorString[0])
+            } else {
+                ChatColor.valueOf(colorString)
+            }
+        }
 
     val showChat: Boolean
         get() = config!!.getBoolean("show_chat")
