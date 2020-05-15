@@ -36,9 +36,8 @@ Place the `ConsoleReader.jar` file into your `plugins/` directory and start the 
 - `config.yml`
     - `prefix`: The prefix that most plugin messages will have.
     - `log_color`: The color of the console in the chat. Supports the colors listed [here](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/ChatColor.html).
-    - `show_chat`: Whether to show chat in /cr read.
-    - `show_own_commands`: Whether you want to see your own commands in /cr read.
     - `forbidden_commands`: A list of commands that will be blocked if used with `/cr exec`
+    - `filters`: A list of regular expressions that if matched with a log message, the message will not be shown.
 
 ## Usage
 
