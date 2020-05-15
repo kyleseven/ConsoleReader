@@ -33,7 +33,6 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
         Filtering console messages here.
         - Go through regex filter.
         - Showing logger name if it is not from the game itself.
-        - Don't show own login message
         - Adding color to WARN, FATAL, and ERROR messages.
          */
 
@@ -43,15 +42,6 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
             if (regexToMatch.matches(strippedMsg)) {
                 return
             }
-        }
-
-        // Don't show join message
-        if (loggerName.contains("net.minecraft.server") && loggerName.contains("PlayerList") && logMessage.contains(player.name)) {
-            return
-        }
-
-        if (loggerName.contains("net.minecraft.server") && logMessage.contains(player.name) && logMessage.contains("joined the game")) {
-            return
         }
 
         // Only add logger name if necessary
