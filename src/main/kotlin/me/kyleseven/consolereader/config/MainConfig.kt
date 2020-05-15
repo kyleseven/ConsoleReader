@@ -15,14 +15,11 @@ object MainConfig : ConfigLoader("config.yml") {
     val logColor: ChatColor
         get() = ChatColor.valueOf(config!!.getString("log_color")!!)
 
-    val showChat: Boolean
-        get() = config!!.getBoolean("show_chat")
-
-    val showOwnCommands: Boolean
-        get() = config!!.getBoolean("show_own_commands")
-
     val forbiddenCommands: List<String>
         get() = config!!.getStringList("forbidden_commands")
+
+    val regexFilters: List<String>
+        get() = config!!.getStringList("filters")
 
     fun reload() {
         loadFile()

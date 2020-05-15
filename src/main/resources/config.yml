@@ -10,13 +10,13 @@ prefix: "&8[&3CR&8] &7"
 # Use Spigot color constants. Refer to "Enum Constants" at https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/ChatColor.html
 log_color: "GRAY"
 
-# Show player chat in /cr read
-show_chat: false
-
-# Show your own commands in /cr read
-show_own_commands: false
-
 # Commands that cannot be executed with /cr exec
 forbidden_commands:
   - "op"
   - "deop"
+
+# Log messages that will not be shown in ConsoleReader
+# Uses Regex to match log messages. %PLAYERNAME% is replaced with the player that is reading the console.
+filters:
+  - "<[a-zA-Z0-9_]*> .*"
+  - "%PLAYERNAME% issued server command: .*"
