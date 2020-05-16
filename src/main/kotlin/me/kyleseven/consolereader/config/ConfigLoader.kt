@@ -11,13 +11,13 @@ abstract class ConfigLoader {
     private var configFile: File
     protected var config: FileConfiguration? = null
 
-    constructor(relativePath: String, fileName: String) {
+    protected constructor(relativePath: String, fileName: String) {
         this.fileName = fileName
         configFile = File(plugin!!.dataFolder, relativePath + File.separator + fileName)
         loadFile()
     }
 
-    constructor(fileName: String) {
+    protected constructor(fileName: String) {
         this.fileName = fileName
         configFile = File(plugin!!.dataFolder, fileName)
         loadFile()
