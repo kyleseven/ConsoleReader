@@ -9,7 +9,7 @@ abstract class ConfigLoader {
     private var plugin: ConsoleReader? = ConsoleReader.instance
     private var fileName: String
     private var configFile: File
-    protected var config: FileConfiguration? = null
+    protected lateinit var config: FileConfiguration
 
     protected constructor(relativePath: String, fileName: String) {
         this.fileName = fileName

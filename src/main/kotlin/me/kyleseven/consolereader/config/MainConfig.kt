@@ -7,14 +7,14 @@ object MainConfig : ConfigLoader("config.yml") {
     Config keys
      */
     val version: String
-        get() = config!!.getString("version")!!
+        get() = config.getString("version")!!
 
     val prefix: String
-        get() = config!!.getString("prefix")!!
+        get() = config.getString("prefix")!!
 
     val logColor: ChatColor
         get() {
-            val colorString = config!!.getString("log_color")!!
+            val colorString = config.getString("log_color")!!
             return if (colorString.length == 1) {
                 ChatColor.getByChar(colorString[0])
             } else {
@@ -23,10 +23,10 @@ object MainConfig : ConfigLoader("config.yml") {
         }
 
     val forbiddenCommands: List<String>
-        get() = config!!.getStringList("forbidden_commands")
+        get() = config.getStringList("forbidden_commands")
 
     val regexFilters: List<String>
-        get() = config!!.getStringList("filters")
+        get() = config.getStringList("filters")
 
     fun reload() {
         loadFile()
