@@ -159,12 +159,18 @@ class MainCommand : BaseCommand() {
             message += "&7None"
         }
 
-        for (name in onlinePlayerNames) {
-            message += "&b$name&7, "
+        for (i in onlinePlayerNames.indices) {
+            message += "&b${onlinePlayerNames[i]}"
+            if (i != onlinePlayerNames.lastIndex) {
+                message += "&7, "
+            }
         }
 
-        for (name in offlinePlayerNames) {
-            message += "&8$name (offline)&7, "
+        for (i in offlinePlayerNames.indices) {
+            message += "&8${offlinePlayerNames[i]} (offline)"
+            if (i != offlinePlayerNames.lastIndex) {
+                message += "&7, "
+            }
         }
 
         sender.sendPrefixMsg(message)
