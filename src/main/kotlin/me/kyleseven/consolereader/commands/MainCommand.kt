@@ -5,8 +5,11 @@ import co.aikar.commands.annotation.*
 import me.kyleseven.consolereader.ConsoleReader
 import me.kyleseven.consolereader.config.MainConfig
 import me.kyleseven.consolereader.logreader.LogAppenderManager
-import me.kyleseven.consolereader.utils.sendColorMsg
 import me.kyleseven.consolereader.utils.sendPrefixMsg
+import net.md_5.bungee.api.ChatColor
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.ComponentBuilder
+import net.md_5.bungee.api.chat.HoverEvent
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -24,14 +27,37 @@ class MainCommand : BaseCommand() {
     @HelpCommand
     @Default
     fun onHelp(sender: CommandSender) {
-        val help = arrayOf("&8------====== &3ConsoleReader Help &8======------",
-                "&3/cr help &8- &7Shows this help menu.",
-                "&3/cr read [player] &8- &7Toggle console monitoring in chat.",
-                "&3/cr execute <command> &8- &7Execute a command as console.",
-                "&3/cr reload &8- &7Reload the plugin config.",
-                "&3/cr version &8- &7Show plugin version")
-        for (s in help) {
-            sender.sendColorMsg(s)
+        // Each array in the array is [command, arguments, description]
+        val commands = arrayOf(arrayOf("/cr help", "", "Shows this help menu."),
+            arrayOf("/cr read", "[player]", "Toggle console monitoring in chat."),
+            arrayOf("/cr execute", "<command>", "Execute a command as console."),
+            arrayOf("/cr reload", "", "Reload the plugin config."),
+            arrayOf("/cr version", "", "Show plugin version."))
+
+        val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
+            .append("ConsoleReader Help").color(ChatColor.DARK_AQUA)
+            .append(" ======------").color(ChatColor.DARK_GRAY)
+        sender.spigot().sendMessage(*header.create())
+
+        for (command in commands) {
+            val helpEntry = ComponentBuilder("")
+
+            // Add ClickEvent and HoverEvent based on command arguments
+            if (command[1].isEmpty() || command[1].matches(Regex("\\[(.*?)]"))){
+                helpEntry.append(command[0]).color(ChatColor.DARK_AQUA)
+                    .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, command[0]))
+                    .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentBuilder("Click to run.").color(ChatColor.GRAY).create()))
+            } else {
+                helpEntry.append(command[0]).color(ChatColor.DARK_AQUA)
+                    .event(ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command[0]))
+                    .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentBuilder("Click to suggest.").color(ChatColor.GRAY).create()))
+            }
+
+            helpEntry.append(if (command[1].isEmpty()) "" else " " + command[1], ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
+                .append(" - ").color(ChatColor.DARK_GRAY)
+                .append(command[2]).color(ChatColor.GRAY)
+
+            sender.spigot().sendMessage(*helpEntry.create())
         }
     }
 
