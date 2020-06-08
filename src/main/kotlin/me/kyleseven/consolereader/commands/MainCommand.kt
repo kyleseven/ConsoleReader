@@ -32,7 +32,7 @@ class MainCommand : BaseCommand() {
             arrayOf("/cr read", "[player]", "/cr r", "Toggle console monitoring in chat."),
             arrayOf("/cr execute", "<command>", "/cr exec, /cexec", "Execute a command as console."),
             arrayOf("/cr list", "", "/cr l", "List players monitoring the console."),
-            arrayOf("/cr reload", "", "", "Reload the plugin config."),
+            arrayOf("/cr reload", "", "/cr rel", "Reload the plugin config."),
             arrayOf("/cr version", "", "/cr ver", "Show plugin version."))
 
         val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
@@ -176,7 +176,7 @@ class MainCommand : BaseCommand() {
         sender.sendPrefixMsg(message)
     }
 
-    @Subcommand("reload")
+    @Subcommand("reload|rel")
     @CommandPermission("consolereader.reload")
     @Description("Reload the plugin configuration.")
     fun onReload(sender: CommandSender) {
