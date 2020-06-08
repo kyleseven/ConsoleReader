@@ -27,13 +27,13 @@ class MainCommand : BaseCommand() {
     @HelpCommand
     @Default
     fun onHelp(sender: CommandSender) {
-        // Each array in the array is [command, arguments, description]
-        val commands = arrayOf(arrayOf("/cr help", "", "Shows this help menu."),
-            arrayOf("/cr read", "[player]", "Toggle console monitoring in chat."),
-            arrayOf("/cr execute", "<command>", "Execute a command as console."),
-            arrayOf("/cr list", "", "List players monitoring the console."),
-            arrayOf("/cr reload", "", "Reload the plugin config."),
-            arrayOf("/cr version", "", "Show plugin version."))
+        // Each array in the array is [command, arguments, aliases, description]
+        val commands = arrayOf(arrayOf("/cr help", "", "/cr, /cr h", "Shows this help menu."),
+            arrayOf("/cr read", "[player]", "/cr r", "Toggle console monitoring in chat."),
+            arrayOf("/cr execute", "<command>", "/cr exec, /cexec", "Execute a command as console."),
+            arrayOf("/cr list", "", "/cr l", "List players monitoring the console."),
+            arrayOf("/cr reload", "", "", "Reload the plugin config."),
+            arrayOf("/cr version", "", "/cr ver", "Show plugin version."))
 
         val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
             .append("ConsoleReader Help").color(ChatColor.DARK_AQUA)
@@ -42,21 +42,35 @@ class MainCommand : BaseCommand() {
 
         for (command in commands) {
             val helpEntry = ComponentBuilder("")
+            val hoverText = ComponentBuilder("")
+
+            val aliases = command[2].split(",")
+            if (aliases[0].isNotEmpty()) {
+                hoverText.append("Aliases: ").color(ChatColor.GRAY)
+            }
+            for (i in aliases.indices) {
+                hoverText.append(aliases[i].trim()).color(ChatColor.DARK_AQUA)
+                if (i != aliases.lastIndex) {
+                    hoverText.append(", ").color(ChatColor.GRAY)
+                } else if (aliases[i].isNotEmpty()) {
+                    hoverText.append("\n")
+                }
+            }
 
             // Add ClickEvent and HoverEvent based on command arguments
             if (command[1].isEmpty() || command[1].matches(Regex("\\[(.*?)]"))){
                 helpEntry.append(command[0]).color(ChatColor.DARK_AQUA)
                     .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, command[0]))
-                    .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentBuilder("Click to run.").color(ChatColor.GRAY).create()))
+                    .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.append("Click to run.").color(ChatColor.GRAY).create()))
             } else {
                 helpEntry.append(command[0]).color(ChatColor.DARK_AQUA)
                     .event(ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command[0]))
-                    .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentBuilder("Click to suggest.").color(ChatColor.GRAY).create()))
+                    .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.append("Click to suggest.").color(ChatColor.GRAY).create()))
             }
 
             helpEntry.append(if (command[1].isEmpty()) "" else " " + command[1], ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
                 .append(" - ").color(ChatColor.DARK_GRAY)
-                .append(command[2]).color(ChatColor.GRAY)
+                .append(command[3]).color(ChatColor.GRAY)
 
             sender.spigot().sendMessage(*helpEntry.create())
         }
