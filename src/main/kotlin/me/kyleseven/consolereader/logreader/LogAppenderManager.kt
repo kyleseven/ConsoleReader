@@ -20,7 +20,7 @@ object LogAppenderManager {
     }
 
     fun isReading(player: Player): Boolean {
-        return logAppenders.containsKey(player.uniqueId)
+        return logger.appenders.containsKey("ConsoleReader-${player.uniqueId}") || logAppenders.containsKey(player.uniqueId)
     }
 
     fun startReading(player: Player) {
