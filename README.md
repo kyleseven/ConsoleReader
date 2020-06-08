@@ -45,11 +45,13 @@ Place the `ConsoleReader.jar` file into your `plugins/` directory and start the 
 - `/cr read [player]` starts/stop showing the console in chat for yourself or a specified player.
 - `/cr execute <command>` executes a command as console.
     - `/cexec <command>` alternatively.
+- `/cr list` shows a list of players currently monitoring the console.
+- `/cr reload` reloads the plugin configuration.
 - `/cr version` shows the plugin version.
 
 ## Permissions
 
-- `consolereader.read` allows access to `read`, `help`, and `version` subcommands.
+- `consolereader.read` allows access to `read`, `list`, `help`, and `version` subcommands.
 - `consolereader.execute` allows access to the `execute` subcommand.
     - WARNING! Only give this permission to people you trust 100%!
 - `consolereader.reload` allows access to the `reload` subcommand.
