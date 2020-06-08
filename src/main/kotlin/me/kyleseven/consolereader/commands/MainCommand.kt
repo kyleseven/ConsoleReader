@@ -139,7 +139,7 @@ class MainCommand : BaseCommand() {
     }
 
     @Subcommand("list|l")
-    @CommandPermission("consolereader.list")
+    @CommandPermission("consolereader.read")
     @Description("List players monitoring the console.")
     fun onList(sender: CommandSender) {
         val readingPlayerUUIDs = LogAppenderManager.getReadingPlayerUUIDs()
