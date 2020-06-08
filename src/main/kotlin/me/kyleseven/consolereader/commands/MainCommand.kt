@@ -31,6 +31,7 @@ class MainCommand : BaseCommand() {
         val commands = arrayOf(arrayOf("/cr help", "", "Shows this help menu."),
             arrayOf("/cr read", "[player]", "Toggle console monitoring in chat."),
             arrayOf("/cr execute", "<command>", "Execute a command as console."),
+            arrayOf("/cr list", "", "List players monitoring the console."),
             arrayOf("/cr reload", "", "Reload the plugin config."),
             arrayOf("/cr version", "", "Show plugin version."))
 
@@ -121,6 +122,38 @@ class MainCommand : BaseCommand() {
         }
 
         Bukkit.dispatchCommand(Bukkit.getServer().consoleSender, command)
+    }
+
+    @Subcommand("list|l")
+    @CommandPermission("consolereader.list")
+    @Description("List players monitoring the console.")
+    fun onList(sender: CommandSender) {
+        val readingPlayerUUIDs = LogAppenderManager.getReadingPlayerUUIDs()
+        val onlinePlayerNames = arrayListOf<String?>()
+        val offlinePlayerNames = arrayListOf<String?>()
+        var message = "Players: "
+        for (uuid in readingPlayerUUIDs) {
+            val player = Bukkit.getOfflinePlayer(uuid)
+            if (player.isOnline) {
+                onlinePlayerNames.add(player.name)
+            } else {
+                offlinePlayerNames.add(player.name)
+            }
+        }
+
+        if (onlinePlayerNames.isEmpty() && offlinePlayerNames.isEmpty()) {
+            message += "&7None"
+        }
+
+        for (name in onlinePlayerNames) {
+            message += "&b$name&7, "
+        }
+
+        for (name in offlinePlayerNames) {
+            message += "&8$name (offline)&7, "
+        }
+
+        sender.sendPrefixMsg(message)
     }
 
     @Subcommand("reload")

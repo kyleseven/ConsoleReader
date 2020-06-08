@@ -15,6 +15,10 @@ object LogAppenderManager {
         logAppenders = hashMapOf()
     }
 
+    fun getReadingPlayerUUIDs(): List<UUID> {
+        return logAppenders.keys.toList()
+    }
+
     fun isReading(player: Player): Boolean {
         return logAppenders.containsKey(player.uniqueId)
     }
