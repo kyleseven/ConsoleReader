@@ -27,13 +27,19 @@ class MainCommand : BaseCommand() {
     @HelpCommand
     @Default
     fun onHelp(sender: CommandSender) {
-        // Each array in the array is [command, arguments, aliases, description]
-        val commands = arrayOf(arrayOf("/cr help", "", "/cr, /cr h", "Shows this help menu."),
-            arrayOf("/cr read", "[player]", "/cr r", "Toggle console monitoring in chat."),
-            arrayOf("/cr execute", "<command>", "/cr exec, /cexec", "Execute a command as console."),
-            arrayOf("/cr list", "", "/cr l", "List players monitoring the console."),
-            arrayOf("/cr reload", "", "/cr rel", "Reload the plugin config."),
-            arrayOf("/cr version", "", "/cr ver", "Show plugin version."))
+        data class Command(
+            val name: String = "/cr",
+            val args: String = "",
+            val aliases: ArrayList<String> = arrayListOf(),
+            val description: String = "ConsoleReader command."
+        )
+
+        val commands = arrayOf(Command(name = "/cr help", aliases = arrayListOf("/cr", "/cr h"), description = "Shows this help menu."),
+            Command(name = "/cr read", args = "[player]", aliases = arrayListOf("/cr r"), description = "Toggle console monitoring in chat."),
+            Command(name = "/cr execute", args = "<command>", aliases = arrayListOf("/cr exec", "/cexec"), description = "Toggle console monitoring in chat."),
+            Command(name = "/cr list", aliases = arrayListOf("/cr l"), description = "List players monitoring the console."),
+            Command(name = "/cr reload", aliases = arrayListOf("/cr rel"), description = "Reload the plugin config."),
+            Command(name = "/cr version", aliases = arrayListOf("/cr ver"), description = "Show plugin version."))
 
         val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
             .append("ConsoleReader Help").color(ChatColor.DARK_AQUA)
@@ -44,33 +50,32 @@ class MainCommand : BaseCommand() {
             val helpEntry = ComponentBuilder("")
             val hoverText = ComponentBuilder("")
 
-            val aliases = command[2].split(",")
-            if (aliases[0].isNotEmpty()) {
+            if (command.aliases.isNotEmpty()) {
                 hoverText.append("Aliases: ").color(ChatColor.GRAY)
             }
-            for (i in aliases.indices) {
-                hoverText.append(aliases[i].trim()).color(ChatColor.DARK_AQUA)
-                if (i != aliases.lastIndex) {
+            for (i in command.aliases.indices) {
+                hoverText.append(command.aliases[i].trim()).color(ChatColor.DARK_AQUA)
+                if (i != command.aliases.lastIndex) {
                     hoverText.append(", ").color(ChatColor.GRAY)
-                } else if (aliases[i].isNotEmpty()) {
+                } else if (command.aliases[i].isNotEmpty()) {
                     hoverText.append("\n")
                 }
             }
 
             // Add ClickEvent and HoverEvent based on command arguments
-            if (command[1].isEmpty() || command[1].matches(Regex("\\[(.*?)]"))){
-                helpEntry.append(command[0]).color(ChatColor.DARK_AQUA)
-                    .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, command[0]))
+            if (command.args.isEmpty() || command.args.matches(Regex("\\[(.*?)]"))){
+                helpEntry.append(command.name).color(ChatColor.DARK_AQUA)
+                    .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, command.name))
                     .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.append("Click to run.").color(ChatColor.GRAY).create()))
             } else {
-                helpEntry.append(command[0]).color(ChatColor.DARK_AQUA)
-                    .event(ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command[0]))
+                helpEntry.append(command.name).color(ChatColor.DARK_AQUA)
+                    .event(ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command.name))
                     .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.append("Click to suggest.").color(ChatColor.GRAY).create()))
             }
 
-            helpEntry.append(if (command[1].isEmpty()) "" else " " + command[1], ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
+            helpEntry.append(if (command.args.isEmpty()) "" else " ${command.args}", ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
                 .append(" - ").color(ChatColor.DARK_GRAY)
-                .append(command[3]).color(ChatColor.GRAY)
+                .append(command.description).color(ChatColor.GRAY)
 
             sender.spigot().sendMessage(*helpEntry.create())
         }
