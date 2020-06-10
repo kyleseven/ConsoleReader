@@ -13,6 +13,7 @@ import net.md_5.bungee.api.chat.HoverEvent
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import kotlin.concurrent.thread
 
 @CommandAlias("cr|consolereader")
 @Description("Use the ConsoleReader plugin.")
@@ -99,33 +100,34 @@ class MainCommand : BaseCommand() {
                 sender.sendPrefixMsg("&cError: Console must specify a player.")
             }
         } else {
-            // Use of deprecated function is neccessary to get an object
-            // TODO Run this async since it can block the main thread.
-            @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
-            if (otherOfflinePlayer.isOnline) {
-                val otherPlayer = otherOfflinePlayer as Player
-                if (otherPlayer.hasPermission("consolereader.read")) {
-                    if (!LogAppenderManager.isReading(otherPlayer)) {
-                        LogAppenderManager.startReading(otherPlayer)
-                        sender.sendPrefixMsg("Console reading enabled for $otherPlayerName!")
-                        otherPlayer.sendPrefixMsg("Console reading enabled!")
+            thread {
+                // Use of deprecated function is necessary to get an object
+                @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
+                if (otherOfflinePlayer.isOnline) {
+                    val otherPlayer = otherOfflinePlayer as Player
+                    if (otherPlayer.hasPermission("consolereader.read")) {
+                        if (!LogAppenderManager.isReading(otherPlayer)) {
+                            LogAppenderManager.startReading(otherPlayer)
+                            sender.sendPrefixMsg("Console reading enabled for $otherPlayerName!")
+                            otherPlayer.sendPrefixMsg("Console reading enabled!")
+                        } else {
+                            LogAppenderManager.stopReading(otherPlayer)
+                            sender.sendPrefixMsg("Console reading disabled for $otherPlayerName")
+                            otherPlayer.sendPrefixMsg("Console reading disabled.")
+                        }
                     } else {
-                        LogAppenderManager.stopReading(otherPlayer)
-                        sender.sendPrefixMsg("Console reading disabled for $otherPlayerName")
-                        otherPlayer.sendPrefixMsg("Console reading disabled.")
+                        sender.sendPrefixMsg("&cError: $otherPlayerName does not have permission to read console.")
                     }
                 } else {
-                    sender.sendPrefixMsg("&cError: $otherPlayerName does not have permission to read console.")
-                }
-            } else {
-                if (!LogAppenderManager.isReading(otherOfflinePlayer)) {
-                    LogAppenderManager.startReading(otherOfflinePlayer)
-                    sender.sendPrefixMsg("Console reading enabled for $otherPlayerName!")
-                    sender.sendPrefixMsg("Note: Since this player is offline, they will start reading the next time they login. " +
-                            "This will fail silently if the player does not have the proper permission.")
-                } else {
-                    LogAppenderManager.stopReading(otherOfflinePlayer)
-                    sender.sendPrefixMsg("Console reading disabled for $otherPlayerName")
+                    if (!LogAppenderManager.isReading(otherOfflinePlayer)) {
+                        LogAppenderManager.startReading(otherOfflinePlayer)
+                        sender.sendPrefixMsg("Console reading enabled for $otherPlayerName!")
+                        sender.sendPrefixMsg("Note: Since this player is offline, they will start reading the next time they login. " +
+                                "This will fail silently if the player does not have the proper permission.")
+                    } else {
+                        LogAppenderManager.stopReading(otherOfflinePlayer)
+                        sender.sendPrefixMsg("Console reading disabled for $otherPlayerName")
+                    }
                 }
             }
         }
@@ -170,6 +172,7 @@ class MainCommand : BaseCommand() {
             if (player.isOnline) {
                 onlinePlayerNames.add(player.name)
             } else {
+                // TODO Fetch name via Mojang API since offline player names will appear as null if the player hasn't joined before
                 offlinePlayerNames.add(player.name)
             }
         }
