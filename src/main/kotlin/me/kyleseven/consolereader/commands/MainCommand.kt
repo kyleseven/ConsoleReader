@@ -99,7 +99,7 @@ class MainCommand : BaseCommand() {
             } else {
                 sender.sendPrefixMsg("&cError: Console must specify a player.")
             }
-        } else {
+        } else if (sender.hasPermission("consolereader.read.others")) {
             thread {
                 // Use of deprecated function is necessary to get an OfflinePlayer from a name.
                 @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
@@ -133,6 +133,8 @@ class MainCommand : BaseCommand() {
                     }
                 }
             }
+        } else {
+            sender.sendPrefixMsg("&cError: You do not have permission to toggle console reading for other players.")
         }
     }
 

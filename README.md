@@ -52,6 +52,7 @@ Place the `ConsoleReader.jar` file into your `plugins/` directory and start the 
 ## Permissions
 
 - `consolereader.read` allows access to `read`, `list`, `help`, and `version` subcommands.
+- `consolereader.read.others` allows for toggling console reading for other players.
 - `consolereader.execute` allows access to the `execute` subcommand.
     - WARNING! Only give this permission to people you trust 100%!
 - `consolereader.reload` allows access to the `reload` subcommand.
