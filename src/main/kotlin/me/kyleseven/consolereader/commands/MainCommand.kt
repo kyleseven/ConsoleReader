@@ -112,25 +112,24 @@ class MainCommand : BaseCommand() {
                     if (otherPlayer.hasPermission("consolereader.read")) {
                         if (!LogAppenderManager.isReading(otherPlayer)) {
                             LogAppenderManager.startReading(otherPlayer)
-                            sender.sendPrefixMsg("Console reading enabled for $otherPlayerName!")
+                            sender.sendPrefixMsg("Console reading enabled for ${otherPlayer.name}!")
                             otherPlayer.sendPrefixMsg("Console reading enabled!")
                         } else {
                             LogAppenderManager.stopReading(otherPlayer)
-                            sender.sendPrefixMsg("Console reading disabled for $otherPlayerName")
+                            sender.sendPrefixMsg("Console reading disabled for ${otherPlayer.name}")
                             otherPlayer.sendPrefixMsg("Console reading disabled.")
                         }
                     } else {
-                        sender.sendPrefixMsg("&cError: $otherPlayerName does not have permission to read console.")
+                        sender.sendPrefixMsg("&cError: ${otherPlayer.name} does not have permission to read console.")
                     }
                 } else {
                     if (!LogAppenderManager.isReading(otherOfflinePlayer)) {
                         LogAppenderManager.startReading(otherOfflinePlayer)
-                        sender.sendPrefixMsg("Console reading enabled for $otherPlayerName!")
-                        sender.sendPrefixMsg("Note: Since this player is offline, they will start reading the next time they login. " +
-                                "This will fail silently if the player does not have the proper permission.")
+                        sender.sendPrefixMsg("Console reading will be enabled for ${otherOfflinePlayer.name} upon login!")
+                        sender.sendPrefixMsg("Note: If they lack the permission, console reading will not be enabled.")
                     } else {
                         LogAppenderManager.stopReading(otherOfflinePlayer)
-                        sender.sendPrefixMsg("Console reading disabled for $otherPlayerName")
+                        sender.sendPrefixMsg("Console reading will be disabled for ${otherOfflinePlayer.name} upon login.")
                     }
                 }
             }
