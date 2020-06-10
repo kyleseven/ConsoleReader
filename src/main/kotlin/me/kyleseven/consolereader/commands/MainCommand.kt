@@ -103,6 +103,10 @@ class MainCommand : BaseCommand() {
             thread {
                 // Use of deprecated function is necessary to get an object
                 @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
+                if (!otherOfflinePlayer.hasPlayedBefore()) {
+                    sender.sendPrefixMsg("&cError: That player hasn't joined this server before.")
+                    return@thread
+                }
                 if (otherOfflinePlayer.isOnline) {
                     val otherPlayer = otherOfflinePlayer as Player
                     if (otherPlayer.hasPermission("consolereader.read")) {
@@ -172,7 +176,6 @@ class MainCommand : BaseCommand() {
             if (player.isOnline) {
                 onlinePlayerNames.add(player.name)
             } else {
-                // TODO Fetch name via Mojang API since offline player names will appear as null if the player hasn't joined before
                 offlinePlayerNames.add(player.name)
             }
         }
