@@ -166,7 +166,7 @@ class MainCommand : BaseCommand() {
 
         for (i in onlinePlayerNames.indices) {
             message += "&b${onlinePlayerNames[i]}"
-            if (i != onlinePlayerNames.lastIndex) {
+            if (i != onlinePlayerNames.lastIndex || offlinePlayerNames.isNotEmpty()) {
                 message += "&7, "
             }
         }
