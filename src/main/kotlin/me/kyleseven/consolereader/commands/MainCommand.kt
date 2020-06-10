@@ -85,14 +85,18 @@ class MainCommand : BaseCommand() {
     @CommandPermission("consolereader.read")
     @CommandCompletion("@players")
     @Description("Toggle reading of console in chat")
-    fun onRead(player: Player, @Optional otherPlayerName: String?) {
-        if (otherPlayerName == null || player.name == otherPlayerName) {
-            if (!LogAppenderManager.isReading(player)) {
-                LogAppenderManager.startReading(player)
-                player.sendPrefixMsg("Console reading enabled!")
+    fun onRead(sender: CommandSender, @Optional otherPlayerName: String?) {
+        if (otherPlayerName == null || sender.name == otherPlayerName) {
+            if (sender is Player) {
+                if (!LogAppenderManager.isReading(sender)) {
+                    LogAppenderManager.startReading(sender)
+                    sender.sendPrefixMsg("Console reading enabled!")
+                } else {
+                    LogAppenderManager.stopReading(sender)
+                    sender.sendPrefixMsg("Console reading disabled.")
+                }
             } else {
-                LogAppenderManager.stopReading(player)
-                player.sendPrefixMsg("Console reading disabled.")
+                sender.sendPrefixMsg("&cError: Console must specify a player.")
             }
         } else {
             // Use of deprecated function is neccessary to get an object
@@ -103,25 +107,25 @@ class MainCommand : BaseCommand() {
                 if (otherPlayer.hasPermission("consolereader.read")) {
                     if (!LogAppenderManager.isReading(otherPlayer)) {
                         LogAppenderManager.startReading(otherPlayer)
-                        player.sendPrefixMsg("Console reading enabled for $otherPlayerName!")
+                        sender.sendPrefixMsg("Console reading enabled for $otherPlayerName!")
                         otherPlayer.sendPrefixMsg("Console reading enabled!")
                     } else {
                         LogAppenderManager.stopReading(otherPlayer)
-                        player.sendPrefixMsg("Console reading disabled for $otherPlayerName")
+                        sender.sendPrefixMsg("Console reading disabled for $otherPlayerName")
                         otherPlayer.sendPrefixMsg("Console reading disabled.")
                     }
                 } else {
-                    player.sendPrefixMsg("&cError: $otherPlayerName does not have permission to read console.")
+                    sender.sendPrefixMsg("&cError: $otherPlayerName does not have permission to read console.")
                 }
             } else {
                 if (!LogAppenderManager.isReading(otherOfflinePlayer)) {
                     LogAppenderManager.startReading(otherOfflinePlayer)
-                    player.sendPrefixMsg("Console reading enabled for $otherPlayerName!")
-                    player.sendMessage("Note: Since this player is offline, they will start reading the next time they login. " +
+                    sender.sendPrefixMsg("Console reading enabled for $otherPlayerName!")
+                    sender.sendPrefixMsg("Note: Since this player is offline, they will start reading the next time they login. " +
                             "This will fail silently if the player does not have the proper permission.")
                 } else {
                     LogAppenderManager.stopReading(otherOfflinePlayer)
-                    player.sendPrefixMsg("Console reading disabled for $otherPlayerName")
+                    sender.sendPrefixMsg("Console reading disabled for $otherPlayerName")
                 }
             }
         }
