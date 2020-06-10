@@ -20,6 +20,16 @@ object LogAppenderManager {
         return logAppenders.keys.toList()
     }
 
+    /*
+    The following functions are overloaded to properly handle both online and offline players:
+        - isReading()
+        - startReading()
+        - stopReading()
+
+     The difference between temp functions and their normal counterparts is that the temp functions
+     (startReadingTemp() and stopReadingTemp()) do not add/remove players to/from the logAppenders HashMap.
+     */
+
     fun isReading(player: Player): Boolean {
         return logger.appenders.containsKey("ConsoleReader-${player.uniqueId}") || logAppenders.containsKey(player.uniqueId)
     }
