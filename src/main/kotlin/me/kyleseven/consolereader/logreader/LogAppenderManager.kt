@@ -62,7 +62,9 @@ object LogAppenderManager {
 
     fun stopReadingAll() {
         for (app in logAppenders.values) {
-            logger.removeAppender(app)
+            if (app != null) {
+                logger.removeAppender(app)
+            }
         }
 
         logAppenders.clear()
