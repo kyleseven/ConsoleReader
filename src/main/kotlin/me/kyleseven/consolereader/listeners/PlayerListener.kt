@@ -19,8 +19,12 @@ class PlayerListener : Listener {
     @EventHandler
     fun resumeReadingPlayer(e: PlayerJoinEvent) {
         if (LogAppenderManager.isReading(e.player)) {
-            e.player.sendPrefixMsg("Console reading resumed!")
-            LogAppenderManager.startReading(e.player)
+            if (e.player.hasPermission("consolereader.read")) {
+                e.player.sendPrefixMsg("Console reading resumed!")
+                LogAppenderManager.startReading(e.player)
+            } else {
+                LogAppenderManager.stopReadingTemp(e.player)
+            }
         }
     }
 }

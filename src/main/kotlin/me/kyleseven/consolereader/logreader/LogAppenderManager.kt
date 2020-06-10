@@ -1,6 +1,7 @@
 package me.kyleseven.consolereader.logreader
 
 import org.apache.logging.log4j.core.Logger
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.collections.HashMap
@@ -8,7 +9,7 @@ import kotlin.concurrent.thread
 
 object LogAppenderManager {
     private lateinit var logger: Logger
-    private lateinit var logAppenders: HashMap<UUID, LogAppender>
+    private lateinit var logAppenders: HashMap<UUID, LogAppender?>
 
     fun setup(logger: Logger) {
         this.logger = logger
@@ -23,10 +24,18 @@ object LogAppenderManager {
         return logger.appenders.containsKey("ConsoleReader-${player.uniqueId}") || logAppenders.containsKey(player.uniqueId)
     }
 
+    fun isReading(player: OfflinePlayer): Boolean {
+        return logAppenders.containsKey(player.uniqueId)
+    }
+
     fun startReading(player: Player) {
         val appender = LogAppender(player)
         logAppenders[player.uniqueId] = appender
         logger.addAppender(appender)
+    }
+
+    fun startReading(player: OfflinePlayer) {
+        logAppenders[player.uniqueId] = null
     }
 
     fun startReadingTemp(player: Player, milliseconds: Long) {
@@ -40,6 +49,10 @@ object LogAppenderManager {
 
     fun stopReading(player: Player) {
         logger.removeAppender(logAppenders[player.uniqueId])
+        logAppenders.remove(player.uniqueId)
+    }
+
+    fun stopReading(player: OfflinePlayer) {
         logAppenders.remove(player.uniqueId)
     }
 
