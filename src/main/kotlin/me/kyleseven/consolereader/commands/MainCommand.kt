@@ -101,7 +101,7 @@ class MainCommand : BaseCommand() {
             }
         } else {
             thread {
-                // Use of deprecated function is necessary to get an object
+                // Use of deprecated function is necessary to get an OfflinePlayer from a name.
                 @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
                 if (!otherOfflinePlayer.hasPlayedBefore()) {
                     sender.sendPrefixMsg("&cError: That player hasn't joined this server before.")
