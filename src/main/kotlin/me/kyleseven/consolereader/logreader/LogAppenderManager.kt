@@ -58,7 +58,9 @@ object LogAppenderManager {
     }
 
     fun stopReading(player: Player) {
-        logger.removeAppender(logAppenders[player.uniqueId])
+        if (logAppenders[player.uniqueId] != null) {
+            logger.removeAppender(logAppenders[player.uniqueId])
+        }
         logAppenders.remove(player.uniqueId)
     }
 

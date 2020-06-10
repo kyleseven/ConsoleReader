@@ -23,7 +23,7 @@ class PlayerListener : Listener {
                 e.player.sendPrefixMsg("Console reading resumed!")
                 LogAppenderManager.startReading(e.player)
             } else {
-                LogAppenderManager.stopReadingTemp(e.player)
+                LogAppenderManager.stopReading(e.player)
             }
         }
     }
