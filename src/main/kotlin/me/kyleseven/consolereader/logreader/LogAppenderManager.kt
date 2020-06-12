@@ -20,34 +20,21 @@ object LogAppenderManager {
         return logAppenders.keys.toList()
     }
 
-    /*
-    The following functions are overloaded to properly handle both online and offline players:
-        - isReading()
-        - startReading()
-        - stopReading()
-
-     The difference between temp functions and their normal counterparts is that the temp functions
-     (startReadingTemp() and stopReadingTemp()) do not add/remove players to/from the logAppenders HashMap.
-     */
-
-    fun isReading(player: Player): Boolean {
+    fun isReading(player: OfflinePlayer): Boolean {
         return logger.appenders.containsKey("ConsoleReader-${player.uniqueId}") || logAppenders.containsKey(player.uniqueId)
     }
 
-    fun isReading(player: OfflinePlayer): Boolean {
-        return logAppenders.containsKey(player.uniqueId)
-    }
-
-    fun startReading(player: Player) {
-        val appender = LogAppender(player)
-        logAppenders[player.uniqueId] = appender
-        logger.addAppender(appender)
-    }
-
     fun startReading(player: OfflinePlayer) {
-        logAppenders[player.uniqueId] = null
+        if (player.isOnline) {
+            val appender = LogAppender(player as Player)
+            logger.addAppender(appender)
+            logAppenders[player.uniqueId] = appender
+        } else {
+            logAppenders[player.uniqueId] = null
+        }
     }
 
+    // Requires online player
     fun startReadingTemp(player: Player, milliseconds: Long) {
         val appender = LogAppender(player)
         logger.addAppender(appender)
@@ -57,17 +44,14 @@ object LogAppenderManager {
         }
     }
 
-    fun stopReading(player: Player) {
+    fun stopReading(player: OfflinePlayer) {
         if (logAppenders[player.uniqueId] != null) {
             logger.removeAppender(logAppenders[player.uniqueId])
         }
         logAppenders.remove(player.uniqueId)
     }
 
-    fun stopReading(player: OfflinePlayer) {
-        logAppenders.remove(player.uniqueId)
-    }
-
+    // Requires online player
     fun stopReadingTemp(player: Player) {
         logger.removeAppender(logAppenders[player.uniqueId])
     }
