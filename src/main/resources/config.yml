@@ -1,19 +1,19 @@
 # ConsoleReader [ALPHA] by kyleseven
 
 # DO NOT CHANGE THIS
-version: "${project.version}"
+version: '${project.version}'
 
 # Prefix for all messages
-prefix: "&8[&3CR&8] &7"
+prefix: '&8[&3CR&8] &7'
 
 # Color of console log in chat
 # Use a color code or ChatColor enum.
-log_color: "GRAY"
+log_color: 'GRAY'
 
 # Commands that cannot be executed with /cr exec
 forbidden_commands:
-  - "op"
-  - "deop"
+  - 'op'
+  - 'deop'
 
 # Log messages that will not be shown in ConsoleReader
 # Uses Regex to match log messages. Messages are only filtered on FULL matches. Test your regex at https://regex101.com/
