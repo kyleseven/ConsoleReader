@@ -7,18 +7,30 @@ object MainConfig : ConfigLoader("config.yml") {
     Config keys
      */
     val version: String
-        get() = config.getString("version")!!
+        get() {
+            val default = "INVALID"
+            return config.getString("version") ?: default
+        }
 
     val prefix: String
-        get() = config.getString("prefix")!!
+        get() {
+            val default = "&8[&3CR&8] &7"
+            return config.getString("prefix") ?: default
+        }
 
     val logColor: ChatColor
         get() {
-            val colorString = config.getString("log_color")!!
-            return if (colorString.length == 1) {
-                ChatColor.getByChar(colorString[0])
-            } else {
-                ChatColor.valueOf(colorString)
+            val default = "GRAY"
+            val colorString = config.getString("log_color") ?: default
+
+            return try {
+                if (colorString.length == 1) {
+                    ChatColor.getByChar(colorString[0])
+                } else {
+                    ChatColor.valueOf(colorString)
+                }
+            } catch (e: Exception) {
+                ChatColor.valueOf(default)
             }
         }
 
