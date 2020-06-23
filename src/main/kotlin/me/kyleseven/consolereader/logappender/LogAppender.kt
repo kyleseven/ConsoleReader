@@ -1,4 +1,4 @@
-package me.kyleseven.consolereader.logreader
+package me.kyleseven.consolereader.logappender
 
 import me.kyleseven.consolereader.config.MainConfig
 import net.md_5.bungee.api.ChatColor

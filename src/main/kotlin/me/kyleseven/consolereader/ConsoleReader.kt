@@ -4,7 +4,7 @@ import co.aikar.commands.PaperCommandManager
 import me.kyleseven.consolereader.commands.MainCommand
 import me.kyleseven.consolereader.config.MainConfig
 import me.kyleseven.consolereader.listeners.PlayerListener
-import me.kyleseven.consolereader.logreader.LogAppenderManager
+import me.kyleseven.consolereader.logappender.LogAppenderManager
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.Logger
 import org.bukkit.plugin.java.JavaPlugin

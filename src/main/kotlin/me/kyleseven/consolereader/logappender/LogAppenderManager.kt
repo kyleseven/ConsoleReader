@@ -1,4 +1,4 @@
-package me.kyleseven.consolereader.logreader
+package me.kyleseven.consolereader.logappender
 
 import org.apache.logging.log4j.core.Logger
 import org.bukkit.OfflinePlayer
