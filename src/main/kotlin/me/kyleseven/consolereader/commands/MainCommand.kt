@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.*
 import me.kyleseven.consolereader.ConsoleReader
 import me.kyleseven.consolereader.config.MainConfig
 import me.kyleseven.consolereader.logappender.LogAppenderManager
+import me.kyleseven.consolereader.logview.LogFileManager
+import me.kyleseven.consolereader.utils.sendColorMsg
 import me.kyleseven.consolereader.utils.sendPrefixMsg
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ClickEvent
@@ -39,6 +41,7 @@ class MainCommand : BaseCommand() {
             Command(name = "/cr read", args = "[player]", aliases = arrayListOf("/cr r"), description = "Toggle console monitoring in chat."),
             Command(name = "/cr execute", args = "<command>", aliases = arrayListOf("/cr exec", "/cexec"), description = "Execute a command as console."),
             Command(name = "/cr list", aliases = arrayListOf("/cr l"), description = "List players monitoring the console."),
+            Command(name = "/cr log", args = "<list | view>", description = "View previous server logs."),
             Command(name = "/cr reload", aliases = arrayListOf("/cr rel"), description = "Reload the plugin config."),
             Command(name = "/cr version", aliases = arrayListOf("/cr ver"), description = "Show plugin version."))
 
@@ -200,6 +203,44 @@ class MainCommand : BaseCommand() {
         }
 
         sender.sendPrefixMsg(message)
+    }
+
+
+    /*
+    TODO
+    - Page UI for log list
+    - Check if page is within range
+    - Handle viewing of "latest.log"
+      - Refresh on every view
+      - Don't attempt to unzip
+     */
+    @Subcommand("log")
+    @CommandPermission("consolereader.log")
+    @Description("See a previous server log.")
+    inner class LogCommand : BaseCommand() {
+        @Default
+        @Subcommand("list|l")
+        @Description("List all available logs.")
+        fun onLogList(sender: CommandSender) {
+            val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
+                .append("Log List").color(ChatColor.DARK_AQUA)
+                .append(" ======------").color(ChatColor.DARK_GRAY)
+            sender.spigot().sendMessage(*header.create())
+            for (file in LogFileManager.logList) {
+                sender.sendColorMsg(MainConfig.logColor.toString() + file)
+            }
+        }
+
+        @Subcommand("view")
+        @Description("Look at a previous log")
+        fun onLogView(sender: CommandSender, fileName: String, page: Int) {
+            if (!LogFileManager.logList.contains(fileName)) {
+                sender.sendPrefixMsg("&cError: Could not find that log file.")
+                return
+            }
+
+            LogFileManager.sendPage(sender, if (fileName == "latest") "$fileName.log" else "$fileName.log.gz", page)
+        }
     }
 
     @Subcommand("reload|rel")

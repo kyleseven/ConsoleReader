@@ -5,6 +5,7 @@ import me.kyleseven.consolereader.commands.MainCommand
 import me.kyleseven.consolereader.config.MainConfig
 import me.kyleseven.consolereader.listeners.PlayerListener
 import me.kyleseven.consolereader.logappender.LogAppenderManager
+import me.kyleseven.consolereader.logview.LogFileManager
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.Logger
 import org.bukkit.plugin.java.JavaPlugin
@@ -16,10 +17,12 @@ class ConsoleReader : JavaPlugin() {
         registerCommands()
         registerEvents()
         LogAppenderManager.setup(LogManager.getRootLogger() as Logger)
+        LogFileManager.setup()
     }
 
     override fun onDisable() {
         LogAppenderManager.stopReadingAll()
+        LogFileManager.cleanUp()
     }
 
     private fun loadConfigs() {
