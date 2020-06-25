@@ -62,7 +62,6 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
         - Showing logger name if it is not from the game itself.
         - Adding color to WARN, FATAL, and ERROR messages.
          */
-
         for (regexString in MainConfig.regexFilters) {
             val strippedMsg = ChatColor.stripColor(logMessage)
             val regexToMatch = regexString.replace("%PLAYERNAME%", player.name).toRegex()
