@@ -1,6 +1,6 @@
 name: ConsoleReader
 version: ${project.version}
 main: me.kyleseven.consolereader.ConsoleReader
-api-version: 1.15
+api-version: 1.16
 authors: [kyleseven]
 description: Look at the server console in game.
