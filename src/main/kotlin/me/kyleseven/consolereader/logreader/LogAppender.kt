@@ -27,7 +27,7 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
         val logDate = DateFormatUtils.format(log.timeMillis, "yyyy-MM-dd")
         val logTime = DateFormatUtils.format(log.timeMillis, "HH:mm:ss")
         val logLevel = log.level.toString()
-        var loggerName = log.loggerName
+        val loggerName = if (log.loggerName.isEmpty()) "None" else log.loggerName
         val threadName = log.threadName
         var messagePrefix = "[$logTime $logLevel]: "
 
@@ -36,10 +36,8 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
         When using Paper, the logger name will need to be added here.
          */
         if (ConsoleReader.instance?.isPaperMC == true) {
-            if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft" || loggerName.isEmpty())) {
+            if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft")) {
                 messagePrefix += "[$loggerName] "
-            } else {
-                loggerName = "None"
             }
         }
 
