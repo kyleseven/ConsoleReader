@@ -1,6 +1,8 @@
 package me.kyleseven.consolereader.logappender
 
+import me.kyleseven.consolereader.ConsoleReader
 import me.kyleseven.consolereader.config.MainConfig
+import me.kyleseven.consolereader.utils.parseANSI
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
@@ -30,6 +32,31 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
         var messagePrefix = "[$logTime $logLevel]: "
 
         /*
+        When using Spigot, logger name is already included in the log message.
+        When using Paper, the logger name will need to be added here.
+         */
+        if (ConsoleReader.instance?.isPaperMC == true) {
+            if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft" || loggerName.isEmpty())) {
+                messagePrefix += "[$loggerName] "
+            } else {
+                loggerName = "None"
+            }
+        }
+
+        if (logLevel == "WARN") {
+            messagePrefix = ChatColor.YELLOW.toString() + messagePrefix
+            logMessage = ChatColor.YELLOW.toString() + logMessage
+        } else if (logLevel == "FATAL" || logLevel == "ERROR") {
+            messagePrefix = ChatColor.RED.toString() + messagePrefix
+            logMessage = ChatColor.RED.toString() + logMessage
+        } else {
+            messagePrefix = logColor.toString() + messagePrefix
+            logMessage = logColor.toString() + logMessage
+        }
+
+        logMessage = parseANSI(logMessage)
+
+        /*
         Filtering console messages here.
         - Go through regex filter.
         - Showing logger name if it is not from the game itself.
@@ -42,24 +69,6 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
             if (regexToMatch.matches(strippedMsg)) {
                 return
             }
-        }
-
-        // Only add logger name if necessary
-        if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft" || loggerName.isEmpty())) {
-            messagePrefix += "[$loggerName] "
-        } else {
-            loggerName = "None"
-        }
-
-        if (logLevel == "WARN") {
-            messagePrefix = ChatColor.YELLOW.toString() + messagePrefix
-            logMessage = ChatColor.YELLOW.toString() + logMessage
-        } else if (logLevel == "FATAL" || logLevel == "ERROR") {
-            messagePrefix = ChatColor.RED.toString() + messagePrefix
-            logMessage = ChatColor.RED.toString() + logMessage
-        } else {
-            messagePrefix = logColor.toString() + messagePrefix
-            logMessage = logColor.toString() + logMessage
         }
 
         // Creating Hover Text
