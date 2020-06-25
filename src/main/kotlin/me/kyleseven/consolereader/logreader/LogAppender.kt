@@ -1,6 +1,8 @@
 package me.kyleseven.consolereader.logreader
 
+import me.kyleseven.consolereader.ConsoleReader
 import me.kyleseven.consolereader.config.MainConfig
+import me.kyleseven.consolereader.utils.parseANSI
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
@@ -44,11 +46,16 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
             }
         }
 
-        // Only add logger name if necessary
-        if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft" || loggerName.isEmpty())) {
-            messagePrefix += "[$loggerName] "
-        } else {
-            loggerName = "None"
+        /*
+        When using Spigot, logger name is already included in the log message.
+        When using Paper, the logger name will need to be added here.
+         */
+        if (ConsoleReader.instance?.isPaperMC == true) {
+            if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft" || loggerName.isEmpty())) {
+                messagePrefix += "[$loggerName] "
+            } else {
+                loggerName = "None"
+            }
         }
 
         if (logLevel == "WARN") {
@@ -61,6 +68,8 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
             messagePrefix = logColor.toString() + messagePrefix
             logMessage = logColor.toString() + logMessage
         }
+
+        logMessage = parseANSI(logMessage)
 
         // Creating Hover Text
         val chatLogPrefix = TextComponent(*TextComponent.fromLegacyText(messagePrefix))

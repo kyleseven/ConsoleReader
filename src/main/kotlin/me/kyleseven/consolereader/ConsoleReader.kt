@@ -10,8 +10,11 @@ import org.apache.logging.log4j.core.Logger
 import org.bukkit.plugin.java.JavaPlugin
 
 class ConsoleReader : JavaPlugin() {
+    var isPaperMC: Boolean = false
+
     override fun onEnable() {
         instance = this
+        checkServerType()
         loadConfigs()
         registerCommands()
         registerEvents()
@@ -32,6 +35,15 @@ class ConsoleReader : JavaPlugin() {
 
     private fun registerEvents() {
         server.pluginManager.registerEvents(PlayerListener(), this)
+    }
+
+    private fun checkServerType() {
+        isPaperMC = try {
+            Class.forName("com.destroystokyo.paper.VersionHistoryManager\$VersionData")
+            true
+        } catch (e: ClassNotFoundException) {
+            false
+        }
     }
 
     companion object {
