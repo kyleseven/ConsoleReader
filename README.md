@@ -11,9 +11,9 @@ This plugin is in ALPHA stage, so you may experience bugs.
 Things like the config.yml, commands, and permission nodes are subject to change.
 
 ## Compatibility
-ConsoleReader is built on Spigot API version 1.15.
+ConsoleReader is built on Spigot API version 1.16.
 
-It is compatible with 1.12, 1.13, 1.14, and 1.15.
+It is compatible with 1.12, 1.13, 1.14, 1.15, and 1.16.
 
 ## Building
 
