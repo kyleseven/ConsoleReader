@@ -25,6 +25,15 @@ class ConsoleReader : JavaPlugin() {
         LogAppenderManager.stopReadingAll()
     }
 
+    private fun checkServerType() {
+        isPaperMC = try {
+            Class.forName("com.destroystokyo.paper.VersionHistoryManager\$VersionData")
+            true
+        } catch (e: ClassNotFoundException) {
+            false
+        }
+    }
+
     private fun loadConfigs() {
         MainConfig
     }
@@ -35,15 +44,6 @@ class ConsoleReader : JavaPlugin() {
 
     private fun registerEvents() {
         server.pluginManager.registerEvents(PlayerListener(), this)
-    }
-
-    private fun checkServerType() {
-        isPaperMC = try {
-            Class.forName("com.destroystokyo.paper.VersionHistoryManager\$VersionData")
-            true
-        } catch (e: ClassNotFoundException) {
-            false
-        }
     }
 
     companion object {
