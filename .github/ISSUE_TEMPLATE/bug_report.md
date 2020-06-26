@@ -25,6 +25,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Server Information**
  - Version: [Copy from /version command]
+ - Plugin Version: [Copy from /cr version command]
  - Plugin List: [Copy from /pl command]
 
 **Additional context**
