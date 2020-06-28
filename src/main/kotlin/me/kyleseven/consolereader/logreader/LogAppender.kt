@@ -36,7 +36,7 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
         When using Paper, the logger name will need to be added here.
          */
         if (ConsoleReader.instance?.isPaperMC == true) {
-            if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft")) {
+            if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft" || loggerName == "None")) {
                 messagePrefix += "[$loggerName] "
             }
         }
