@@ -35,7 +35,7 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
         When using Spigot, logger name is already included in the log message.
         When using Paper, the logger name will need to be added here.
          */
-        if (ConsoleReader.instance?.isPaperMC == true) {
+        if (ConsoleReader.instance.isPaperMC) {
             if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft" || loggerName == "None")) {
                 messagePrefix += "[$loggerName] "
             }

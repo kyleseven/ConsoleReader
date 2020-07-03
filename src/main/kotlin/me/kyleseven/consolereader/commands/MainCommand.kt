@@ -214,6 +214,6 @@ class MainCommand : BaseCommand() {
     @CommandPermission("consolereader.read")
     @Description("See the plugin version.")
     fun onVersion(sender: CommandSender) {
-        sender.sendPrefixMsg("ConsoleReader ${ConsoleReader.instance?.description?.version} by kyleseven")
+        sender.sendPrefixMsg("ConsoleReader ${ConsoleReader.instance.description.version} by kyleseven")
     }
 }
