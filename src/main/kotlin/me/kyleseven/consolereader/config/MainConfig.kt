@@ -41,6 +41,6 @@ object MainConfig : ConfigLoader("config.yml") {
         get() = config.getStringList("filters")
 
     fun reload() {
-        loadFile()
+        config = loadConfig()
     }
 }
