@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
 abstract class ConfigLoader(private val fileName: String) {
-    private val plugin: ConsoleReader = ConsoleReader.instance
+    private val plugin = ConsoleReader.instance
     private var configFile = File(plugin.dataFolder, fileName)
     protected var config = loadConfig()
 
