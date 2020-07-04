@@ -20,7 +20,7 @@ import kotlin.concurrent.thread
 class MainCommand : BaseCommand() {
     @CatchUnknown
     fun onInvalid(sender: CommandSender) {
-        sender.sendPrefixMsg("&cUnknown subcommand.")
+        sender.sendPrefixMsg("${ChatColor.RED}Unknown subcommand.")
     }
 
     @Subcommand("help|h")
@@ -97,14 +97,14 @@ class MainCommand : BaseCommand() {
                     sender.sendPrefixMsg("Console reading disabled.")
                 }
             } else {
-                sender.sendPrefixMsg("&cError: Console must specify a player.")
+                sender.sendPrefixMsg("${ChatColor.RED}Error: Console must specify a player.")
             }
         } else if (sender.hasPermission("consolereader.read.others")) {
             thread {
                 // Use of deprecated function is necessary to get an OfflinePlayer from a name.
                 @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
                 if (!otherOfflinePlayer.hasPlayedBefore()) {
-                    sender.sendPrefixMsg("&cError: That player hasn't joined this server before.")
+                    sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
                     return@thread
                 }
                 if (otherOfflinePlayer.isOnline) {
@@ -120,7 +120,7 @@ class MainCommand : BaseCommand() {
                             otherPlayer.sendPrefixMsg("Console reading disabled.")
                         }
                     } else {
-                        sender.sendPrefixMsg("&cError: ${otherPlayer.name} does not have permission to read console.")
+                        sender.sendPrefixMsg("${ChatColor.RED}Error: ${otherPlayer.name} does not have permission to read console.")
                     }
                 } else {
                     if (!LogAppenderManager.isReading(otherOfflinePlayer)) {
@@ -134,7 +134,7 @@ class MainCommand : BaseCommand() {
                 }
             }
         } else {
-            sender.sendPrefixMsg("&cError: You do not have permission to toggle console reading for other players.")
+            sender.sendPrefixMsg("${ChatColor.RED}Error: You do not have permission to toggle console reading for other players.")
         }
     }
 
@@ -145,13 +145,13 @@ class MainCommand : BaseCommand() {
     @Description("Execute a command as console.")
     fun onExecute(player: Player, @Optional command: String?) {
         if (command == null || command.isEmpty()) {
-            player.sendPrefixMsg("&cError: You need to specify a command.")
+            player.sendPrefixMsg("${ChatColor.RED}Error: You need to specify a command.")
             return
         }
 
         for (forbiddenCommand in MainConfig.forbiddenCommands) {
             if (command.startsWith(forbiddenCommand, ignoreCase = true)) {
-                player.sendPrefixMsg("&cError: The /$forbiddenCommand command may only be used in the real console.")
+                player.sendPrefixMsg("${ChatColor.RED}Error: The /$forbiddenCommand command may only be used in the real console.")
                 return
             }
         }
@@ -182,20 +182,20 @@ class MainCommand : BaseCommand() {
         }
 
         if (onlinePlayerNames.isEmpty() && offlinePlayerNames.isEmpty()) {
-            message += "&7None"
+            message += "${ChatColor.GRAY}None"
         }
 
         for (i in onlinePlayerNames.indices) {
-            message += "&b${onlinePlayerNames[i]}"
+            message += "${ChatColor.AQUA}${onlinePlayerNames[i]}"
             if (i != onlinePlayerNames.lastIndex || offlinePlayerNames.isNotEmpty()) {
-                message += "&7, "
+                message += "${ChatColor.GRAY}, "
             }
         }
 
         for (i in offlinePlayerNames.indices) {
-            message += "&8${offlinePlayerNames[i]} (offline)"
+            message += "${ChatColor.DARK_GRAY}${offlinePlayerNames[i]} (offline)"
             if (i != offlinePlayerNames.lastIndex) {
-                message += "&7, "
+                message += "${ChatColor.GRAY}, "
             }
         }
 
