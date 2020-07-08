@@ -78,7 +78,7 @@ class MainCommand : BaseCommand() {
                     .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.append("Click to suggest.").color(ChatColor.GRAY).create()))
             }
 
-            helpEntry.append(if (command.args.isEmpty()) "" else " ${command.args}", ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
+            helpEntry.append(command.args.ifBlank { "" }, ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
                 .append(" - ").color(ChatColor.DARK_GRAY)
                 .append(command.description).color(ChatColor.GRAY)
 

@@ -27,7 +27,7 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
         val logDate = DateFormatUtils.format(log.timeMillis, "yyyy-MM-dd")
         val logTime = DateFormatUtils.format(log.timeMillis, "HH:mm:ss")
         val logLevel = log.level.toString()
-        val loggerName = if (log.loggerName.isEmpty()) "None" else log.loggerName
+        val loggerName = log.loggerName.ifBlank { "None" }
         val threadName = log.threadName
         var messagePrefix = "[$logTime $logLevel]: "
 
