@@ -57,8 +57,9 @@ class MainCommand : BaseCommand() {
             if (command.aliases.isNotEmpty()) {
                 hoverText.append("Aliases: ").color(ChatColor.GRAY)
             }
-            for (i in command.aliases.indices) {
-                hoverText.append(command.aliases[i].trim()).color(ChatColor.DARK_AQUA)
+
+            for ((i, alias) in command.aliases.withIndex()) {
+                hoverText.append(alias.trim()).color(ChatColor.DARK_AQUA)
                 if (i != command.aliases.lastIndex) {
                     hoverText.append(", ").color(ChatColor.GRAY)
                 } else if (command.aliases[i].isNotEmpty()) {
@@ -189,15 +190,15 @@ class MainCommand : BaseCommand() {
             message += "${ChatColor.GRAY}None"
         }
 
-        for (i in onlinePlayerNames.indices) {
-            message += "${ChatColor.AQUA}${onlinePlayerNames[i]}"
+        for ((i, playerName) in onlinePlayerNames.withIndex()) {
+            message += "${ChatColor.AQUA}${playerName}"
             if (i != onlinePlayerNames.lastIndex || offlinePlayerNames.isNotEmpty()) {
                 message += "${ChatColor.GRAY}, "
             }
         }
 
-        for (i in offlinePlayerNames.indices) {
-            message += "${ChatColor.DARK_GRAY}${offlinePlayerNames[i]} (offline)"
+        for ((i, playerName) in offlinePlayerNames.withIndex()) {
+            message += "${ChatColor.DARK_GRAY}${playerName} (offline)"
             if (i != offlinePlayerNames.lastIndex) {
                 message += "${ChatColor.GRAY}, "
             }
