@@ -3,6 +3,7 @@ package me.kyleseven.consolereader.logview
 import me.kyleseven.consolereader.ConsoleReader
 import org.bukkit.Bukkit
 import java.io.*
+import java.lang.Integer.min
 import java.util.zip.GZIPInputStream
 import kotlin.math.ceil
 
@@ -23,7 +24,7 @@ class LogFile(fileName: String) {
 
         val content = arrayListOf<String>()
         val start = (page - 1) * 7
-        val end = if (start + 7 >= lines) lines else start + 7
+        val end = min(start + 7, lines)
 
         val fs = FileInputStream(file.absolutePath)
         val br = BufferedReader(InputStreamReader(fs))
