@@ -22,7 +22,7 @@ import kotlin.concurrent.thread
 class MainCommand : BaseCommand() {
     @CatchUnknown
     fun onInvalid(sender: CommandSender) {
-        sender.sendPrefixMsg("&cUnknown subcommand.")
+        sender.sendPrefixMsg("${ChatColor.RED}Unknown subcommand.")
     }
 
     @Subcommand("help|h")
@@ -37,17 +37,20 @@ class MainCommand : BaseCommand() {
             val description: String = "ConsoleReader command."
         )
 
-        val commands = arrayOf(Command(name = "/cr help", aliases = arrayListOf("/cr", "/cr h"), description = "Shows this help menu."),
+        val commands = arrayOf(
+            Command(name = "/cr help", aliases = arrayListOf("/cr", "/cr h"), description = "Shows this help menu."),
             Command(name = "/cr read", args = "[player]", aliases = arrayListOf("/cr r"), description = "Toggle console monitoring in chat."),
             Command(name = "/cr execute", args = "<command>", aliases = arrayListOf("/cr exec", "/cexec"), description = "Execute a command as console."),
             Command(name = "/cr list", aliases = arrayListOf("/cr l"), description = "List players monitoring the console."),
             Command(name = "/cr log", args = "<list | view>", description = "View previous server logs."),
             Command(name = "/cr reload", aliases = arrayListOf("/cr rel"), description = "Reload the plugin config."),
-            Command(name = "/cr version", aliases = arrayListOf("/cr ver"), description = "Show plugin version."))
+            Command(name = "/cr version", aliases = arrayListOf("/cr ver"), description = "Show plugin version.")
+        )
 
         val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
             .append("ConsoleReader Help").color(ChatColor.DARK_AQUA)
             .append(" ======------").color(ChatColor.DARK_GRAY)
+
         sender.spigot().sendMessage(*header.create())
 
         for (command in commands) {
@@ -57,8 +60,9 @@ class MainCommand : BaseCommand() {
             if (command.aliases.isNotEmpty()) {
                 hoverText.append("Aliases: ").color(ChatColor.GRAY)
             }
-            for (i in command.aliases.indices) {
-                hoverText.append(command.aliases[i].trim()).color(ChatColor.DARK_AQUA)
+
+            for ((i, alias) in command.aliases.withIndex()) {
+                hoverText.append(alias.trim()).color(ChatColor.DARK_AQUA)
                 if (i != command.aliases.lastIndex) {
                     hoverText.append(", ").color(ChatColor.GRAY)
                 } else if (command.aliases[i].isNotEmpty()) {
@@ -77,7 +81,7 @@ class MainCommand : BaseCommand() {
                     .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.append("Click to suggest.").color(ChatColor.GRAY).create()))
             }
 
-            helpEntry.append(if (command.args.isEmpty()) "" else " ${command.args}", ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
+            helpEntry.append(command.args.ifBlank { "" }, ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
                 .append(" - ").color(ChatColor.DARK_GRAY)
                 .append(command.description).color(ChatColor.GRAY)
 
@@ -100,14 +104,14 @@ class MainCommand : BaseCommand() {
                     sender.sendPrefixMsg("Console reading disabled.")
                 }
             } else {
-                sender.sendPrefixMsg("&cError: Console must specify a player.")
+                sender.sendPrefixMsg("${ChatColor.RED}Error: Console must specify a player.")
             }
         } else if (sender.hasPermission("consolereader.read.others")) {
             thread {
                 // Use of deprecated function is necessary to get an OfflinePlayer from a name.
                 @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
                 if (!otherOfflinePlayer.hasPlayedBefore()) {
-                    sender.sendPrefixMsg("&cError: That player hasn't joined this server before.")
+                    sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
                     return@thread
                 }
                 if (otherOfflinePlayer.isOnline) {
@@ -123,7 +127,7 @@ class MainCommand : BaseCommand() {
                             otherPlayer.sendPrefixMsg("Console reading disabled.")
                         }
                     } else {
-                        sender.sendPrefixMsg("&cError: ${otherPlayer.name} does not have permission to read console.")
+                        sender.sendPrefixMsg("${ChatColor.RED}Error: ${otherPlayer.name} does not have permission to read console.")
                     }
                 } else {
                     if (!LogAppenderManager.isReading(otherOfflinePlayer)) {
@@ -137,7 +141,7 @@ class MainCommand : BaseCommand() {
                 }
             }
         } else {
-            sender.sendPrefixMsg("&cError: You do not have permission to toggle console reading for other players.")
+            sender.sendPrefixMsg("${ChatColor.RED}Error: You do not have permission to toggle console reading for other players.")
         }
     }
 
@@ -148,13 +152,13 @@ class MainCommand : BaseCommand() {
     @Description("Execute a command as console.")
     fun onExecute(player: Player, @Optional command: String?) {
         if (command == null || command.isEmpty()) {
-            player.sendPrefixMsg("&cError: You need to specify a command.")
+            player.sendPrefixMsg("${ChatColor.RED}Error: You need to specify a command.")
             return
         }
 
         for (forbiddenCommand in MainConfig.forbiddenCommands) {
             if (command.startsWith(forbiddenCommand, ignoreCase = true)) {
-                player.sendPrefixMsg("&cError: The /$forbiddenCommand command may only be used in the real console.")
+                player.sendPrefixMsg("${ChatColor.RED}Error: The /$forbiddenCommand command may only be used in the real console.")
                 return
             }
         }
@@ -175,6 +179,7 @@ class MainCommand : BaseCommand() {
         val onlinePlayerNames = arrayListOf<String?>()
         val offlinePlayerNames = arrayListOf<String?>()
         var message = "Players: "
+
         for (uuid in readingPlayerUUIDs) {
             val player = Bukkit.getOfflinePlayer(uuid)
             if (player.isOnline) {
@@ -185,20 +190,20 @@ class MainCommand : BaseCommand() {
         }
 
         if (onlinePlayerNames.isEmpty() && offlinePlayerNames.isEmpty()) {
-            message += "&7None"
+            message += "${ChatColor.GRAY}None"
         }
 
-        for (i in onlinePlayerNames.indices) {
-            message += "&b${onlinePlayerNames[i]}"
+        for ((i, playerName) in onlinePlayerNames.withIndex()) {
+            message += "${ChatColor.AQUA}${playerName}"
             if (i != onlinePlayerNames.lastIndex || offlinePlayerNames.isNotEmpty()) {
-                message += "&7, "
+                message += "${ChatColor.GRAY}, "
             }
         }
 
-        for (i in offlinePlayerNames.indices) {
-            message += "&8${offlinePlayerNames[i]} (offline)"
+        for ((i, playerName) in offlinePlayerNames.withIndex()) {
+            message += "${ChatColor.DARK_GRAY}${playerName} (offline)"
             if (i != offlinePlayerNames.lastIndex) {
-                message += "&7, "
+                message += "${ChatColor.GRAY}, "
             }
         }
 
@@ -255,6 +260,6 @@ class MainCommand : BaseCommand() {
     @CommandPermission("consolereader.read")
     @Description("See the plugin version.")
     fun onVersion(sender: CommandSender) {
-        sender.sendPrefixMsg("ConsoleReader ${ConsoleReader.instance?.description?.version} by kyleseven")
+        sender.sendPrefixMsg("ConsoleReader ${ConsoleReader.instance.description.version} by kyleseven")
     }
 }

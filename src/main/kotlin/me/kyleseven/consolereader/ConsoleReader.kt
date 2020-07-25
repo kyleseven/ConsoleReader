@@ -50,7 +50,7 @@ class ConsoleReader : JavaPlugin() {
     }
 
     companion object {
-        var instance: ConsoleReader? = null
+        lateinit var instance: ConsoleReader
             private set
     }
 }
