@@ -41,7 +41,7 @@ object LogFileManager {
     }
 
     fun cleanUp() {
-        val tempDir = ConsoleReader.instance?.dataFolder?.absolutePath + File.separator + "temp"
+        val tempDir = ConsoleReader.instance.dataFolder.absolutePath + File.separator + "temp"
         val tempFile = File(tempDir)
         tempFile.deleteRecursively()
     }
