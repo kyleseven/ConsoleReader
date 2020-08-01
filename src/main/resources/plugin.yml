@@ -3,4 +3,5 @@ version: ${project.version}
 main: me.kyleseven.consolereader.ConsoleReader
 api-version: 1.16
 authors: [kyleseven]
+website: https://www.spigotmc.org/resources/consolereader.78041/
 description: Look at the server console in game.
