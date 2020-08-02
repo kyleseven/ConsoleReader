@@ -217,6 +217,11 @@ class MainCommand : BaseCommand() {
     @Description("See a previous server log.")
     inner class LogCommand : BaseCommand() {
         @Default
+        @Description("Shows help for the log subcommands")
+        fun onLogHelp(sender: CommandSender) {
+            sender.sendPrefixMsg("Not implemented.")
+        }
+
         @Subcommand("list|l")
         @Description("List all available logs.")
         fun onLogList(sender: CommandSender, page: Int) {
