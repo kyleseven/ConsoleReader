@@ -215,9 +215,6 @@ class MainCommand : BaseCommand() {
     TODO
     - Page UI for log list
     - Check if page is within range
-    - Handle viewing of "latest.log"
-      - Refresh on every view
-      - Don't attempt to unzip
      */
     @Subcommand("log")
     @CommandPermission("consolereader.log")

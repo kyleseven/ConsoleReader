@@ -51,8 +51,12 @@ class LogFile(fileName: String) {
 
     private fun getUnzippedFile(logFileName: String): File {
         val logPath = Bukkit.getServer().worldContainer.absolutePath + File.separator + "logs" + File.separator + logFileName
-        val tempPath = ConsoleReader.instance.dataFolder.absolutePath + File.separator + "temp" + File.separator + logFileName.dropLast(3)
+        val tempPath = ConsoleReader.instance.dataFolder.absolutePath + File.separator + "temp" + File.separator + logFileName.removeSuffix(".gz")
         val buffer = ByteArray(1024)
+
+        if (logFileName == "latest.log") {
+            return File(logPath)
+        }
 
         try {
             val gzipIS = GZIPInputStream(FileInputStream(logPath))
