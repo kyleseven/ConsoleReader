@@ -54,6 +54,10 @@ class LogFile(fileName: String) {
         val tempPath = ConsoleReader.instance.dataFolder.absolutePath + File.separator + "temp" + File.separator + logFileName.removeSuffix(".gz")
         val buffer = ByteArray(1024)
 
+        if (File(tempPath).exists()) {
+            return File(tempPath)
+        }
+
         if (logFileName == "latest.log") {
             return File(logPath)
         }
