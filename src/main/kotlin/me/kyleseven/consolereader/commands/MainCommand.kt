@@ -214,7 +214,6 @@ class MainCommand : BaseCommand() {
     /*
     TODO
     - Page UI for log list
-    - Check if page is within range
      */
     @Subcommand("log")
     @CommandPermission("consolereader.log")

@@ -3,10 +3,10 @@ package me.kyleseven.consolereader.logview
 import me.kyleseven.consolereader.ConsoleReader
 import me.kyleseven.consolereader.config.MainConfig
 import me.kyleseven.consolereader.utils.sendColorMsg
+import me.kyleseven.consolereader.utils.sendPrefixMsg
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ComponentBuilder
 import org.bukkit.Bukkit
-import org.bukkit.Bukkit.spigot
 import org.bukkit.command.CommandSender
 import java.io.File
 
@@ -24,6 +24,11 @@ object LogFileManager {
     fun sendPage(sender: CommandSender, logFileName: String, page: Int) {
         val logFile = LogFile(logFileName)
         val content = logFile.getLinesFromPage(page)
+
+        if (content.isEmpty()) {
+            sender.sendPrefixMsg("${ChatColor.RED}Error: Invalid page number. Valid Range: 1-${logFile.pages}.")
+            return
+        }
 
         val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
             .append(logFileName).color(ChatColor.DARK_AQUA)
