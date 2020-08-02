@@ -16,6 +16,8 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import kotlin.concurrent.thread
+import kotlin.math.ceil
+import kotlin.math.min
 
 @CommandAlias("cr|consolereader")
 @Description("Use the ConsoleReader plugin.")
@@ -210,11 +212,6 @@ class MainCommand : BaseCommand() {
         sender.sendPrefixMsg(message)
     }
 
-
-    /*
-    TODO
-    - Page UI for log list
-     */
     @Subcommand("log")
     @CommandPermission("consolereader.log")
     @Description("See a previous server log.")
@@ -222,14 +219,30 @@ class MainCommand : BaseCommand() {
         @Default
         @Subcommand("list|l")
         @Description("List all available logs.")
-        fun onLogList(sender: CommandSender) {
+        fun onLogList(sender: CommandSender, page: Int) {
+            val totalPages = ceil(LogFileManager.logList.size / 7.0).toInt()
+
+            val start = (page - 1) * 7
+            val end = min(start + 7, LogFileManager.logList.lastIndex)
+
+            if (page < 0 || page > totalPages) {
+                sender.sendPrefixMsg("${ChatColor.RED}Error: Invalid page number. Valid Range: 1-${totalPages}.")
+                return
+            }
+
             val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
                 .append("Log List").color(ChatColor.DARK_AQUA)
                 .append(" ======------").color(ChatColor.DARK_GRAY)
+
+            val footer = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
+                .append("$page of $totalPages").color(ChatColor.AQUA)
+                .append(" ======------").color(ChatColor.DARK_GRAY)
+
             sender.spigot().sendMessage(*header.create())
-            for (file in LogFileManager.logList) {
-                sender.sendColorMsg(MainConfig.logColor.toString() + file)
+            for (i in start..end) {
+                sender.sendColorMsg(MainConfig.logColor.toString() + LogFileManager.logList[i])
             }
+            sender.spigot().sendMessage(*footer.create())
         }
 
         @Subcommand("view")

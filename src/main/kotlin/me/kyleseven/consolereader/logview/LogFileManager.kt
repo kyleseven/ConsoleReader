@@ -15,7 +15,7 @@ object LogFileManager {
 
     fun setup() {
         val logPath = Bukkit.getServer().worldContainer.absolutePath + File.separator + "logs"
-        logList = File(logPath).list()?.filterNotNull()?.toTypedArray() ?: arrayOf()
+        logList = File(logPath).list()?.filterNotNull()?.toTypedArray()?.sortedArrayDescending() ?: arrayOf()
         for (i in logList.indices) {
             logList[i] = logList[i].removeSuffix(".log.gz").removeSuffix(".log")
         }
