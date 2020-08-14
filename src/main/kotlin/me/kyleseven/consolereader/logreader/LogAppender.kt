@@ -13,7 +13,8 @@ import org.apache.logging.log4j.core.appender.AbstractAppender
 import org.bukkit.entity.Player
 
 @Suppress("DEPRECATION") // Paper/Spigot uses an older version of Log4J that does not have the new constructor
-class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-${player.uniqueId}", null, null, false) {
+class LogAppender(private val player: Player) :
+    AbstractAppender("ConsoleReader-${player.uniqueId}", null, null, false) {
     init {
         start()
     }
@@ -72,10 +73,10 @@ class LogAppender(private val player: Player) : AbstractAppender("ConsoleReader-
         val chatLogPrefix = TextComponent(*TextComponent.fromLegacyText(messagePrefix))
         val chatLogMessage = TextComponent(*TextComponent.fromLegacyText(logMessage))
         val hoverText = ComponentBuilder("")
-                .append("Time: ").color(ChatColor.GRAY).append("$logDate $logTime\n").color(ChatColor.WHITE)
-                .append("Log Level: ").color(ChatColor.GRAY).append(logLevel.trimIndent() + "\n").color(ChatColor.WHITE)
-                .append("Logger: ").color(ChatColor.GRAY).append(loggerName.trimIndent() + "\n").color(ChatColor.WHITE)
-                .append("Thread: ").color(ChatColor.GRAY).append(threadName).color(ChatColor.WHITE)
+            .append("Time: ").color(ChatColor.GRAY).append("$logDate $logTime\n").color(ChatColor.WHITE)
+            .append("Log Level: ").color(ChatColor.GRAY).append(logLevel.trimIndent() + "\n").color(ChatColor.WHITE)
+            .append("Logger: ").color(ChatColor.GRAY).append(loggerName.trimIndent() + "\n").color(ChatColor.WHITE)
+            .append("Thread: ").color(ChatColor.GRAY).append(threadName).color(ChatColor.WHITE)
         chatLogPrefix.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.create())
 
         player.spigot().sendMessage(chatLogPrefix, chatLogMessage)

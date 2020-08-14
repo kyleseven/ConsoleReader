@@ -36,12 +36,38 @@ class MainCommand : BaseCommand() {
         )
 
         val commands = arrayOf(
-            Command(name = "/cr help", aliases = arrayListOf("/cr", "/cr h"), description = "Shows this help menu."),
-            Command(name = "/cr read", args = "[player]", aliases = arrayListOf("/cr r"), description = "Toggle console monitoring in chat."),
-            Command(name = "/cr execute", args = "<command>", aliases = arrayListOf("/cr exec", "/cexec"), description = "Execute a command as console."),
-            Command(name = "/cr list", aliases = arrayListOf("/cr l"), description = "List players monitoring the console."),
-            Command(name = "/cr reload", aliases = arrayListOf("/cr rel"), description = "Reload the plugin config."),
-            Command(name = "/cr version", aliases = arrayListOf("/cr ver"), description = "Show plugin version.")
+            Command(
+                name = "/cr help",
+                aliases = arrayListOf("/cr", "/cr h"),
+                description = "Shows this help menu."
+            ),
+            Command(
+                name = "/cr read",
+                args = "[player]",
+                aliases = arrayListOf("/cr r"),
+                description = "Toggle console monitoring in chat."
+            ),
+            Command(
+                name = "/cr execute",
+                args = "<command>",
+                aliases = arrayListOf("/cr exec", "/cexec"),
+                description = "Execute a command as console."
+            ),
+            Command(
+                name = "/cr list",
+                aliases = arrayListOf("/cr l"),
+                description = "List players monitoring the console."
+            ),
+            Command(
+                name = "/cr reload",
+                aliases = arrayListOf("/cr rel"),
+                description = "Reload the plugin config."
+            ),
+            Command(
+                name = "/cr version",
+                aliases = arrayListOf("/cr ver"),
+                description = "Show plugin version."
+            )
         )
 
         val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
@@ -68,14 +94,24 @@ class MainCommand : BaseCommand() {
             }
 
             // Add ClickEvent and HoverEvent based on command arguments
-            if (command.args.isEmpty() || command.args.matches(Regex("\\[(.*?)]"))){
+            if (command.args.isEmpty() || command.args.matches(Regex("\\[(.*?)]"))) {
                 helpEntry.append(command.name).color(ChatColor.DARK_AQUA)
                     .event(ClickEvent(ClickEvent.Action.RUN_COMMAND, command.name))
-                    .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.append("Click to run.").color(ChatColor.GRAY).create()))
+                    .event(
+                        HoverEvent(
+                            HoverEvent.Action.SHOW_TEXT,
+                            hoverText.append("Click to run.").color(ChatColor.GRAY).create()
+                        )
+                    )
             } else {
                 helpEntry.append(command.name).color(ChatColor.DARK_AQUA)
                     .event(ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command.name))
-                    .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.append("Click to suggest.").color(ChatColor.GRAY).create()))
+                    .event(
+                        HoverEvent(
+                            HoverEvent.Action.SHOW_TEXT,
+                            hoverText.append("Click to suggest.").color(ChatColor.GRAY).create()
+                        )
+                    )
             }
 
             helpEntry.append(command.args.ifBlank { "" }, ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
