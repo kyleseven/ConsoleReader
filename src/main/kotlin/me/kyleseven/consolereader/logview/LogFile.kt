@@ -4,6 +4,7 @@ import me.kyleseven.consolereader.ConsoleReader
 import org.bukkit.Bukkit
 import java.io.*
 import java.lang.Integer.min
+import java.nio.file.Paths
 import java.util.zip.GZIPInputStream
 import kotlin.math.ceil
 
@@ -50,8 +51,8 @@ class LogFile(fileName: String) {
     }
 
     private fun getUnzippedFile(logFileName: String): File {
-        val logPath = Bukkit.getServer().worldContainer.absolutePath + File.separator + "logs" + File.separator + logFileName
-        val tempPath = ConsoleReader.instance.dataFolder.absolutePath + File.separator + "temp" + File.separator + logFileName.removeSuffix(".gz")
+        val logPath = Paths.get(Bukkit.getServer().worldContainer.absolutePath, "logs", logFileName).toString()
+        val tempPath = Paths.get(ConsoleReader.instance.dataFolder.absolutePath, "temp", logFileName.removeSuffix(".gz")).toString()
         val buffer = ByteArray(1024)
 
         if (File(tempPath).exists()) {
