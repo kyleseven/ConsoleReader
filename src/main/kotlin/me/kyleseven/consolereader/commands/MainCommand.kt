@@ -6,7 +6,8 @@ import me.kyleseven.consolereader.ConsoleReader
 import me.kyleseven.consolereader.config.MainConfig
 import me.kyleseven.consolereader.logappender.LogAppenderManager
 import me.kyleseven.consolereader.logview.LogFileManager
-import me.kyleseven.consolereader.utils.sendColorMsg
+import me.kyleseven.consolereader.ui.Page
+import me.kyleseven.consolereader.ui.sendPage
 import me.kyleseven.consolereader.utils.sendPrefixMsg
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ClickEvent
@@ -226,28 +227,23 @@ class MainCommand : BaseCommand() {
         @Description("List all available logs.")
         fun onLogList(sender: CommandSender, page: Int) {
             val totalPages = ceil(LogFileManager.logList.size / 7.0).toInt()
-
             val start = (page - 1) * 7
             val end = min(start + 7, LogFileManager.logList.lastIndex)
-
-            if (page < 0 || page > totalPages) {
-                sender.sendPrefixMsg("${ChatColor.RED}Error: Invalid page number. Valid Range: 1-${totalPages}.")
-                return
-            }
-
-            val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
-                .append("Log List").color(ChatColor.DARK_AQUA)
-                .append(" ======------").color(ChatColor.DARK_GRAY)
-
-            val footer = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
-                .append("$page of $totalPages").color(ChatColor.AQUA)
-                .append(" ======------").color(ChatColor.DARK_GRAY)
-
-            sender.spigot().sendMessage(*header.create())
+            val content = ArrayList<String>()
             for (i in start..end) {
-                sender.sendColorMsg(MainConfig.logColor.toString() + LogFileManager.logList[i])
+                content.add(LogFileManager.logList[i])
             }
-            sender.spigot().sendMessage(*footer.create())
+
+            val pageUI = Page(
+                title = "Log List",
+                content = content,
+                pageNumber = page,
+                maxPageNumber = totalPages,
+                prevCmd = "/cr list ${page - 1}",
+                nextCmd = "/cr list ${page + 1}"
+            )
+
+            sender.sendPage(pageUI)
         }
 
         @Subcommand("view")

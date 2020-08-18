@@ -1,11 +1,8 @@
 package me.kyleseven.consolereader.logview
 
 import me.kyleseven.consolereader.ConsoleReader
-import me.kyleseven.consolereader.config.MainConfig
-import me.kyleseven.consolereader.utils.sendColorMsg
-import me.kyleseven.consolereader.utils.sendPrefixMsg
-import net.md_5.bungee.api.ChatColor
-import net.md_5.bungee.api.chat.ComponentBuilder
+import me.kyleseven.consolereader.ui.Page
+import me.kyleseven.consolereader.ui.sendPage
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import java.io.File
@@ -26,24 +23,16 @@ object LogFileManager {
         val logFile = LogFile(logFileName)
         val content = logFile.getLinesFromPage(page)
 
-        if (content.isEmpty()) {
-            sender.sendPrefixMsg("${ChatColor.RED}Error: Invalid page number. Valid Range: 1-${logFile.pages}.")
-            return
-        }
+        val pageUI = Page(
+            title = logFileName,
+            content = content,
+            pageNumber = page,
+            maxPageNumber = logFile.pages,
+            prevCmd = "/cr log view $logFileName ${page - 1}",
+            nextCmd = "/cr log view $logFileName ${page + 1}"
+        )
 
-        val header = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
-            .append(logFileName).color(ChatColor.DARK_AQUA)
-            .append(" ======------").color(ChatColor.DARK_GRAY)
-
-        val footer = ComponentBuilder("------====== ").color(ChatColor.DARK_GRAY)
-            .append("$page of ${logFile.pages}").color(ChatColor.DARK_AQUA)
-            .append(" ======------").color(ChatColor.DARK_GRAY)
-
-        sender.spigot().sendMessage(*header.create())
-        for (line in content) {
-            sender.sendColorMsg(MainConfig.logColor.toString() + line)
-        }
-        sender.spigot().sendMessage(*footer.create())
+        sender.sendPage(pageUI)
     }
 
     fun cleanUp() {
