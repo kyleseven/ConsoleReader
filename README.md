@@ -16,15 +16,15 @@ It is compatible with 1.12, 1.13, 1.14, 1.15, and 1.16.
 
 ## Building
 
-ConsoleReader uses Maven to handle dependencies and building.
+ConsoleReader uses Gradle to handle dependencies and building.
 
 ### Compiling from source
 
     git clone https://github.com/kyleseven/ConsoleReader.git
     cd ConsoleReader/
-    mvn clean package
+    ./gradlew clean build
     
-The jars can be found in the `target` directory.
+The jars can be found in the `build/libs` directory.
 
 ## Installation
 
