@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT")
-    compileOnly("org.apache.logging.log4j:log4j-api:2.13.1")
+    compileOnly("org.apache.logging.log4j:log4j-api:2.13.2")
     compileOnly("org.apache.logging.log4j:log4j-core:2.13.2")
     implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
