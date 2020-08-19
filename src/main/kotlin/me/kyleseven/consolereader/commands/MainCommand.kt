@@ -114,7 +114,7 @@ class MainCommand : BaseCommand() {
                     )
             }
 
-            helpEntry.append(command.args.ifBlank { "" }, ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
+            helpEntry.append(" ${command.args}".ifBlank { "" }, ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
                 .append(" - ").color(ChatColor.DARK_GRAY)
                 .append(command.description).color(ChatColor.GRAY)
 
