@@ -34,6 +34,7 @@ tasks.withType<KotlinCompile>().configureEach {
 
 tasks {
     named<ShadowJar>("shadowJar") {
+        archiveClassifier.set("")
         relocate("kotlin", "me.kyleseven.consolereader.kotlin")
         relocate("co.aikar.commands", "me.kyleseven.consolereader.acf")
         relocate("co.aikar.locales", "me.kyleseven.locales")
