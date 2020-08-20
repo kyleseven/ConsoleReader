@@ -1,6 +1,6 @@
 # ConsoleReader
 
-![CI with Maven](https://github.com/kyleseven/ConsoleReader/workflows/CI%20with%20Maven/badge.svg)
+![CI with Gradle](https://github.com/kyleseven/ConsoleReader/workflows/CI%20with%20Gradle/badge.svg)
 [![GitHub tag](https://img.shields.io/github/tag/kyleseven/ConsoleReader.svg)](https://GitHub.com/kyleseven/ConsoleReader/tags/)
 
 Spigot plugin that allows players to access the console in game.
