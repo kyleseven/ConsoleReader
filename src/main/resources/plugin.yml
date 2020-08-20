@@ -1,5 +1,5 @@
 name: ConsoleReader
-version: ${project.version}
+version: @version@
 main: me.kyleseven.consolereader.ConsoleReader
 api-version: 1.16
 authors: [kyleseven]

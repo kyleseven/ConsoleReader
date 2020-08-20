@@ -3,6 +3,6 @@
 *.iml
 *.ipr
 
-# Maven
-dependency-reduced-pom.xml
-target/
+# Gradle
+.gradle
+build/
