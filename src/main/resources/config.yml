@@ -1,7 +1,7 @@
 # ConsoleReader [ALPHA] by kyleseven
 
 # DO NOT CHANGE THIS
-version: '${project.version}'
+version: '@version@'
 
 # Prefix for all messages
 prefix: '&8[&3CR&8] &7'
