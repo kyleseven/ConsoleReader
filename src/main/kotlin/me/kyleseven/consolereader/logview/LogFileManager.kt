@@ -28,8 +28,8 @@ object LogFileManager {
             content = content,
             pageNumber = page,
             maxPageNumber = logFile.pages,
-            prevCmd = "/cr log view $logFileName ${page - 1}",
-            nextCmd = "/cr log view $logFileName ${page + 1}"
+            prevCmd = "/cr log view ${logFileName.removeSuffix(".gz").removeSuffix(".log")} ${page - 1}",
+            nextCmd = "/cr log view ${logFileName.removeSuffix(".gz").removeSuffix(".log")} ${page + 1}"
         )
 
         sender.sendPage(pageUI)

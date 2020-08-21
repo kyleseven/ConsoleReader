@@ -243,8 +243,8 @@ class MainCommand : BaseCommand() {
                 content = content,
                 pageNumber = page,
                 maxPageNumber = totalPages,
-                prevCmd = "/cr list ${page - 1}",
-                nextCmd = "/cr list ${page + 1}"
+                prevCmd = "/cr log list ${page - 1}",
+                nextCmd = "/cr log list ${page + 1}"
             )
 
             sender.sendPage(pageUI)
