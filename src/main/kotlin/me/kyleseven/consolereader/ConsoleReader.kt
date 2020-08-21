@@ -15,12 +15,14 @@ class ConsoleReader : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
+        commandManager = PaperCommandManager(this)
+        LogAppenderManager.setup(LogManager.getRootLogger() as Logger)
+        LogFileManager.setup()
         checkServerType()
         loadConfigs()
         registerCommands()
+        registerCompletions()
         registerEvents()
-        LogAppenderManager.setup(LogManager.getRootLogger() as Logger)
-        LogFileManager.setup()
     }
 
     override fun onDisable() {
@@ -42,7 +44,13 @@ class ConsoleReader : JavaPlugin() {
     }
 
     private fun registerCommands() {
-        PaperCommandManager(this).registerCommand(MainCommand())
+        commandManager.registerCommand(MainCommand())
+    }
+
+    private fun registerCompletions() {
+        commandManager.commandCompletions.registerAsyncCompletion("logs") {
+            LogFileManager.logList.toList()
+        }
     }
 
     private fun registerEvents() {
@@ -52,5 +60,7 @@ class ConsoleReader : JavaPlugin() {
     companion object {
         lateinit var instance: ConsoleReader
             private set
+
+        private lateinit var commandManager: PaperCommandManager
     }
 }

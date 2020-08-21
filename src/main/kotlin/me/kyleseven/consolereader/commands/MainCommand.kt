@@ -252,6 +252,7 @@ class MainCommand : BaseCommand() {
 
         @Subcommand("view")
         @Description("Look at a previous log")
+        @CommandCompletion("@logs")
         fun onLogView(sender: CommandSender, @Optional fileName: String?, @Optional page: Int?) {
             if (fileName == null) {
                 sender.sendPrefixMsg("${ChatColor.RED}Error: You must specify a log.")
