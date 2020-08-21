@@ -202,9 +202,28 @@ class MainCommand : BaseCommand() {
     @Suppress("RedundantInnerClassModifier")
     inner class LogCommand : BaseCommand() {
         @Default
+        @Subcommand("help|h")
         @Description("Shows help for the log subcommands")
         fun onLogHelp(sender: CommandSender) {
-            sender.sendPrefixMsg("Not implemented.")
+            val commands = arrayOf(
+                Command(
+                    name = "/cr log help",
+                    description = "Shows this help menu."
+                ),
+                Command(
+                    name = "/cr log list",
+                    args = "[page]",
+                    aliases = arrayListOf("/cr log l"),
+                    description = "List all available logs."
+                ),
+                Command(
+                    name = "/cr log view",
+                    args = "<logName> [page]",
+                    description = "View the contents of the specified log."
+                )
+            )
+
+            sender.sendHelpMenu(*commands)
         }
 
         @Subcommand("list|l")
