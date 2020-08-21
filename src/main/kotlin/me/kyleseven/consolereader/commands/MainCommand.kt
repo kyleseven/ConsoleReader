@@ -199,7 +199,7 @@ class MainCommand : BaseCommand() {
     @Subcommand("log")
     @CommandPermission("consolereader.log")
     @Description("See a previous server log.")
-    @Suppress("RedundantInnerClassModifier")
+    @Suppress("RedundantInnerClassModifier", "NAME_SHADOWING")
     inner class LogCommand : BaseCommand() {
         @Default
         @Subcommand("help|h")
@@ -228,7 +228,8 @@ class MainCommand : BaseCommand() {
 
         @Subcommand("list|l")
         @Description("List all available logs.")
-        fun onLogList(sender: CommandSender, page: Int) {
+        fun onLogList(sender: CommandSender, @Optional page: Int?) {
+            val page = page ?: 1
             val totalPages = ceil(LogFileManager.logList.size / 7.0).toInt()
             val start = (page - 1) * 7
             val end = min(start + 7, LogFileManager.logList.lastIndex)
@@ -251,7 +252,8 @@ class MainCommand : BaseCommand() {
 
         @Subcommand("view")
         @Description("Look at a previous log")
-        fun onLogView(sender: CommandSender, fileName: String, page: Int) {
+        fun onLogView(sender: CommandSender, fileName: String, @Optional page: Int?) {
+            val page = page ?: 1
             if (!LogFileManager.logList.contains(fileName)) {
                 sender.sendPrefixMsg("${ChatColor.RED}Error: Could not find that log file.")
                 return
