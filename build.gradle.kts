@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("java")
     kotlin("jvm") version "1.4.0"
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
