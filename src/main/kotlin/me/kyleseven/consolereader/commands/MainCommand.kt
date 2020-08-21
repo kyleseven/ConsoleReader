@@ -199,6 +199,7 @@ class MainCommand : BaseCommand() {
     @Subcommand("log")
     @CommandPermission("consolereader.log")
     @Description("See a previous server log.")
+    @Suppress("RedundantInnerClassModifier")
     inner class LogCommand : BaseCommand() {
         @Default
         @Description("Shows help for the log subcommands")
