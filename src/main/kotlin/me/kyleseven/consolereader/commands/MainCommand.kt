@@ -252,7 +252,12 @@ class MainCommand : BaseCommand() {
 
         @Subcommand("view")
         @Description("Look at a previous log")
-        fun onLogView(sender: CommandSender, fileName: String, @Optional page: Int?) {
+        fun onLogView(sender: CommandSender, @Optional fileName: String?, @Optional page: Int?) {
+            if (fileName == null) {
+                sender.sendPrefixMsg("${ChatColor.RED}Error: You must specify a log.")
+                return
+            }
+
             val page = page ?: 1
             if (!LogFileManager.logList.contains(fileName)) {
                 sender.sendPrefixMsg("${ChatColor.RED}Error: Could not find that log file.")
