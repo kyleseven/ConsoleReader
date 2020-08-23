@@ -12,6 +12,10 @@ fun CommandSender.sendPrefixMsg(message: String) {
     sendMessage(ChatColor.translateAlternateColorCodes('&', MainConfig.prefix + message))
 }
 
+fun CommandSender.sendError(message: String) {
+    sendPrefixMsg("${ChatColor.RED}Error: $message")
+}
+
 fun parseANSI(message: String): String {
     var messageToParse = message
     val ansiMap = mapOf(

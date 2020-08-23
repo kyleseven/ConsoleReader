@@ -10,6 +10,7 @@ import me.kyleseven.consolereader.ui.Command
 import me.kyleseven.consolereader.ui.Page
 import me.kyleseven.consolereader.ui.sendHelpMenu
 import me.kyleseven.consolereader.ui.sendPage
+import me.kyleseven.consolereader.utils.sendError
 import me.kyleseven.consolereader.utils.sendPrefixMsg
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
@@ -90,14 +91,14 @@ class MainCommand : BaseCommand() {
                     sender.sendPrefixMsg("Console reading disabled.")
                 }
             } else {
-                sender.sendPrefixMsg("${ChatColor.RED}Error: Console must specify a player.")
+                sender.sendError("Console must specify a player.")
             }
         } else if (sender.hasPermission("consolereader.read.others")) {
             thread {
                 // Use of deprecated function is necessary to get an OfflinePlayer from a name.
                 @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
                 if (!otherOfflinePlayer.hasPlayedBefore()) {
-                    sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
+                    sender.sendError("That player hasn't joined this server before.")
                     return@thread
                 }
                 if (otherOfflinePlayer.isOnline) {
@@ -113,7 +114,7 @@ class MainCommand : BaseCommand() {
                             otherPlayer.sendPrefixMsg("Console reading disabled.")
                         }
                     } else {
-                        sender.sendPrefixMsg("${ChatColor.RED}Error: ${otherPlayer.name} does not have permission to read console.")
+                        sender.sendError("${otherPlayer.name} does not have permission to read console.")
                     }
                 } else {
                     if (!LogAppenderManager.isReading(otherOfflinePlayer)) {
@@ -127,7 +128,7 @@ class MainCommand : BaseCommand() {
                 }
             }
         } else {
-            sender.sendPrefixMsg("${ChatColor.RED}Error: You do not have permission to toggle console reading for other players.")
+            sender.sendError("You do not have permission to toggle console reading for other players.")
         }
     }
 
@@ -138,13 +139,13 @@ class MainCommand : BaseCommand() {
     @Description("Execute a command as console.")
     fun onExecute(player: Player, @Optional command: String?) {
         if (command == null || command.isEmpty()) {
-            player.sendPrefixMsg("${ChatColor.RED}Error: You need to specify a command.")
+            player.sendError("You need to specify a command.")
             return
         }
 
         for (forbiddenCommand in MainConfig.forbiddenCommands) {
             if (command.startsWith(forbiddenCommand, ignoreCase = true)) {
-                player.sendPrefixMsg("${ChatColor.RED}Error: The /$forbiddenCommand command may only be used in the real console.")
+                player.sendError("The /$forbiddenCommand command may only be used in the real console.")
                 return
             }
         }
@@ -255,13 +256,13 @@ class MainCommand : BaseCommand() {
         @CommandCompletion("@logs")
         fun onLogView(sender: CommandSender, @Optional fileName: String?, @Optional page: Int?) {
             if (fileName == null) {
-                sender.sendPrefixMsg("${ChatColor.RED}Error: You must specify a log.")
+                sender.sendError("You must specify a log.")
                 return
             }
 
             val page = page ?: 1
             if (!LogFileManager.logList.contains(fileName)) {
-                sender.sendPrefixMsg("${ChatColor.RED}Error: Could not find that log file.")
+                sender.sendError("Could not find that file.")
                 return
             }
 

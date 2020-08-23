@@ -2,6 +2,7 @@ package me.kyleseven.consolereader.ui
 
 import me.kyleseven.consolereader.config.MainConfig
 import me.kyleseven.consolereader.utils.sendColorMsg
+import me.kyleseven.consolereader.utils.sendError
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
@@ -18,11 +19,8 @@ data class Page(
 )
 
 fun CommandSender.sendPage(page: Page) {
-    val finalComponent = ComponentBuilder("")
-
     if (page.content.isEmpty()) {
-        finalComponent.append("Error: Invalid Page Number. Valid Range: 1-${page.maxPageNumber}").color(ChatColor.RED)
-        spigot().sendMessage(*finalComponent.create())
+        sendError("Invalid Page Number. Valid Range: 1-${page.maxPageNumber}")
         return
     }
 
