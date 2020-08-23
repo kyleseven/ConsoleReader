@@ -19,7 +19,7 @@ data class Page(
 )
 
 fun CommandSender.sendPage(page: Page) {
-    if (page.content.isEmpty()) {
+    if (page.pageNumber !in 1..page.maxPageNumber) {
         sendError("Invalid Page Number. Valid Range: 1-${page.maxPageNumber}")
         return
     }
