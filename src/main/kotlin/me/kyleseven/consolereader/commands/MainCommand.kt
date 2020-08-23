@@ -231,11 +231,11 @@ class MainCommand : BaseCommand() {
         @Description("List all available logs.")
         fun onLogList(sender: CommandSender, @Optional page: Int?) {
             val page = page ?: 1
-            val totalPages = ceil(LogFileManager.logList.size / 7.0).toInt()
-            val start = (page - 1) * 7
-            val end = min(start + 7, LogFileManager.logList.lastIndex)
+            val totalPages = ceil(LogFileManager.logList.size / 8.0).toInt()
+            val start = (page - 1) * 8
+            val end = min(start + 8, LogFileManager.logList.size)
             val content = ArrayList<String>()
-            for (i in start..end) {
+            for (i in start until end) {
                 content.add(LogFileManager.logList[i])
             }
 
