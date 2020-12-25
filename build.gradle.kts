@@ -36,7 +36,7 @@ tasks {
         archiveClassifier.set("")
         relocate("kotlin", "me.kyleseven.consolereader.kotlin")
         relocate("co.aikar.commands", "me.kyleseven.consolereader.acf")
-        relocate("co.aikar.locales", "me.kyleseven.locales")
+        relocate("co.aikar.locales", "me.kyleseven.consolereader.locales")
         minimize()
     }
 
