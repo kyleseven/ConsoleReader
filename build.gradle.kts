@@ -16,6 +16,7 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://repo.codemc.org/repository/maven-public")
 }
 
 dependencies {
@@ -23,6 +24,7 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-api:2.13.2")
     compileOnly("org.apache.logging.log4j:log4j-core:2.13.2")
     implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
+    implementation("org.bstats:bstats-bukkit:1.8")
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
 }
 
@@ -37,6 +39,7 @@ tasks {
         relocate("kotlin", "me.kyleseven.consolereader.kotlin")
         relocate("co.aikar.commands", "me.kyleseven.consolereader.acf")
         relocate("co.aikar.locales", "me.kyleseven.consolereader.locales")
+        relocate("org.bstats", "me.kyleseven.consolereader.bstats")
         minimize()
     }
 
