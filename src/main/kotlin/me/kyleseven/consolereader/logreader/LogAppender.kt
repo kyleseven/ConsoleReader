@@ -53,7 +53,10 @@ class LogAppender(private val player: Player) :
             logMessage = logColor.toString() + logMessage
         }
 
-        logMessage = parseANSI(logMessage)
+        // ANSI Parsing only needed for Spigot
+        if (!ConsoleReader.instance.isPaperMC) {
+            logMessage = parseANSI(logMessage)
+        }
 
         /*
         Filtering console messages here.
