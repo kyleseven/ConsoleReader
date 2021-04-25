@@ -28,12 +28,12 @@ dependencies {
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions.javaParameters = true
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 tasks {
+    withType<KotlinCompile>().configureEach {
+        kotlinOptions.javaParameters = true
+        kotlinOptions.jvmTarget = "1.8"
+    }
+
     named<ShadowJar>("shadowJar") {
         archiveClassifier.set("")
         relocate("kotlin", "me.kyleseven.consolereader.kotlin")
