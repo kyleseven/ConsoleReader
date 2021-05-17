@@ -53,7 +53,9 @@ object LogAppenderManager {
 
     // Requires online player
     fun stopReadingTemp(player: Player) {
-        logger.removeAppender(logAppenders[player.uniqueId])
+        if (player.uniqueId in logAppenders.keys) {
+            logger.removeAppender(logAppenders[player.uniqueId])
+        }
     }
 
     fun stopReadingAll() {
