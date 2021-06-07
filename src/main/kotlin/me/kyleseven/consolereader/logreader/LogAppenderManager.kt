@@ -1,11 +1,12 @@
 package me.kyleseven.consolereader.logreader
 
+import me.kyleseven.consolereader.ConsoleReader
 import org.apache.logging.log4j.core.Logger
+import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.concurrent.thread
 
 object LogAppenderManager {
     private lateinit var logger: Logger
@@ -35,13 +36,12 @@ object LogAppenderManager {
     }
 
     // Requires online player
-    fun startReadingTemp(player: Player, milliseconds: Long) {
+    fun startReadingTemp(player: Player, seconds: Int) {
         val appender = LogAppender(player)
         logger.addAppender(appender)
-        thread {
-            Thread.sleep(milliseconds)
+        Bukkit.getScheduler().runTaskLater(ConsoleReader.instance, Runnable {
             logger.removeAppender(appender)
-        }
+        }, seconds * 20L)
     }
 
     fun stopReading(player: OfflinePlayer) {

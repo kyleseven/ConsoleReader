@@ -198,7 +198,7 @@ class MainCommand : BaseCommand() {
 
         if (!LogAppenderManager.isReading(player)) {
             player.sendPrefixMsg("Temporarily enabling console reading for 5 seconds.")
-            LogAppenderManager.startReadingTemp(player, 5000)
+            LogAppenderManager.startReadingTemp(player, 5)
         }
 
         Bukkit.dispatchCommand(Bukkit.getServer().consoleSender, command)
