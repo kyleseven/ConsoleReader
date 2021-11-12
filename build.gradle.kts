@@ -24,7 +24,7 @@ dependencies {
     compileOnly("org.apache.logging.log4j:log4j-api:2.13.2")
     compileOnly("org.apache.logging.log4j:log4j-core:2.13.2")
     implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
-    implementation("org.bstats:bstats-bukkit:1.8")
+    implementation("org.bstats:bstats-bukkit:2.2.1")
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
 }
 
