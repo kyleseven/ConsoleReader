@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT")
     compileOnly("org.apache.logging.log4j:log4j-api:2.15.0")
     compileOnly("org.apache.logging.log4j:log4j-core:2.15.0")
     implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
