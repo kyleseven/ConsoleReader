@@ -12,7 +12,7 @@ Things like the config.yml, commands, and permission nodes are subject to change
 ## Compatibility
 ConsoleReader is built on Spigot API version 1.18.
 
-It is compatible with versions 1.12 to 1.18.
+It is compatible with versions 1.12 to 1.19.
 
 ## Building
 
