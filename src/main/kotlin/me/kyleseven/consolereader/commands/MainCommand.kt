@@ -184,7 +184,7 @@ class MainCommand : BaseCommand() {
     @CommandCompletion("<command>")
     @Description("Execute a command as console.")
     fun onExecute(player: Player, @Optional command: String?) {
-        if (command == null || command.isEmpty()) {
+        if (command.isNullOrEmpty()) {
             player.sendPrefixMsg("${ChatColor.RED}Error: You need to specify a command.")
             return
         }

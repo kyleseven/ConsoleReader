@@ -38,10 +38,8 @@ fun parseANSI(message: String): String {
         "\u001B[m" to ChatColor.RESET
     )
 
-    for ((ansi, color) in ansiMap) {
-        if (messageToParse.contains(ansi)) {
-            messageToParse = messageToParse.replace(ansi, color.toString())
-        }
+    ansiMap.forEach {
+        messageToParse = messageToParse.replace(it.key, it.value.toString())
     }
 
     return messageToParse
