@@ -42,15 +42,21 @@ class LogAppender(private val player: Player) :
             }
         }
 
-        if (logLevel == "WARN") {
-            messagePrefix = ChatColor.YELLOW.toString() + messagePrefix
-            logMessage = ChatColor.YELLOW.toString() + logMessage
-        } else if (logLevel == "FATAL" || logLevel == "ERROR") {
-            messagePrefix = ChatColor.RED.toString() + messagePrefix
-            logMessage = ChatColor.RED.toString() + logMessage
-        } else {
-            messagePrefix = logColor.toString() + messagePrefix
-            logMessage = logColor.toString() + logMessage
+        when (logLevel) {
+            "WARN" -> {
+                messagePrefix = ChatColor.YELLOW.toString() + messagePrefix
+                logMessage = ChatColor.YELLOW.toString() + logMessage
+            }
+
+            "FATAL", "ERROR" -> {
+                messagePrefix = ChatColor.RED.toString() + messagePrefix
+                logMessage = ChatColor.RED.toString() + logMessage
+            }
+
+            else -> {
+                messagePrefix = logColor.toString() + messagePrefix
+                logMessage = logColor.toString() + logMessage
+            }
         }
 
         // ANSI Parsing only needed for Spigot
