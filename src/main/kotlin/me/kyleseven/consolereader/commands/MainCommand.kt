@@ -13,7 +13,6 @@ import net.md_5.bungee.api.chat.HoverEvent
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import kotlin.concurrent.thread
 
 @CommandAlias("cr|consolereader")
 @Description("Use the ConsoleReader plugin.")
@@ -140,12 +139,12 @@ class MainCommand : BaseCommand() {
                 sender.sendPrefixMsg("${ChatColor.RED}Error: Console must specify a player.")
             }
         } else if (sender.hasPermission("consolereader.read.others")) {
-            thread {
+            Bukkit.getScheduler().runTaskAsynchronously(ConsoleReader.instance, Runnable {
                 // Use of deprecated function is necessary to get an OfflinePlayer from a name.
                 @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
                 if (!otherOfflinePlayer.hasPlayedBefore()) {
                     sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
-                    return@thread
+                    return@Runnable
                 }
                 if (otherOfflinePlayer.isOnline) {
                     val otherPlayer = otherOfflinePlayer as Player
@@ -172,7 +171,7 @@ class MainCommand : BaseCommand() {
                         sender.sendPrefixMsg("Console reading will be disabled for ${otherOfflinePlayer.name} upon login.")
                     }
                 }
-            }
+            })
         } else {
             sender.sendPrefixMsg("${ChatColor.RED}Error: You do not have permission to toggle console reading for other players.")
         }
