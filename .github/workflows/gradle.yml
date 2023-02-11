@@ -20,10 +20,14 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: '8'
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
     - name: Validate Gradle Wrapper
       uses: gradle/wrapper-validation-action@v1
     - name: Run the Gradle package task
       uses: gradle/gradle-build-action@v2.3.3
+      with:
+        arguments: clean build
     - uses: actions/upload-artifact@v3
       name: Upload artifact
       if: success()
