@@ -30,41 +30,41 @@ class MainCommand : BaseCommand() {
         data class Command(
             val name: String = "/cr",
             val args: String = "",
-            val aliases: ArrayList<String> = arrayListOf(),
+            val aliases: List<String> = listOf(),
             val description: String = "ConsoleReader command."
         )
 
         val commands = arrayOf(
             Command(
                 name = "/cr help",
-                aliases = arrayListOf("/cr", "/cr h"),
+                aliases = listOf("/cr", "/cr h"),
                 description = "Shows this help menu."
             ),
             Command(
                 name = "/cr read",
                 args = "[player]",
-                aliases = arrayListOf("/cr r"),
+                aliases = listOf("/cr r"),
                 description = "Toggle console monitoring in chat."
             ),
             Command(
                 name = "/cr execute",
                 args = "<command>",
-                aliases = arrayListOf("/cr exec", "/cexec"),
+                aliases = listOf("/cr exec", "/cexec"),
                 description = "Execute a command as console."
             ),
             Command(
                 name = "/cr list",
-                aliases = arrayListOf("/cr l"),
+                aliases = listOf("/cr l"),
                 description = "List players monitoring the console."
             ),
             Command(
                 name = "/cr reload",
-                aliases = arrayListOf("/cr rel"),
+                aliases = listOf("/cr rel"),
                 description = "Reload the plugin config."
             ),
             Command(
                 name = "/cr version",
-                aliases = arrayListOf("/cr ver"),
+                aliases = listOf("/cr ver"),
                 description = "Show plugin version."
             )
         )
