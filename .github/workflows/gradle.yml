@@ -25,7 +25,7 @@ jobs:
     - name: Validate Gradle Wrapper
       uses: gradle/wrapper-validation-action@v1
     - name: Run the Gradle package task
-      uses: gradle/gradle-build-action@v2.3.3
+      uses: gradle/gradle-build-action@v2.4.2
       with:
         arguments: clean build
     - uses: actions/upload-artifact@v3
