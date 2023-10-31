@@ -1,8 +1,14 @@
 package me.kyleseven.consolereader.config
 
 import net.md_5.bungee.api.ChatColor
+import java.util.regex.Pattern
 
 object MainConfig : ConfigLoader("config.yml") {
+    /*
+    Internal
+     */
+    private val _regexFilters: MutableList<String> = mutableListOf()
+
     /*
     Config keys
      */
@@ -38,9 +44,31 @@ object MainConfig : ConfigLoader("config.yml") {
         get() = config.getStringList("forbidden_commands")
 
     val regexFilters: List<String>
-        get() = config.getStringList("filters")
+        get() = _regexFilters
+
+    init {
+        validateRegexPatterns()
+    }
+
+    private fun validateRegexPatterns() {
+        val validRegexFilters: MutableList<Pattern> = mutableListOf()
+
+        validRegexFilters.addAll(
+            config.getStringList("filters").mapNotNull {
+                try {
+                    Pattern.compile(it)
+                } catch (e: Exception) {
+                    null
+                }
+            }
+        )
+
+        _regexFilters.clear()
+        _regexFilters.addAll(validRegexFilters.map { it.pattern() })
+    }
 
     fun reload() {
         config = loadConfig()
+        validateRegexPatterns()
     }
 }

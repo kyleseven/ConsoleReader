@@ -11,6 +11,7 @@ import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.logging.log4j.core.LogEvent
 import org.apache.logging.log4j.core.appender.AbstractAppender
 import org.bukkit.entity.Player
+import java.util.regex.PatternSyntaxException
 
 @Suppress("DEPRECATION") // Paper/Spigot uses an older version of Log4J that does not have the new constructor
 class LogAppender(private val player: Player) :
@@ -72,9 +73,16 @@ class LogAppender(private val player: Player) :
          */
         for (regexString in MainConfig.regexFilters) {
             val strippedMsg = ChatColor.stripColor(logMessage)
-            val regexToMatch = regexString.replace("%PLAYERNAME%", player.name).toRegex()
-            if (regexToMatch.matches(strippedMsg)) {
-                return
+            try {
+                val regexToMatch = regexString.replace("%PLAYERNAME%", player.name).toRegex()
+                if (regexToMatch.matches(strippedMsg)) {
+                    return
+                }
+            } catch (e: PatternSyntaxException) {
+                /*
+                Move onto next regex pattern.
+                Regex filters are validated at config load, so we shouldn't reach this point.
+                 */
             }
         }
 
