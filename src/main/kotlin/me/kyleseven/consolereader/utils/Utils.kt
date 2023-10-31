@@ -42,5 +42,10 @@ fun parseANSI(message: String): String {
         messageToParse = messageToParse.replace(it.key, it.value.toString())
     }
 
+    // TODO: Figure out how to handle ALL ANSI Escape sequences
+    // Clean up remaining ANSI escape sequences
+    val ansiCodeRegex = "\u001B\\[[0-9;]*m".toRegex()
+    messageToParse = messageToParse.replace(ansiCodeRegex, "")
+
     return messageToParse
 }
