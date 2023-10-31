@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.9.10"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -28,10 +28,13 @@ dependencies {
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
 }
 
+kotlin {
+    jvmToolchain(8)
+}
+
 tasks {
     withType<KotlinCompile>().configureEach {
         kotlinOptions.javaParameters = true
-        kotlinOptions.jvmTarget = "1.8"
     }
 
     named<ShadowJar>("shadowJar") {
