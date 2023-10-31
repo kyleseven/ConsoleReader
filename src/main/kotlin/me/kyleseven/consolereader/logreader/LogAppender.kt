@@ -7,7 +7,7 @@ import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
-import org.apache.commons.lang.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.logging.log4j.core.LogEvent
 import org.apache.logging.log4j.core.appender.AbstractAppender
 import org.bukkit.entity.Player
