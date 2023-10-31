@@ -20,11 +20,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT")
-    compileOnly("org.apache.logging.log4j:log4j-api:2.15.0")
-    compileOnly("org.apache.logging.log4j:log4j-core:2.15.0")
-    implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
-    implementation("org.bstats:bstats-bukkit:3.0.0")
+    compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
+    compileOnly("org.apache.logging.log4j:log4j-api:2.19.0")
+    compileOnly("org.apache.logging.log4j:log4j-core:2.19.0")
+    implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
+    implementation("org.bstats:bstats-bukkit:3.0.2")
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
 }
 
