@@ -10,9 +10,9 @@ This plugin is in ALPHA stage, so you may experience bugs.
 Things like the config.yml, commands, and permission nodes are subject to change.
 
 ## Compatibility
-ConsoleReader is built on Spigot API version 1.18.
+ConsoleReader is built on Spigot API version 1.20 and is currently only tested on 1.20.
 
-It is compatible with versions 1.12 to 1.19.
+If you encounter issues on a Minecraft version lower than 1.20, then use v1.5.4-ALPHA.
 
 ## Building
 
