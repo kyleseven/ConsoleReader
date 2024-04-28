@@ -11,6 +11,7 @@ import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -113,7 +114,8 @@ class MainCommand : BaseCommand() {
                     )
             }
 
-            helpEntry.append(" ${command.args}".ifBlank { "" }, ComponentBuilder.FormatRetention.NONE).color(ChatColor.AQUA)
+            helpEntry.append(" ${command.args}".ifBlank { "" }, ComponentBuilder.FormatRetention.NONE)
+                .color(ChatColor.AQUA)
                 .append(" - ").color(ChatColor.DARK_GRAY)
                 .append(command.description).color(ChatColor.GRAY)
 
@@ -126,7 +128,7 @@ class MainCommand : BaseCommand() {
     @CommandCompletion("@players")
     @Description("Toggle reading of console in chat")
     fun onRead(sender: CommandSender, @Optional otherPlayerName: String?) {
-        if (otherPlayerName == null || sender.name == otherPlayerName) {
+        fun handleSelfToggle(sender: CommandSender) {
             if (sender is Player) {
                 if (!LogAppenderManager.isReading(sender)) {
                     LogAppenderManager.startReading(sender)
@@ -138,42 +140,60 @@ class MainCommand : BaseCommand() {
             } else {
                 sender.sendPrefixMsg("${ChatColor.RED}Error: Console must specify a player.")
             }
-        } else if (sender.hasPermission("consolereader.read.others")) {
-            Bukkit.getScheduler().runTaskAsynchronously(ConsoleReader.instance, Runnable {
-                // Use of deprecated function is necessary to get an OfflinePlayer from a name.
-                @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
-                if (!otherOfflinePlayer.hasPlayedBefore()) {
-                    sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
-                    return@Runnable
-                }
-                if (otherOfflinePlayer.isOnline) {
-                    val otherPlayer = otherOfflinePlayer as Player
-                    if (otherPlayer.hasPermission("consolereader.read")) {
-                        if (!LogAppenderManager.isReading(otherPlayer)) {
-                            LogAppenderManager.startReading(otherPlayer)
-                            sender.sendPrefixMsg("Console reading enabled for ${otherPlayer.name}!")
-                            otherPlayer.sendPrefixMsg("Console reading enabled!")
-                        } else {
-                            LogAppenderManager.stopReading(otherPlayer)
-                            sender.sendPrefixMsg("Console reading disabled for ${otherPlayer.name}")
-                            otherPlayer.sendPrefixMsg("Console reading disabled.")
-                        }
-                    } else {
-                        sender.sendPrefixMsg("${ChatColor.RED}Error: ${otherPlayer.name} does not have permission to read console.")
-                    }
+        }
+
+        fun handleOtherOnlinePlayerToggle(sender: CommandSender, otherPlayer: Player) {
+            if (otherPlayer.hasPermission("consolereader.read")) {
+                if (!LogAppenderManager.isReading(otherPlayer)) {
+                    LogAppenderManager.startReading(otherPlayer)
+                    sender.sendPrefixMsg("Console reading enabled for ${otherPlayer.name}!")
+                    otherPlayer.sendPrefixMsg("Console reading enabled!")
                 } else {
-                    if (!LogAppenderManager.isReading(otherOfflinePlayer)) {
-                        LogAppenderManager.startReading(otherOfflinePlayer)
-                        sender.sendPrefixMsg("Console reading will be enabled for ${otherOfflinePlayer.name} upon login!")
-                        sender.sendPrefixMsg("Note: If they lack the permission, console reading will not be enabled.")
-                    } else {
-                        LogAppenderManager.stopReading(otherOfflinePlayer)
-                        sender.sendPrefixMsg("Console reading will be disabled for ${otherOfflinePlayer.name} upon login.")
-                    }
+                    LogAppenderManager.stopReading(otherPlayer)
+                    sender.sendPrefixMsg("Console reading disabled for ${otherPlayer.name}")
+                    otherPlayer.sendPrefixMsg("Console reading disabled.")
                 }
-            })
+            } else {
+                sender.sendPrefixMsg("${ChatColor.RED}Error: ${otherPlayer.name} does not have permission to read console.")
+            }
+        }
+
+        fun handleOtherOfflinePlayerToggle(sender: CommandSender, otherOfflinePlayer: OfflinePlayer) {
+            if (!LogAppenderManager.isReading(otherOfflinePlayer)) {
+                LogAppenderManager.startReading(otherOfflinePlayer)
+                sender.sendPrefixMsg("Console reading will be enabled for ${otherOfflinePlayer.name} upon login!")
+                sender.sendPrefixMsg("Note: If they lack the permission, console reading will not be enabled.")
+            } else {
+                LogAppenderManager.stopReading(otherOfflinePlayer)
+                sender.sendPrefixMsg("Console reading will be disabled for ${otherOfflinePlayer.name} upon login.")
+            }
+        }
+
+        fun handleOtherToggle(sender: CommandSender, otherPlayerName: String) {
+            if (sender.hasPermission("consolereader.read.others")) {
+                Bukkit.getScheduler().runTaskAsynchronously(ConsoleReader.instance, Runnable {
+                    // Use of deprecated function is necessary to get an OfflinePlayer from a name.
+                    @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
+                    if (!otherOfflinePlayer.hasPlayedBefore()) {
+                        sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
+                        return@Runnable
+                    }
+
+                    if (otherOfflinePlayer.isOnline) {
+                        handleOtherOnlinePlayerToggle(sender, otherOfflinePlayer as Player)
+                    } else {
+                        handleOtherOfflinePlayerToggle(sender, otherOfflinePlayer)
+                    }
+                })
+            } else {
+                sender.sendPrefixMsg("${ChatColor.RED}Error: You do not have permission to toggle console reading for other players.")
+            }
+        }
+
+        if (otherPlayerName == null || sender.name == otherPlayerName) {
+            handleSelfToggle(sender)
         } else {
-            sender.sendPrefixMsg("${ChatColor.RED}Error: You do not have permission to toggle console reading for other players.")
+            handleOtherToggle(sender, otherPlayerName)
         }
     }
 
