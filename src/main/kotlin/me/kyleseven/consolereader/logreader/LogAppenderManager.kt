@@ -6,7 +6,6 @@ import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.util.*
-import kotlin.collections.HashMap
 
 object LogAppenderManager {
     private lateinit var logger: Logger
