@@ -39,8 +39,7 @@ class ConsoleReader : JavaPlugin() {
     }
 
     private fun setupBStats() {
-        val pluginId = 9754
-        val metrics = Metrics(this, pluginId)
+        Metrics(this, 9754)
     }
 
     companion object {
