@@ -7,15 +7,15 @@ import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.hover.content.Text
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.logging.log4j.core.LogEvent
 import org.apache.logging.log4j.core.appender.AbstractAppender
 import org.bukkit.entity.Player
 import java.util.regex.PatternSyntaxException
 
-@Suppress("DEPRECATION") // Paper/Spigot uses an older version of Log4J that does not have the new constructor
 class LogAppender(private val player: Player) :
-    AbstractAppender("ConsoleReader-${player.uniqueId}", null, null, false) {
+    AbstractAppender("ConsoleReader-${player.uniqueId}", null, null, false, null) {
     init {
         start()
     }
@@ -84,14 +84,14 @@ class LogAppender(private val player: Player) :
         }
 
         // Creating Hover Text
-        val chatLogPrefix = TextComponent(*TextComponent.fromLegacyText(messagePrefix))
-        val chatLogMessage = TextComponent(*TextComponent.fromLegacyText(logMessage))
+        val chatLogPrefix = TextComponent(TextComponent.fromLegacy(messagePrefix))
+        val chatLogMessage = TextComponent(TextComponent.fromLegacy(logMessage))
         val hoverText = ComponentBuilder("")
             .append("Time: ").color(ChatColor.GRAY).append("$logDate $logTime\n").color(ChatColor.WHITE)
             .append("Log Level: ").color(ChatColor.GRAY).append(logLevel.trimIndent() + "\n").color(ChatColor.WHITE)
             .append("Logger: ").color(ChatColor.GRAY).append(loggerName.trimIndent() + "\n").color(ChatColor.WHITE)
             .append("Thread: ").color(ChatColor.GRAY).append(threadName).color(ChatColor.WHITE)
-        chatLogPrefix.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText.create())
+        chatLogPrefix.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(hoverText.create()))
 
         player.spigot().sendMessage(chatLogPrefix, chatLogMessage)
     }

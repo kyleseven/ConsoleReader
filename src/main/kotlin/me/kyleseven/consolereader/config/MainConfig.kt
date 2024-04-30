@@ -33,10 +33,10 @@ object MainConfig : ConfigLoader("config.yml") {
                 if (colorString.length == 1) {
                     ChatColor.getByChar(colorString[0])
                 } else {
-                    ChatColor.valueOf(colorString)
+                    ChatColor.of(colorString)
                 }
             } catch (e: Exception) {
-                ChatColor.valueOf(default)
+                ChatColor.of(default)
             }
         }
 
