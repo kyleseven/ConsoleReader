@@ -29,7 +29,7 @@ class ConsoleReader : JavaPlugin() {
 
     private fun checkServerType() {
         isPaperMC = try {
-            Class.forName("com.destroystokyo.paper.VersionHistoryManager\$VersionData")
+            Class.forName("com.destroystokyo.paper.PaperConfig")
             true
         } catch (e: ClassNotFoundException) {
             false
