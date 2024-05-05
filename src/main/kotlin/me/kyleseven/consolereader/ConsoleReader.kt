@@ -15,6 +15,7 @@ class ConsoleReader : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
+        checkServerType()
         loadConfigs()
         registerCommands()
         registerEvents()
@@ -24,6 +25,15 @@ class ConsoleReader : JavaPlugin() {
 
     override fun onDisable() {
         LogAppenderManager.stopReadingAll()
+    }
+
+    private fun checkServerType() {
+        isPaperMC = try {
+            Class.forName("com.destroystokyo.paper.VersionHistoryManager\$VersionData")
+            true
+        } catch (e: ClassNotFoundException) {
+            false
+        }
     }
 
     private fun loadConfigs() {
