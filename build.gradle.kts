@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.9.10"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    kotlin("jvm") version "2.0.20"
+    id("com.gradleup.shadow") version "8.3.2"
 }
 
 group = "me.kyleseven"
@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.20.5-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly("org.apache.commons:commons-lang3:3.14.0")
     compileOnly("org.apache.logging.log4j:log4j-api:2.22.1")
     compileOnly("org.apache.logging.log4j:log4j-core:2.22.1")
@@ -30,12 +30,12 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 tasks {
     withType<KotlinCompile>().configureEach {
-        kotlinOptions.javaParameters = true
+        compilerOptions.javaParameters = true
     }
 
     named<ShadowJar>("shadowJar") {
