@@ -6,13 +6,17 @@
 Spigot plugin that allows players to access the console in game.
 
 ## Disclaimer
+
 This plugin is in ALPHA stage, so you may experience bugs.
 Things like the config.yml, commands, and permission nodes are subject to change.
 
 ## Compatibility
-ConsoleReader is built on Spigot API version 1.20 and is currently only tested on 1.20.
 
-If you encounter issues on a Minecraft version lower than 1.20, then use v1.5.4-ALPHA.
+| Plugin Version | Supported Minecraft Versions | Spigot API Version   |
+|----------------|------------------------------|----------------------|
+| `master`       | 1.21                         | 1.21.1-R0.1-SNAPSHOT |
+| v1.5.5-ALPHA   | 1.20 - 1.21                  | 1.20.2-R0.1-SNAPSHOT |
+| v1.5.4-ALPHA   | 1.12 - 1.19                  | 1.18.1-R0.1-SNAPSHOT |
 
 ## Building
 
@@ -23,7 +27,7 @@ ConsoleReader uses Gradle to handle dependencies and building.
     git clone https://github.com/kyleseven/ConsoleReader.git
     cd ConsoleReader/
     ./gradlew clean build
-    
+
 The jars can be found in the `build/libs` directory.
 
 ## Installation
@@ -34,7 +38,8 @@ Place the `ConsoleReader.jar` file into your `plugins/` directory and start the 
 
 - `config.yml`
     - `prefix`: The prefix that most plugin messages will have.
-    - `log_color`: The color of the console in the chat. Supports the colors listed [here](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/ChatColor.html).
+    - `log_color`: The color of the console in the chat. Supports the colors
+      listed [here](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/ChatColor.html).
     - `forbidden_commands`: A list of commands that will be blocked if used with `/cr exec`
     - `filters`: A list of regular expressions that if matched with a log message, the message will not be shown.
 
