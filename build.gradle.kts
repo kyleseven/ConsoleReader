@@ -1,11 +1,10 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.apache.tools.ant.filters.ReplaceTokens
-import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.0.20"
-    id("com.gradleup.shadow") version "8.3.2"
+    kotlin("jvm") version "2.3.0"
+    id("com.gradleup.shadow") version "9.3.0"
 }
 
 group = "me.kyleseven"
@@ -20,13 +19,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
-    compileOnly("org.apache.commons:commons-lang3:3.14.0")
-    compileOnly("org.apache.logging.log4j:log4j-api:2.22.1")
-    compileOnly("org.apache.logging.log4j:log4j-core:2.22.1")
+    compileOnly("org.spigotmc:spigot-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("org.apache.commons:commons-lang3:3.19.0")
+    compileOnly("org.apache.logging.log4j:log4j-api:2.25.2")
+    compileOnly("org.apache.logging.log4j:log4j-core:2.25.2")
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
-    implementation("org.bstats:bstats-bukkit:3.0.2")
-    implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
+    implementation("org.bstats:bstats-bukkit:3.1.0")
+    implementation(kotlin("stdlib"))
 }
 
 kotlin {
