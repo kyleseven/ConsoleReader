@@ -24,8 +24,6 @@ class LogAppender(
         if (subscribers.isEmpty()) return
 
         val log = event!!.toImmutable()
-
-        // Strip ANSI once for filter checks
         val strippedMsg = ChatColor.stripColor(log.message.formattedMessage)
 
         // Global filters — if matched, drop for all subscribers
@@ -33,7 +31,6 @@ class LogAppender(
             if (pattern.matcher(strippedMsg).matches()) return
         }
 
-        // Enqueue both the stripped message (for per-player filtering) and the built message
         queue.add(strippedMsg to LogMessageBuilder.build(log))
     }
 

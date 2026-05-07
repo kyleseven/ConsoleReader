@@ -8,8 +8,10 @@ import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
-import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.logging.log4j.core.LogEvent
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 data class LogMessage(val prefix: TextComponent, val body: TextComponent)
 
@@ -17,13 +19,17 @@ object LogMessageBuilder {
     private val yellowColor = ChatColor.YELLOW.toString()
     private val redColor = ChatColor.RED.toString()
 
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault())
+    private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZoneId.systemDefault())
+
     fun build(log: LogEvent): LogMessage {
         var logMessage = log.message.formattedMessage
         val logLevel = log.level.toString()
         val loggerName = log.loggerName.ifBlank { "None" }
 
-        val logDate = DateFormatUtils.format(log.timeMillis, "yyyy-MM-dd")
-        val logTime = DateFormatUtils.format(log.timeMillis, "HH:mm:ss")
+        val instant = Instant.ofEpochMilli(log.timeMillis)
+        val logDate = dateFormatter.format(instant)
+        val logTime = timeFormatter.format(instant)
         val threadName = log.threadName
 
         val prefixBuilder = StringBuilder()
