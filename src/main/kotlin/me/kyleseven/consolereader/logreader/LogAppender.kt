@@ -8,7 +8,9 @@ import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
-import org.apache.commons.lang3.time.DateFormatUtils
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import org.apache.logging.log4j.core.LogEvent
 import org.apache.logging.log4j.core.appender.AbstractAppender
 import org.bukkit.entity.Player
@@ -16,6 +18,12 @@ import java.util.regex.PatternSyntaxException
 
 class LogAppender(private val player: Player) :
     AbstractAppender("ConsoleReader-${player.uniqueId}", null, null, false, null) {
+
+    companion object {
+        private val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault())
+        private val TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZoneId.systemDefault())
+    }
+
     init {
         start()
     }
@@ -26,8 +34,9 @@ class LogAppender(private val player: Player) :
         // Log components
         val logColor: ChatColor = MainConfig.logColor
         var logMessage = log.message.formattedMessage
-        val logDate = DateFormatUtils.format(log.timeMillis, "yyyy-MM-dd")
-        val logTime = DateFormatUtils.format(log.timeMillis, "HH:mm:ss")
+        val instant = Instant.ofEpochMilli(log.timeMillis)
+        val logDate = DATE_FORMATTER.format(instant)
+        val logTime = TIME_FORMATTER.format(instant)
         val logLevel = log.level.toString()
         val loggerName = log.loggerName.ifBlank { "None" }
         val threadName = log.threadName
