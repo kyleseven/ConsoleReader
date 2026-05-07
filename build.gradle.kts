@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:26.1.2-R0.1-SNAPSHOT")
     compileOnly("org.apache.logging.log4j:log4j-api:2.25.2")
     compileOnly("org.apache.logging.log4j:log4j-core:2.25.2")
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
@@ -28,7 +28,7 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }
 
 tasks {
