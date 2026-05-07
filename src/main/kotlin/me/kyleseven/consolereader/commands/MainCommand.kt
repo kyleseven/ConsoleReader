@@ -268,6 +268,7 @@ class MainCommand : BaseCommand() {
     @Description("Reload the plugin configuration.")
     fun onReload(sender: CommandSender) {
         MainConfig.reload()
+        LogAppenderManager.reloadFilters()
         sender.sendPrefixMsg("Configuration reloaded.")
     }
 

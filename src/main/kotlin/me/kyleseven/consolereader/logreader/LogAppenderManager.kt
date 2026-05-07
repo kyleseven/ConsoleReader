@@ -5,65 +5,96 @@ import org.apache.logging.log4j.core.Logger
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
-import java.util.*
+import org.bukkit.scheduler.BukkitTask
+import java.util.Collections
+import java.util.UUID
+import java.util.concurrent.CopyOnWriteArraySet
 
 object LogAppenderManager {
     private lateinit var logger: Logger
-    private lateinit var logAppenders: HashMap<UUID, LogAppender?>
+    private lateinit var appender: LogAppender
+
+    // Active online subscribers
+    private val subscribers = CopyOnWriteArraySet<Player>()
+
+    // UUIDs of all players who have console reading enabled (including offline players)
+    private val readingUUIDs: MutableSet<UUID> = Collections.synchronizedSet(HashSet())
+
+    // Drain task — only running while there is at least one subscriber
+    private var drainTask: BukkitTask? = null
 
     fun setup(logger: Logger) {
         this.logger = logger
-        logAppenders = hashMapOf()
+        LogFilterManager.load()
+        appender = LogAppender(
+            subscribers,
+            { LogFilterManager.globalFilters },
+            { uuid -> LogFilterManager.getPlayerFilters(uuid) }
+        )
+        logger.addAppender(appender)
     }
 
-    fun getReadingPlayerUUIDs(): List<UUID> {
-        return logAppenders.keys.toList()
+    private fun startDrainTaskIfNeeded() {
+        if (drainTask != null) return
+        drainTask = Bukkit.getScheduler().runTaskTimer(ConsoleReader.instance, Runnable {
+            appender.drainQueue()
+        }, 1L, 1L)
     }
 
-    fun isReading(player: OfflinePlayer): Boolean {
-        return logger.appenders.containsKey("ConsoleReader-${player.uniqueId}") || logAppenders.containsKey(player.uniqueId)
+    private fun stopDrainTaskIfIdle() {
+        if (subscribers.isNotEmpty()) return
+        drainTask?.cancel()
+        drainTask = null
+    }
+
+    fun reloadFilters() {
+        LogFilterManager.reload(subscribers)
+    }
+
+    fun getReadingPlayerUUIDs(): List<UUID> = readingUUIDs.toList()
+
+    fun isReading(player: OfflinePlayer): Boolean = player.uniqueId in readingUUIDs
+
+    fun subscribe(player: Player) {
+        LogFilterManager.onPlayerSubscribe(player)
+        subscribers.add(player)
+        startDrainTaskIfNeeded()
+    }
+
+    fun unsubscribe(player: Player) {
+        subscribers.remove(player)
+        LogFilterManager.onPlayerUnsubscribe(player)
+        stopDrainTaskIfIdle()
     }
 
     fun startReading(player: OfflinePlayer) {
+        readingUUIDs.add(player.uniqueId)
         if (player.isOnline) {
-            val appender = LogAppender(player as Player)
-            logger.addAppender(appender)
-            logAppenders[player.uniqueId] = appender
-        } else {
-            logAppenders[player.uniqueId] = null
+            subscribe(player as Player)
         }
     }
 
     // Requires online player
     fun startReadingTemp(player: Player, seconds: Int) {
-        val appender = LogAppender(player)
-        logger.addAppender(appender)
+        subscribe(player)
         Bukkit.getScheduler().runTaskLater(ConsoleReader.instance, Runnable {
-            logger.removeAppender(appender)
+            unsubscribe(player)
         }, seconds * 20L)
     }
 
     fun stopReading(player: OfflinePlayer) {
-        if (logAppenders[player.uniqueId] != null) {
-            logger.removeAppender(logAppenders[player.uniqueId])
-        }
-        logAppenders.remove(player.uniqueId)
-    }
-
-    // Requires online player
-    fun stopReadingTemp(player: Player) {
-        if (player.uniqueId in logAppenders.keys) {
-            logger.removeAppender(logAppenders[player.uniqueId])
+        readingUUIDs.remove(player.uniqueId)
+        if (player.isOnline) {
+            unsubscribe(player as Player)
         }
     }
 
     fun stopReadingAll() {
-        for (app in logAppenders.values) {
-            if (app != null) {
-                logger.removeAppender(app)
-            }
-        }
-
-        logAppenders.clear()
+        subscribers.toList().forEach { LogFilterManager.onPlayerUnsubscribe(it) }
+        subscribers.clear()
+        readingUUIDs.clear()
+        drainTask?.cancel()
+        drainTask = null
+        logger.removeAppender(appender)
     }
 }
