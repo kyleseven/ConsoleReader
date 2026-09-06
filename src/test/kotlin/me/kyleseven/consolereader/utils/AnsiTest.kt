@@ -109,4 +109,36 @@ class AnsiTest {
     fun `expands terminal tabs for Minecraft chat`() {
         assertEquals("    at Example.run", Ansi.toMinecraft("\tat Example.run"))
     }
+
+    @Test
+    fun `retains embedded Minecraft formatting when applying ANSI styles`() {
+        val input = "${ChatColor.GREEN}Green \u001B[1mBold"
+
+        assertEquals(
+            "${ChatColor.GRAY}${ChatColor.GREEN}Green " +
+                "${ChatColor.RESET}${ChatColor.GREEN}${ChatColor.BOLD}Bold",
+            Ansi.toMinecraft(input, ChatColor.GRAY)
+        )
+    }
+
+    @Test
+    fun `ignores overflowing SGR parameters without resetting formatting`() {
+        val input = "\u001B[31mRed\u001B[999999999999m still red"
+
+        assertEquals(
+            "${ChatColor.RESET}${ChatColor.DARK_RED}Red" +
+                "${ChatColor.RESET}${ChatColor.DARK_RED} still red",
+            Ansi.toMinecraft(input)
+        )
+    }
+
+    @Test
+    fun `supports blink using Minecraft magic formatting`() {
+        val input = "\u001B[5mMagic\u001B[25m normal"
+
+        assertEquals(
+            "${ChatColor.RESET}${ChatColor.MAGIC}Magic${ChatColor.RESET} normal",
+            Ansi.toMinecraft(input)
+        )
+    }
 }

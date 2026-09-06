@@ -29,9 +29,14 @@ object LegacyText {
                 text[index] == ChatColor.COLOR_CHAR -> {
                     val code = formattingCodeAt(text, index)
                     if (code != null) {
-                        if (line.length + code.length > maxLength) finishLine()
-                        line.append(code)
-                        formatting.apply(code)
+                        if (line.length + code.length > maxLength) {
+                            lines += line.toString()
+                            formatting.apply(code)
+                            line = StringBuilder(formatting.prefix())
+                        } else {
+                            line.append(code)
+                            formatting.apply(code)
+                        }
                         index += code.length
                     } else {
                         val token = textTokenAt(text, index)

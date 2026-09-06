@@ -12,6 +12,7 @@ class LogAppender(queueCapacity: Int = DEFAULT_QUEUE_CAPACITY) :
     AbstractAppender(APPENDER_NAME, null, null, true, null) {
 
     data class Entry(
+        val sequence: Long,
         val timeMillis: Long,
         val level: Level,
         val loggerName: String,
@@ -24,14 +25,17 @@ class LogAppender(queueCapacity: Int = DEFAULT_QUEUE_CAPACITY) :
 
     private val entries = ArrayBlockingQueue<Entry>(queueCapacity)
     private val droppedEntries = AtomicLong()
+    private val eventSequence = AtomicLong()
 
     override fun append(event: LogEvent) {
+        val sequence = eventSequence.incrementAndGet()
         if (entries.remainingCapacity() == 0) {
             droppedEntries.incrementAndGet()
             return
         }
 
         val entry = Entry(
+            sequence = sequence,
             timeMillis = event.timeMillis,
             level = event.level,
             loggerName = event.loggerName?.takeIf(String::isNotBlank) ?: "None",
@@ -54,6 +58,10 @@ class LogAppender(queueCapacity: Int = DEFAULT_QUEUE_CAPACITY) :
     fun clear() {
         entries.clear()
         droppedEntries.set(0)
+    }
+
+    fun latestSequence(): Long {
+        return eventSequence.get()
     }
 
     private fun Throwable.stackTraceString(): String = StringWriter().also { writer ->

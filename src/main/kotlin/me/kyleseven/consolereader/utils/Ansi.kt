@@ -13,6 +13,7 @@ object Ansi {
             var endOfLastMatch = 0
             for (match in SGR_REGEX.findAll(message)) {
                 append(message, endOfLastMatch, match.range.first)
+                state.applyMinecraftFormatting(message, endOfLastMatch, match.range.first)
                 state.apply(match.groupValues[1])
                 append(state.asMinecraftFormatting())
                 endOfLastMatch = match.range.last + 1
@@ -34,6 +35,7 @@ object Ansi {
 
     private class RenditionState(private val defaultColor: ChatColor?) {
         private var foreground = defaultColor
+        private var magic = false
         private var bold = false
         private var italic = false
         private var underlined = false
@@ -50,15 +52,23 @@ object Ansi {
                     continue
                 }
 
-                when (val code = parameter.toIntOrNull() ?: 0) {
+                val code = if (parameter.isEmpty()) 0 else parameter.toIntOrNull()
+                if (code == null) {
+                    index++
+                    continue
+                }
+
+                when (code) {
                     0 -> reset()
                     1 -> bold = true
+                    5, 6 -> magic = true
                     3 -> italic = true
                     4, 21 -> underlined = true
                     9 -> strikethrough = true
                     22 -> bold = false
                     23 -> italic = false
                     24 -> underlined = false
+                    25 -> magic = false
                     29 -> strikethrough = false
                     in 30..37 -> foreground = STANDARD_COLORS[code - 30]
                     38 -> {
@@ -80,6 +90,7 @@ object Ansi {
             return buildString {
                 append(ChatColor.RESET)
                 if (foreground != null) append(foreground)
+                if (magic) append(ChatColor.MAGIC)
                 if (bold) append(ChatColor.BOLD)
                 if (italic) append(ChatColor.ITALIC)
                 if (underlined) append(ChatColor.UNDERLINE)
@@ -89,6 +100,59 @@ object Ansi {
 
         private fun reset() {
             foreground = defaultColor
+            magic = false
+            bold = false
+            italic = false
+            underlined = false
+            strikethrough = false
+        }
+
+        fun applyMinecraftFormatting(message: String, start: Int, end: Int) {
+            var index = start
+            while (index + 1 < end) {
+                if (message[index] != ChatColor.COLOR_CHAR) {
+                    index++
+                    continue
+                }
+
+                val code = message[index + 1].lowercaseChar()
+                if (code == 'x' && index + LEGACY_HEX_LENGTH <= end) {
+                    val validSeparators = (index + 2 until index + LEGACY_HEX_LENGTH step 2).all {
+                        message[it] == ChatColor.COLOR_CHAR
+                    }
+                    val hex = buildString(7) {
+                        append('#')
+                        for (part in 3 until LEGACY_HEX_LENGTH step 2) append(message[index + part])
+                    }
+                    if (validSeparators && hex.drop(1).all { it.digitToIntOrNull(16) != null }) {
+                        foreground = ChatColor.of(hex)
+                        clearStyles()
+                        index += LEGACY_HEX_LENGTH
+                        continue
+                    }
+                }
+
+                when (code) {
+                    in LEGACY_COLOR_CODES -> {
+                        foreground = ChatColor.getByChar(code)
+                        clearStyles()
+                    }
+                    'k' -> magic = true
+                    'l' -> bold = true
+                    'm' -> strikethrough = true
+                    'n' -> underlined = true
+                    'o' -> italic = true
+                    'r' -> {
+                        foreground = null
+                        clearStyles()
+                    }
+                }
+                index += 2
+            }
+        }
+
+        private fun clearStyles() {
+            magic = false
             bold = false
             italic = false
             underlined = false
@@ -184,6 +248,8 @@ object Ansi {
     )
     private val ANSI_CUBE_LEVELS = intArrayOf(0, 95, 135, 175, 215, 255)
     private const val TAB_SPACES = "    "
+    private const val LEGACY_HEX_LENGTH = 14
+    private const val LEGACY_COLOR_CODES = "0123456789abcdef"
     private val COLOR_COMPONENT_RANGE = 0..255
     private val ANSI_COLOR_INDEX_RANGE = 0..255
     private val SGR_REGEX = "(?:\u001B\\[|\u009B)([0-9;:]*)m".toRegex()

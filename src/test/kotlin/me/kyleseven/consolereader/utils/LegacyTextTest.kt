@@ -74,6 +74,7 @@ class LegacyTextTest {
         val lines = LegacyText.splitLines(formatting + message, 38)
 
         assertTrue(lines.all { it.length <= 38 })
+        assertTrue(lines.all { ChatColor.stripColor(it).orEmpty().isNotEmpty() })
         assertEquals(message, lines.joinToString("") { ChatColor.stripColor(it) })
     }
 }

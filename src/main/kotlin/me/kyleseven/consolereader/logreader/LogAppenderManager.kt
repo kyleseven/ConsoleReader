@@ -26,6 +26,7 @@ object LogAppenderManager {
     private data class Subscription(
         var persistent: Boolean,
         var filters: List<Pattern>,
+        val startAfterSequence: Long,
         var expirationTask: BukkitTask? = null
     )
 
@@ -60,14 +61,15 @@ object LogAppenderManager {
         subscriptions[player.uniqueId]?.expirationTask?.cancel()
         subscriptions[player.uniqueId] = Subscription(
             persistent = true,
-            filters = compileFilters(player.name.orEmpty())
+            filters = compileFilters(player.name.orEmpty()),
+            startAfterSequence = appender.latestSequence()
         )
     }
 
     fun startReadingTemp(player: Player, seconds: Int) {
         if (subscriptions.containsKey(player.uniqueId)) return
 
-        val subscription = Subscription(false, compileFilters(player.name))
+        val subscription = Subscription(false, compileFilters(player.name), appender.latestSequence())
         subscriptions[player.uniqueId] = subscription
         subscription.expirationTask = Bukkit.getScheduler().runTaskLater(
             ConsoleReader.instance,
@@ -147,6 +149,7 @@ object LogAppenderManager {
         val lines = buildLines(parsedMessage, entry.throwable)
 
         subscriptions.forEach { (uuid, subscription) ->
+            if (entry.sequence <= subscription.startAfterSequence) return@forEach
             val player = Bukkit.getPlayer(uuid)?.takeIf(Player::isOnline) ?: return@forEach
             if (LogFilters.matches(subscription.filters, filterMessage)) return@forEach
             lines.forEach { player.sendLogLine(prefix, it, hover) }

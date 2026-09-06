@@ -61,4 +61,21 @@ class LogAppenderTest {
 
         assertEquals(message, appender.drain(1).entries.single().message)
     }
+
+    @Test
+    fun `assigns increasing sequences to captured events`() {
+        val appender = LogAppender(queueCapacity = 2)
+        val event = Log4jLogEvent.newBuilder()
+            .setLevel(Level.INFO)
+            .setMessage(SimpleMessage("test"))
+            .build()
+
+        appender.append(event)
+        val subscriptionCutoff = appender.latestSequence()
+        appender.append(event)
+
+        val entries = appender.drain(2).entries
+        assertTrue(entries[0].sequence <= subscriptionCutoff)
+        assertTrue(entries[1].sequence > subscriptionCutoff)
+    }
 }
