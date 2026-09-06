@@ -22,19 +22,21 @@ class LegacyTextTest {
     @Test
     fun `carries hex colors across length boundaries`() {
         val color = ChatColor.of("#12abef").toString()
-        val lines = LegacyText.splitLines("${color}abcdefghijklmnopqrstuvwxyz", 24)
+        val message = "abcdefghijklmnopqrstuvwxyz0123456789"
+        val lines = LegacyText.splitLines("$color$message", 40)
 
         assertTrue(lines.size > 1)
         assertTrue(lines.all { it.startsWith(color) })
-        assertEquals("abcdefghijklmnopqrstuvwxyz", lines.joinToString("") { ChatColor.stripColor(it) })
+        assertEquals(message, lines.joinToString("") { ChatColor.stripColor(it) })
     }
 
     @Test
     fun `never divides a legacy hex color sequence`() {
         val color = ChatColor.of("#abcdef").toString()
-        val lines = LegacyText.splitLines("1234567890${color}colored", 24)
+        val prefix = "123456789012345678901234567890"
+        val lines = LegacyText.splitLines("$prefix${color}colored", 38)
 
-        assertEquals("1234567890${color}", lines.first())
+        assertEquals(prefix, lines.first())
         assertTrue(lines[1].startsWith(color))
         assertTrue(lines.none { it.endsWith(ChatColor.COLOR_CHAR) })
     }
@@ -51,5 +53,27 @@ class LegacyTextTest {
             ),
             LegacyText.splitLines(input, 64)
         )
+    }
+
+    @Test
+    fun `keeps supplementary Unicode characters intact at boundaries`() {
+        val message = "a".repeat(999) + "😀"
+        val lines = LegacyText.splitLines(message, 1_000)
+
+        assertEquals(listOf("a".repeat(999), "😀"), lines)
+        assertEquals(message, lines.joinToString(""))
+    }
+
+    @Test
+    fun `continuation prefixes never exceed the line limit`() {
+        val formatting = ChatColor.of("#abcdef").toString() +
+            ChatColor.MAGIC + ChatColor.BOLD + ChatColor.STRIKETHROUGH +
+            ChatColor.UNDERLINE + ChatColor.ITALIC
+        val message = "123456789012345"
+
+        val lines = LegacyText.splitLines(formatting + message, 38)
+
+        assertTrue(lines.all { it.length <= 38 })
+        assertEquals(message, lines.joinToString("") { ChatColor.stripColor(it) })
     }
 }

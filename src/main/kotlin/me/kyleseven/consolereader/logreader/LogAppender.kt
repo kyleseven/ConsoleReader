@@ -58,7 +58,7 @@ class LogAppender(queueCapacity: Int = DEFAULT_QUEUE_CAPACITY) :
 
     private fun Throwable.stackTraceString(): String = StringWriter().also { writer ->
         printStackTrace(PrintWriter(writer))
-    }.toString()
+    }.toString().trimEnd('\r', '\n')
 
     companion object {
         const val APPENDER_NAME = "ConsoleReader"

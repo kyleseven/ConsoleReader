@@ -9,8 +9,8 @@ object LegacyText {
      * Active colors and styles are repeated at the beginning of every continuation.
      */
     fun splitLines(text: String, maxLength: Int): List<String> {
-        require(maxLength >= MAX_FORMATTING_PREFIX_LENGTH) {
-            "maxLength must accommodate a complete legacy formatting prefix"
+        require(maxLength >= MINIMUM_LINE_LENGTH) {
+            "maxLength must accommodate a formatting prefix and an atomic token"
         }
 
         val formatting = FormattingState()
@@ -34,19 +34,21 @@ object LegacyText {
                 text[index] == ChatColor.COLOR_CHAR -> {
                     val code = formattingCodeAt(text, index)
                     if (code != null) {
-                        if (line.isNotEmpty() && line.length + code.length > maxLength) finishLine()
+                        if (line.length + code.length > maxLength) finishLine()
                         line.append(code)
                         formatting.apply(code)
                         index += code.length
                     } else {
-                        appendCharacter(line, formatting, lines, text[index], maxLength).also { line = it }
-                        index++
+                        val token = textTokenAt(text, index)
+                        line = appendTextToken(line, formatting, lines, token, maxLength)
+                        index += token.length
                     }
                 }
 
                 else -> {
-                    appendCharacter(line, formatting, lines, text[index], maxLength).also { line = it }
-                    index++
+                    val token = textTokenAt(text, index)
+                    line = appendTextToken(line, formatting, lines, token, maxLength)
+                    index += token.length
                 }
             }
         }
@@ -55,20 +57,29 @@ object LegacyText {
         return lines
     }
 
-    private fun appendCharacter(
+    private fun appendTextToken(
         currentLine: StringBuilder,
         formatting: FormattingState,
         completedLines: MutableList<String>,
-        character: Char,
+        token: String,
         maxLength: Int
     ): StringBuilder {
         var line = currentLine
-        if (line.length == maxLength) {
+        if (line.length + token.length > maxLength) {
             completedLines += line.toString()
             line = StringBuilder(formatting.prefix())
         }
-        line.append(character)
+        line.append(token)
         return line
+    }
+
+    private fun textTokenAt(text: String, index: Int): String {
+        val first = text[index]
+        return if (first.isHighSurrogate() && text.getOrNull(index + 1)?.isLowSurrogate() == true) {
+            text.substring(index, index + 2)
+        } else {
+            first.toString()
+        }
     }
 
     private fun formattingCodeAt(text: String, start: Int): String? {
@@ -118,6 +129,8 @@ object LegacyText {
 
     private const val HEX_COLOR_LENGTH = 14
     private const val MAX_FORMATTING_PREFIX_LENGTH = HEX_COLOR_LENGTH + 10
+    private const val MAX_ATOMIC_TOKEN_LENGTH = HEX_COLOR_LENGTH
+    private const val MINIMUM_LINE_LENGTH = MAX_FORMATTING_PREFIX_LENGTH + MAX_ATOMIC_TOKEN_LENGTH
     private const val COLOR_CODES = "0123456789abcdef"
     private const val STYLE_CODES = "klmno"
     private const val LEGACY_CODES = COLOR_CODES + STYLE_CODES + "rx"

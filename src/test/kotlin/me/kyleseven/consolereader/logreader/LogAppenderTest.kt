@@ -29,6 +29,7 @@ class LogAppenderTest {
         assertEquals("failed", result.entries.single().message)
         assertEquals("test.logger", result.entries.single().loggerName)
         assertTrue(result.entries.single().throwable.orEmpty().contains("IllegalStateException: boom"))
+        assertTrue(result.entries.single().throwable.orEmpty().last() !in "\r\n")
     }
 
     @Test
