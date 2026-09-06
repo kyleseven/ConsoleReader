@@ -1,107 +1,67 @@
 package me.kyleseven.consolereader.logreader
 
-import me.kyleseven.consolereader.ConsoleReader
-import me.kyleseven.consolereader.config.MainConfig
-import me.kyleseven.consolereader.utils.parseANSI
-import net.md_5.bungee.api.ChatColor
-import net.md_5.bungee.api.chat.ComponentBuilder
-import net.md_5.bungee.api.chat.HoverEvent
-import net.md_5.bungee.api.chat.TextComponent
-import net.md_5.bungee.api.chat.hover.content.Text
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.core.LogEvent
 import org.apache.logging.log4j.core.appender.AbstractAppender
-import org.bukkit.entity.Player
-import java.util.regex.PatternSyntaxException
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.atomic.AtomicLong
 
-class LogAppender(private val player: Player) :
-    AbstractAppender("ConsoleReader-${player.uniqueId}", null, null, false, null) {
+class LogAppender(queueCapacity: Int = DEFAULT_QUEUE_CAPACITY) :
+    AbstractAppender(APPENDER_NAME, null, null, true, null) {
+
+    data class Entry(
+        val timeMillis: Long,
+        val level: Level,
+        val loggerName: String,
+        val threadName: String,
+        val message: String,
+        val throwable: String?
+    )
+
+    data class DrainResult(val entries: List<Entry>, val droppedEntries: Long)
+
+    private val entries = ArrayBlockingQueue<Entry>(queueCapacity)
+    private val droppedEntries = AtomicLong()
+
+    override fun append(event: LogEvent) {
+        if (entries.remainingCapacity() == 0) {
+            droppedEntries.incrementAndGet()
+            return
+        }
+
+        val entry = Entry(
+            timeMillis = event.timeMillis,
+            level = event.level,
+            loggerName = event.loggerName?.takeIf(String::isNotBlank) ?: "None",
+            threadName = event.threadName ?: "Unknown",
+            message = event.message?.formattedMessage.orEmpty(),
+            throwable = event.thrown?.stackTraceString()
+        )
+
+        if (!entries.offer(entry)) {
+            droppedEntries.incrementAndGet()
+        }
+    }
+
+    fun drain(maxEntries: Int): DrainResult {
+        val drained = ArrayList<Entry>(maxEntries)
+        entries.drainTo(drained, maxEntries)
+        return DrainResult(drained, droppedEntries.getAndSet(0))
+    }
+
+    fun clear() {
+        entries.clear()
+        droppedEntries.set(0)
+    }
+
+    private fun Throwable.stackTraceString(): String = StringWriter().also { writer ->
+        printStackTrace(PrintWriter(writer))
+    }.toString()
 
     companion object {
-        private val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault())
-        private val TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZoneId.systemDefault())
-    }
-
-    init {
-        start()
-    }
-
-    override fun append(event: LogEvent?) {
-        val log = event!!.toImmutable()
-
-        // Log components
-        val logColor: ChatColor = MainConfig.logColor
-        var logMessage = log.message.formattedMessage
-        val instant = Instant.ofEpochMilli(log.timeMillis)
-        val logDate = DATE_FORMATTER.format(instant)
-        val logTime = TIME_FORMATTER.format(instant)
-        val logLevel = log.level.toString()
-        val loggerName = log.loggerName.ifBlank { "None" }
-        val threadName = log.threadName
-        var messagePrefix = "[$logTime $logLevel]: "
-
-        /*
-        When using Spigot, logger name is already included in the log message.
-        When using Paper, the logger name will need to be added here.
-         */
-        if (ConsoleReader.instance.isPaperMC) {
-            if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft" || loggerName == "None")) {
-                messagePrefix += "[$loggerName] "
-            }
-        }
-
-        when (logLevel) {
-            "WARN" -> {
-                messagePrefix = ChatColor.YELLOW.toString() + messagePrefix
-                logMessage = ChatColor.YELLOW.toString() + logMessage
-            }
-
-            "FATAL", "ERROR" -> {
-                messagePrefix = ChatColor.RED.toString() + messagePrefix
-                logMessage = ChatColor.RED.toString() + logMessage
-            }
-
-            else -> {
-                messagePrefix = logColor.toString() + messagePrefix
-                logMessage = logColor.toString() + logMessage
-            }
-        }
-
-        logMessage = parseANSI(logMessage)
-
-        /*
-        Filtering console messages here.
-        - Go through regex filter.
-        - Showing logger name if it is not from the game itself.
-        - Adding color to WARN, FATAL, and ERROR messages.
-         */
-        for (regexString in MainConfig.regexFilters) {
-            val strippedMsg = ChatColor.stripColor(logMessage)
-            try {
-                val regexToMatch = regexString.replace("%PLAYERNAME%", player.name).toRegex()
-                if (regexToMatch.matches(strippedMsg)) {
-                    return
-                }
-            } catch (e: PatternSyntaxException) {
-                /*
-                Move onto next regex pattern.
-                Regex filters are validated at config load, so we shouldn't reach this point.
-                 */
-            }
-        }
-
-        // Creating Hover Text
-        val chatLogPrefix = TextComponent(TextComponent.fromLegacy(messagePrefix))
-        val chatLogMessage = TextComponent(TextComponent.fromLegacy(logMessage))
-        val hoverText = ComponentBuilder("")
-            .append("Time: ").color(ChatColor.GRAY).append("$logDate $logTime\n").color(ChatColor.WHITE)
-            .append("Log Level: ").color(ChatColor.GRAY).append(logLevel.trimIndent() + "\n").color(ChatColor.WHITE)
-            .append("Logger: ").color(ChatColor.GRAY).append(loggerName.trimIndent() + "\n").color(ChatColor.WHITE)
-            .append("Thread: ").color(ChatColor.GRAY).append(threadName).color(ChatColor.WHITE)
-        chatLogPrefix.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(hoverText.create()))
-
-        player.spigot().sendMessage(chatLogPrefix, chatLogMessage)
+        const val APPENDER_NAME = "ConsoleReader"
+        const val DEFAULT_QUEUE_CAPACITY = 1_000
     }
 }

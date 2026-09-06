@@ -25,6 +25,9 @@ dependencies {
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation(kotlin("stdlib"))
+    testImplementation(kotlin("test"))
+    testImplementation("org.spigotmc:spigot-api:26.1.2-R0.1-SNAPSHOT")
+    testImplementation("org.apache.logging.log4j:log4j-core:2.25.2")
 }
 
 kotlin {
@@ -54,5 +57,9 @@ tasks {
 
     build {
         dependsOn("shadowJar")
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }

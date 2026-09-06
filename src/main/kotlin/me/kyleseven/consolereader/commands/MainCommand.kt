@@ -176,15 +176,19 @@ class MainCommand : BaseCommand() {
                     // Use of deprecated function is necessary to get an OfflinePlayer from a name.
                     @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
                     if (!otherOfflinePlayer.hasPlayedBefore()) {
-                        sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
+                        Bukkit.getScheduler().runTask(ConsoleReader.instance, Runnable {
+                            sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
+                        })
                         return@Runnable
                     }
 
-                    if (otherOfflinePlayer.isOnline) {
-                        handleOtherOnlinePlayerToggle(sender, otherOfflinePlayer as Player)
-                    } else {
-                        handleOtherOfflinePlayerToggle(sender, otherOfflinePlayer)
-                    }
+                    Bukkit.getScheduler().runTask(ConsoleReader.instance, Runnable {
+                        if (otherOfflinePlayer.isOnline) {
+                            handleOtherOnlinePlayerToggle(sender, otherOfflinePlayer as Player)
+                        } else {
+                            handleOtherOfflinePlayerToggle(sender, otherOfflinePlayer)
+                        }
+                    })
                 })
             } else {
                 sender.sendPrefixMsg("${ChatColor.RED}Error: You do not have permission to toggle console reading for other players.")
@@ -268,6 +272,7 @@ class MainCommand : BaseCommand() {
     @Description("Reload the plugin configuration.")
     fun onReload(sender: CommandSender) {
         MainConfig.reload()
+        LogAppenderManager.reloadFilters()
         sender.sendPrefixMsg("Configuration reloaded.")
     }
 

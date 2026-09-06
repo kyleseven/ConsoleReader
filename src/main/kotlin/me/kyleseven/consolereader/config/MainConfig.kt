@@ -1,5 +1,6 @@
 package me.kyleseven.consolereader.config
 
+import me.kyleseven.consolereader.ConsoleReader
 import net.md_5.bungee.api.ChatColor
 import java.util.regex.Pattern
 
@@ -7,7 +8,8 @@ object MainConfig : ConfigLoader("config.yml") {
     /*
     Internal
      */
-    private val _regexFilters: MutableList<String> = mutableListOf()
+    @Volatile
+    private var _regexFilters: List<String> = emptyList()
 
     /*
     Config keys
@@ -51,20 +53,16 @@ object MainConfig : ConfigLoader("config.yml") {
     }
 
     private fun validateRegexPatterns() {
-        val validRegexFilters: MutableList<Pattern> = mutableListOf()
-
-        validRegexFilters.addAll(
-            config.getStringList("filters").mapNotNull {
-                try {
-                    Pattern.compile(it)
-                } catch (e: Exception) {
-                    null
-                }
+        _regexFilters = config.getStringList("filters").mapNotNull { filter ->
+            try {
+                Pattern.compile(filter).pattern()
+            } catch (exception: IllegalArgumentException) {
+                ConsoleReader.instance.logger.warning(
+                    "Ignoring invalid console filter '$filter': ${exception.message}"
+                )
+                null
             }
-        )
-
-        _regexFilters.clear()
-        _regexFilters.addAll(validRegexFilters.map { it.pattern() })
+        }
     }
 
     fun reload() {
