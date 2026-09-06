@@ -1,6 +1,7 @@
 package me.kyleseven.consolereader.utils
 
 import net.md_5.bungee.api.ChatColor
+import java.util.regex.Pattern
 
 object LegacyText {
     fun splitLines(text: String, maxLength: Int): List<String> {
@@ -11,18 +12,64 @@ object LegacyText {
         val formatting = FormattingState()
         val lines = mutableListOf<String>()
         var line = StringBuilder()
+        var lineHasVisibleText = false
+        var logicalLineHasVisibleText = false
+        var pendingContinuation = false
         var index = 0
 
-        fun finishLine() {
-            lines += line.toString()
+        fun startLine(isContinuation: Boolean) {
             line = StringBuilder(formatting.prefix())
+            lineHasVisibleText = false
+            pendingContinuation = isContinuation
+        }
+
+        fun finishExplicitLine() {
+            if (lineHasVisibleText || !pendingContinuation || !logicalLineHasVisibleText) {
+                lines += line.toString()
+            }
+            startLine(isContinuation = false)
+            logicalLineHasVisibleText = false
+        }
+
+        fun finishWrappedLine() {
+            if (lineHasVisibleText) {
+                lines += line.toString()
+            }
+            startLine(isContinuation = true)
+        }
+
+        fun appendVisibleToken(token: String) {
+            if (line.length + token.length <= maxLength) {
+                line.append(token)
+                lineHasVisibleText = true
+                logicalLineHasVisibleText = true
+                return
+            }
+
+            // A grapheme cluster can be arbitrarily large (for example, a
+            // base character followed by many combining marks). Split only
+            // this pathological case into code points so the hard line limit
+            // remains enforceable. Ordinary clusters are always kept intact.
+            finishWrappedLine()
+            var tokenIndex = 0
+            while (tokenIndex < token.length) {
+                val codePointLength = Character.charCount(token.codePointAt(tokenIndex))
+                val codePoint = token.substring(tokenIndex, tokenIndex + codePointLength)
+                if (line.length + codePoint.length > maxLength) {
+                    finishWrappedLine()
+                }
+                line.append(codePoint)
+                lineHasVisibleText = true
+                logicalLineHasVisibleText = true
+                tokenIndex += codePointLength
+            }
         }
 
         while (index < text.length) {
             when {
                 text[index] == '\r' || text[index] == '\n' -> {
                     if (text[index] == '\r' && text.getOrNull(index + 1) == '\n') index++
-                    finishLine()
+                    finishExplicitLine()
                     index++
                 }
 
@@ -30,7 +77,7 @@ object LegacyText {
                     val code = formattingCodeAt(text, index)
                     if (code != null) {
                         if (line.length + code.length > maxLength) {
-                            lines += line.toString()
+                            finishWrappedLine()
                             formatting.apply(code)
                             line = StringBuilder(formatting.prefix())
                         } else {
@@ -40,46 +87,34 @@ object LegacyText {
                         index += code.length
                     } else {
                         val token = textTokenAt(text, index)
-                        line = appendTextToken(line, formatting, lines, token, maxLength)
+                        appendVisibleToken(token)
                         index += token.length
                     }
                 }
 
                 else -> {
                     val token = textTokenAt(text, index)
-                    line = appendTextToken(line, formatting, lines, token, maxLength)
+                    appendVisibleToken(token)
                     index += token.length
                 }
             }
         }
 
-        lines += line.toString()
+        if (lineHasVisibleText || !pendingContinuation || !logicalLineHasVisibleText) {
+            // Formatting-only input still represents one logical line. Keep
+            // its final canonical state rather than returning no lines after
+            // a formatting prefix overflowed. A pending prefix after visible
+            // text in this logical line remains a suppressed spill.
+            lines += line.toString()
+        }
         return lines
     }
 
-    private fun appendTextToken(
-        currentLine: StringBuilder,
-        formatting: FormattingState,
-        completedLines: MutableList<String>,
-        token: String,
-        maxLength: Int
-    ): StringBuilder {
-        var line = currentLine
-        if (line.length + token.length > maxLength) {
-            completedLines += line.toString()
-            line = StringBuilder(formatting.prefix())
-        }
-        line.append(token)
-        return line
-    }
-
     private fun textTokenAt(text: String, index: Int): String {
-        val first = text[index]
-        return if (first.isHighSurrogate() && text.getOrNull(index + 1)?.isLowSurrogate() == true) {
-            text.substring(index, index + 2)
-        } else {
-            first.toString()
-        }
+        val matcher = GRAPHEME_PATTERN.matcher(text)
+        matcher.region(index, text.length)
+        check(matcher.lookingAt()) { "Expected a grapheme at index $index" }
+        return matcher.group()
     }
 
     private fun formattingCodeAt(text: String, start: Int): String? {
@@ -144,4 +179,5 @@ object LegacyText {
     private const val COLOR_CODES = "0123456789abcdef"
     private const val STYLE_CODES = "klmno"
     private const val LEGACY_CODES = COLOR_CODES + STYLE_CODES + "rx"
+    private val GRAPHEME_PATTERN: Pattern = Pattern.compile("\\X")
 }

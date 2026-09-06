@@ -5,20 +5,24 @@ import net.md_5.bungee.api.ChatColor
 object Ansi {
     fun toMinecraft(message: String, defaultColor: ChatColor? = null): String {
         val state = RenditionState(defaultColor)
+        val messageWithoutOsc = removeOscSequences(message)
         val parsedMessage = buildString {
             if (defaultColor != null) {
                 append(defaultColor)
             }
 
             var endOfLastMatch = 0
-            for (match in SGR_REGEX.findAll(message)) {
-                append(message, endOfLastMatch, match.range.first)
-                state.applyMinecraftFormatting(message, endOfLastMatch, match.range.first)
-                state.apply(match.groupValues[1])
-                append(state.asMinecraftFormatting())
+            for (match in SGR_REGEX.findAll(messageWithoutOsc)) {
+                append(messageWithoutOsc, endOfLastMatch, match.range.first)
+                state.applyMinecraftFormatting(messageWithoutOsc, endOfLastMatch, match.range.first)
+                val encodedParameters = match.groupValues[1]
+                if (!isBlinkOnlySgr(encodedParameters)) {
+                    state.apply(encodedParameters)
+                    append(state.asMinecraftFormatting())
+                }
                 endOfLastMatch = match.range.last + 1
             }
-            append(message, endOfLastMatch, message.length)
+            append(messageWithoutOsc, endOfLastMatch, messageWithoutOsc.length)
         }
 
         /*
@@ -27,10 +31,46 @@ object Ansi {
          */
         return parsedMessage
             .replace("\t", TAB_SPACES)
-            .replace(OSC_REGEX, "")
             .replace(CSI_REGEX, "")
             .replace(TWO_CHARACTER_ESCAPE_REGEX, "")
             .replace(UNSUPPORTED_CONTROL_REGEX, "")
+    }
+
+    private fun isBlinkOnlySgr(encodedParameters: String): Boolean {
+        if (encodedParameters.isEmpty()) return false
+        return encodedParameters.split(';').all { parameter ->
+            parameter.toIntOrNull() in UNSUPPORTED_BLINK_CODES
+        }
+    }
+
+    private fun removeOscSequences(message: String): String {
+        return buildString(message.length) {
+            var index = 0
+            while (index < message.length) {
+                val isEscOsc = message[index] == '\u001B' && message.getOrNull(index + 1) == ']'
+                val isC1Osc = message[index] == '\u009D'
+                if (!isEscOsc && !isC1Osc) {
+                    append(message[index])
+                    index++
+                    continue
+                }
+
+                index += if (isEscOsc) 2 else 1
+                while (index < message.length) {
+                    when {
+                        message[index] == '\u0007' || message[index] == '\u009C' -> {
+                            index++
+                            break
+                        }
+                        message[index] == '\u001B' && message.getOrNull(index + 1) == '\\' -> {
+                            index += 2
+                            break
+                        }
+                        else -> index++
+                    }
+                }
+            }
+        }
     }
 
     private class RenditionState(private val defaultColor: ChatColor?) {
@@ -61,14 +101,12 @@ object Ansi {
                 when (code) {
                     0 -> reset()
                     1 -> bold = true
-                    5, 6 -> magic = true
                     3 -> italic = true
                     4, 21 -> underlined = true
                     9 -> strikethrough = true
                     22 -> bold = false
                     23 -> italic = false
                     24 -> underlined = false
-                    25 -> magic = false
                     29 -> strikethrough = false
                     in 30..37 -> foreground = STANDARD_COLORS[code - 30]
                     38 -> {
@@ -252,10 +290,9 @@ object Ansi {
     private const val LEGACY_COLOR_CODES = "0123456789abcdef"
     private val COLOR_COMPONENT_RANGE = 0..255
     private val ANSI_COLOR_INDEX_RANGE = 0..255
+    private val UNSUPPORTED_BLINK_CODES = setOf(5, 6, 25)
     private val SGR_REGEX = "(?:\u001B\\[|\u009B)([0-9;:]*)m".toRegex()
     private val CSI_REGEX = "(?:\u001B\\[|\u009B)[0-?]*[ -/]*[@-~]".toRegex()
-    private val OSC_REGEX = "(?:\u001B]|\u009D).*?(?:\u0007|\u001B\\\\|\u009C)"
-        .toRegex(RegexOption.DOT_MATCHES_ALL)
     private val TWO_CHARACTER_ESCAPE_REGEX = "\u001B[ -/]*[0-~]".toRegex()
     private val UNSUPPORTED_CONTROL_REGEX =
         "[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]".toRegex()

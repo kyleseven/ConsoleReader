@@ -106,6 +106,23 @@ class AnsiTest {
     }
 
     @Test
+    fun `removes OSC payload before parsing rendition state`() {
+        val input = "before\u001B]0;title \u001B[31m ${ChatColor.RED} hidden\u0007\u001B[1mVisible"
+
+        assertEquals(
+            "before${ChatColor.RESET}${ChatColor.BOLD}Visible",
+            Ansi.toMinecraft(input)
+        )
+    }
+
+    @Test
+    fun `supports eight-bit OSC terminators and discards unterminated payload`() {
+        val input = "a\u009Dtitle\u009Cb\u009Dother\u0007c\u001B]last"
+
+        assertEquals("abc", Ansi.toMinecraft(input))
+    }
+
+    @Test
     fun `expands terminal tabs for Minecraft chat`() {
         assertEquals("    at Example.run", Ansi.toMinecraft("\tat Example.run"))
     }
@@ -133,12 +150,26 @@ class AnsiTest {
     }
 
     @Test
-    fun `supports blink using Minecraft magic formatting`() {
+    fun `ignores unsupported blink formatting`() {
         val input = "\u001B[5mMagic\u001B[25m normal"
 
+        assertEquals("Magic normal", Ansi.toMinecraft(input))
+    }
+
+    @Test
+    fun `ignores blink parameters without discarding supported parameters`() {
+        val input = "\u001B[5;31;1mReadable"
+
         assertEquals(
-            "${ChatColor.RESET}${ChatColor.MAGIC}Magic${ChatColor.RESET} normal",
+            "${ChatColor.RESET}${ChatColor.DARK_RED}${ChatColor.BOLD}Readable",
             Ansi.toMinecraft(input)
         )
+    }
+
+    @Test
+    fun `does not let ANSI blink reset embedded Minecraft magic`() {
+        val input = "${ChatColor.MAGIC}Magic\u001B[25m still magic"
+
+        assertEquals("${ChatColor.MAGIC}Magic still magic", Ansi.toMinecraft(input))
     }
 }
