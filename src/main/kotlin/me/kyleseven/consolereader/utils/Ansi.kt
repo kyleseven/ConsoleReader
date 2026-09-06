@@ -2,12 +2,14 @@ package me.kyleseven.consolereader.utils
 
 import net.md_5.bungee.api.ChatColor
 
-/** Translates terminal SGR styling into Minecraft legacy chat formatting. */
 object Ansi {
     fun toMinecraft(message: String, defaultColor: ChatColor? = null): String {
         val state = RenditionState(defaultColor)
-        val translated = buildString {
-            defaultColor?.let(::append)
+        val parsedMessage = buildString {
+            if (defaultColor != null) {
+                append(defaultColor)
+            }
+
             var endOfLastMatch = 0
             for (match in SGR_REGEX.findAll(message)) {
                 append(message, endOfLastMatch, match.range.first)
@@ -17,7 +19,12 @@ object Ansi {
             }
             append(message, endOfLastMatch, message.length)
         }
-        return translated
+
+        /*
+        Replace tabs used by stack traces, then remove terminal controls that
+        cannot be displayed in Minecraft chat.
+         */
+        return parsedMessage
             .replace("\t", TAB_SPACES)
             .replace(OSC_REGEX, "")
             .replace(CSI_REGEX, "")
@@ -69,13 +76,15 @@ object Ansi {
             }
         }
 
-        fun asMinecraftFormatting(): String = buildString {
-            append(ChatColor.RESET)
-            foreground?.let(::append)
-            if (bold) append(ChatColor.BOLD)
-            if (italic) append(ChatColor.ITALIC)
-            if (underlined) append(ChatColor.UNDERLINE)
-            if (strikethrough) append(ChatColor.STRIKETHROUGH)
+        fun asMinecraftFormatting(): String {
+            return buildString {
+                append(ChatColor.RESET)
+                if (foreground != null) append(foreground)
+                if (bold) append(ChatColor.BOLD)
+                if (italic) append(ChatColor.ITALIC)
+                if (underlined) append(ChatColor.UNDERLINE)
+                if (strikethrough) append(ChatColor.STRIKETHROUGH)
+            }
         }
 
         private fun reset() {
@@ -151,12 +160,13 @@ object Ansi {
         return rgbColor(gray, gray, gray)
     }
 
-    private fun semicolonExtendedColorParameterCount(parameters: List<String>, index: Int): Int =
-        when (parameters.getOrNull(index + 1)?.toIntOrNull()) {
+    private fun semicolonExtendedColorParameterCount(parameters: List<String>, index: Int): Int {
+        return when (parameters.getOrNull(index + 1)?.toIntOrNull()) {
             2 -> 4
             5 -> 2
             else -> 0
         }
+    }
 
     private val STANDARD_COLORS = arrayOf(
         ChatColor.BLACK, ChatColor.DARK_RED, ChatColor.DARK_GREEN, ChatColor.GOLD,

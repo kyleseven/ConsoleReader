@@ -2,12 +2,7 @@ package me.kyleseven.consolereader.utils
 
 import net.md_5.bungee.api.ChatColor
 
-/** Utilities for safely dividing Minecraft legacy-formatted text into chat messages. */
 object LegacyText {
-    /**
-     * Splits text at newlines and length boundaries without cutting formatting codes.
-     * Active colors and styles are repeated at the beginning of every continuation.
-     */
     fun splitLines(text: String, maxLength: Int): List<String> {
         require(maxLength >= MINIMUM_LINE_LENGTH) {
             "maxLength must accommodate a formatting prefix and an atomic token"
@@ -92,12 +87,20 @@ object LegacyText {
         return text.substring(start, start + 2).takeIf { code in LEGACY_CODES }
     }
 
-    private fun isHexColor(value: String): Boolean =
-        value.length == HEX_COLOR_LENGTH &&
-            value[1].lowercaseChar() == 'x' &&
-            (2 until HEX_COLOR_LENGTH step 2).all { index ->
-                value[index] == ChatColor.COLOR_CHAR && value[index + 1].digitToIntOrNull(16) != null
+    private fun isHexColor(value: String): Boolean {
+        if (value.length != HEX_COLOR_LENGTH || value[1].lowercaseChar() != 'x') {
+            return false
+        }
+
+        var index = 2
+        while (index < HEX_COLOR_LENGTH) {
+            if (value[index] != ChatColor.COLOR_CHAR || value[index + 1].digitToIntOrNull(16) == null) {
+                return false
             }
+            index += 2
+        }
+        return true
+    }
 
     private class FormattingState {
         private var color = ""
@@ -118,11 +121,13 @@ object LegacyText {
             }
         }
 
-        fun prefix(): String = buildString {
-            append(color)
-            styles.forEach { style ->
-                append(ChatColor.COLOR_CHAR)
-                append(style)
+        fun prefix(): String {
+            return buildString {
+                append(color)
+                for (style in styles) {
+                    append(ChatColor.COLOR_CHAR)
+                    append(style)
+                }
             }
         }
     }
