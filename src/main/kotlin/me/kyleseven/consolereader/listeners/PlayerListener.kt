@@ -10,15 +10,13 @@ import org.bukkit.event.player.PlayerQuitEvent
 class PlayerListener : Listener {
     @EventHandler
     fun removeReadingPlayer(e: PlayerQuitEvent) {
-        // Remove the appender if player is offline
-        if (LogAppenderManager.isReading(e.player)) {
-            LogAppenderManager.stopReadingTemp(e.player)
-        }
+        // Preserve persistent subscriptions for the next login.
+        LogAppenderManager.playerQuit(e.player)
     }
 
     @EventHandler
     fun resumeReadingPlayer(e: PlayerJoinEvent) {
-        if (LogAppenderManager.isReading(e.player)) {
+        if (LogAppenderManager.isReadingPersistent(e.player)) {
             if (e.player.hasPermission("consolereader.read")) {
                 e.player.sendPrefixMsg("Console reading resumed!")
                 LogAppenderManager.startReading(e.player)

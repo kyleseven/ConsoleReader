@@ -1,13 +1,20 @@
 package me.kyleseven.consolereader.config
 
-import net.md_5.bungee.api.ChatColor
+import me.kyleseven.consolereader.logreader.LogAppenderManager
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import java.util.Locale
 import java.util.regex.Pattern
 
 object MainConfig : ConfigLoader("config.yml") {
     /*
     Internal
      */
-    private val _regexFilters: MutableList<String> = mutableListOf()
+    data class RegexFilter(val source: String, val pattern: Pattern?, val playerDependent: Boolean)
+
+    private var _logColor: TextColor = NamedTextColor.GRAY
+    private var _regexFilters: List<RegexFilter> = emptyList()
 
     /*
     Config keys
@@ -24,51 +31,39 @@ object MainConfig : ConfigLoader("config.yml") {
             return config.getString("prefix") ?: default
         }
 
-    val logColor: ChatColor
-        get() {
-            val default = "GRAY"
-            val colorString = config.getString("log_color") ?: default
-
-            return try {
-                if (colorString.length == 1) {
-                    ChatColor.getByChar(colorString[0])
-                } else {
-                    ChatColor.of(colorString)
-                }
-            } catch (e: Exception) {
-                ChatColor.of(default)
-            }
-        }
+    val logColor: TextColor
+        get() = _logColor
 
     val forbiddenCommands: List<String>
         get() = config.getStringList("forbidden_commands")
 
-    val regexFilters: List<String>
+    val regexFilters: List<RegexFilter>
         get() = _regexFilters
 
     init {
-        validateRegexPatterns()
+        refreshCachedValues()
     }
 
-    private fun validateRegexPatterns() {
-        val validRegexFilters: MutableList<Pattern> = mutableListOf()
-
-        validRegexFilters.addAll(
-            config.getStringList("filters").mapNotNull {
-                try {
-                    Pattern.compile(it)
-                } catch (e: Exception) {
-                    null
-                }
+    // Parses colors and validates filter templates once per configuration load.
+    private fun refreshCachedValues() {
+        val value = config.getString("log_color")
+        _logColor = if (value == null) NamedTextColor.GRAY else when {
+            value.length == 1 -> LegacyComponentSerializer.legacySection().deserialize("§$value ").color()
+            value.startsWith("#") -> TextColor.fromHexString(value)
+            else -> NamedTextColor.NAMES.value(value.lowercase(Locale.ROOT))
+        } ?: NamedTextColor.GRAY
+        _regexFilters = config.getStringList("filters").mapNotNull { source ->
+            try {
+                RegexFilter(source, Pattern.compile(source), source.contains("%PLAYERNAME%"))
+            } catch (_: Exception) {
+                null
             }
-        )
-
-        _regexFilters.clear()
-        _regexFilters.addAll(validRegexFilters.map { it.pattern() })
+        }
     }
 
     fun reload() {
         config = loadConfig()
-        validateRegexPatterns()
+        refreshCachedValues()
+        LogAppenderManager.invalidateConfigCaches()
     }
 }

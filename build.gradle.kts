@@ -12,16 +12,16 @@ version = "1.5.6"
 
 repositories {
     mavenCentral()
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://repo.codemc.org/repository/maven-public")
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:26.1.2-R0.1-SNAPSHOT")
-    compileOnly("org.apache.logging.log4j:log4j-api:2.25.2")
-    compileOnly("org.apache.logging.log4j:log4j-core:2.25.2")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.121-stable")
+    compileOnly("org.apache.logging.log4j:log4j-api:2.26.0")
+    compileOnly("org.apache.logging.log4j:log4j-core:2.26.0")
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation(kotlin("stdlib"))

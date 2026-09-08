@@ -175,16 +175,16 @@ class MainCommand : BaseCommand() {
                 Bukkit.getScheduler().runTaskAsynchronously(ConsoleReader.instance, Runnable {
                     // Use of deprecated function is necessary to get an OfflinePlayer from a name.
                     @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
-                    if (!otherOfflinePlayer.hasPlayedBefore()) {
-                        sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
-                        return@Runnable
-                    }
-
-                    if (otherOfflinePlayer.isOnline) {
-                        handleOtherOnlinePlayerToggle(sender, otherOfflinePlayer as Player)
-                    } else {
-                        handleOtherOfflinePlayerToggle(sender, otherOfflinePlayer)
-                    }
+                    Bukkit.getScheduler().runTask(ConsoleReader.instance, Runnable {
+                        val onlinePlayer = otherOfflinePlayer.player
+                        if (!otherOfflinePlayer.hasPlayedBefore()) {
+                            sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
+                        } else if (onlinePlayer != null) {
+                            handleOtherOnlinePlayerToggle(sender, onlinePlayer)
+                        } else {
+                            handleOtherOfflinePlayerToggle(sender, otherOfflinePlayer)
+                        }
+                    })
                 })
             } else {
                 sender.sendPrefixMsg("${ChatColor.RED}Error: You do not have permission to toggle console reading for other players.")
@@ -218,8 +218,8 @@ class MainCommand : BaseCommand() {
 
         if (!LogAppenderManager.isReading(player)) {
             player.sendPrefixMsg("Temporarily enabling console reading for 5 seconds.")
-            LogAppenderManager.startReadingTemp(player, 5)
         }
+        LogAppenderManager.startReadingTemp(player, 5)
 
         Bukkit.dispatchCommand(Bukkit.getServer().consoleSender, command)
     }

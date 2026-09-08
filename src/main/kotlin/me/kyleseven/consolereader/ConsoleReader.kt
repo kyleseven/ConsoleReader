@@ -11,11 +11,8 @@ import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 
 class ConsoleReader : JavaPlugin() {
-    val isPaperMC: Boolean by lazy { checkServerType() }
-
     override fun onEnable() {
         instance = this
-        checkServerType()
         loadConfigs()
         registerCommands()
         registerEvents()
@@ -25,15 +22,6 @@ class ConsoleReader : JavaPlugin() {
 
     override fun onDisable() {
         LogAppenderManager.stopReadingAll()
-    }
-
-    private fun checkServerType(): Boolean {
-        return try {
-            Class.forName("com.destroystokyo.paper.PaperConfig")
-            true
-        } catch (e: ClassNotFoundException) {
-            false
-        }
     }
 
     private fun loadConfigs() {

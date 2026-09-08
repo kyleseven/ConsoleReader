@@ -3,15 +3,16 @@
 ![CI with Gradle](https://github.com/kyleseven/ConsoleReader/workflows/CI%20with%20Gradle/badge.svg)
 [![GitHub tag](https://img.shields.io/github/tag/kyleseven/ConsoleReader.svg)](https://GitHub.com/kyleseven/ConsoleReader/tags/)
 
-Spigot plugin that allows players to access the console in game.
+Paper plugin that allows players to access the console in game.
 
 ## Compatibility
 
-| Plugin Version | Supported Minecraft Versions | Spigot API Version   |
-|----------------|------------------------------|----------------------|
-| v1.5.6         | 26.x                         | 26.1.2-R0.1-SNAPSHOT |
-| v1.5.5-ALPHA   | 1.20 - 1.21                  | 1.20.2-R0.1-SNAPSHOT |
-| v1.5.4-ALPHA   | 1.12 - 1.19                  | 1.18.1-R0.1-SNAPSHOT |
+| Plugin Version | Supported Server Versions | API Version           |
+|----------------|---------------------------|-----------------------|
+| `next`         | Paper 26.x                | 26.2.build.121-stable |
+| v1.5.6         | Spigot/Paper 26.x         | 26.1.2-R0.1-SNAPSHOT  |
+| v1.5.5-ALPHA   | Spigot/Paper 1.20 - 1.21  | 1.20.2-R0.1-SNAPSHOT  |
+| v1.5.4-ALPHA   | Spigot/Paper 1.12 - 1.19  | 1.18.1-R0.1-SNAPSHOT  |
 
 ## Building
 
