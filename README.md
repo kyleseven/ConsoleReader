@@ -9,7 +9,8 @@ Spigot plugin that allows players to access the console in game.
 
 | Plugin Version | Supported Minecraft Versions | Spigot API Version   |
 |----------------|------------------------------|----------------------|
-| v1.5.6         | 26.x                         | 26.3-R0.1-SNAPSHOT   |
+| master         | 26.x                         | 26.3-R0.1-SNAPSHOT   |
+| v1.5.6         | 26.x                         | 26.1.2-R0.1-SNAPSHOT |
 | v1.5.5-ALPHA   | 1.20 - 1.21                  | 1.20.2-R0.1-SNAPSHOT |
 | v1.5.4-ALPHA   | 1.12 - 1.19                  | 1.18.1-R0.1-SNAPSHOT |
 
