@@ -7,7 +7,7 @@ version: '@version@'
 prefix: '&8[&3CR&8] &7'
 
 # Color of console log in chat
-# Use a color code or ChatColor enum.
+# Use a color code, a ChatColor enum, or a hex color like '#55FFFF'.
 log_color: 'GRAY'
 
 # Commands that cannot be executed with /cr exec

@@ -8,6 +8,7 @@ object MainConfig : ConfigLoader("config.yml") {
     Internal
      */
     private val _regexFilters: MutableList<String> = mutableListOf()
+    private var _logColor: ChatColor = ChatColor.GRAY
 
     /*
     Config keys
@@ -25,20 +26,7 @@ object MainConfig : ConfigLoader("config.yml") {
         }
 
     val logColor: ChatColor
-        get() {
-            val default = "GRAY"
-            val colorString = config.getString("log_color") ?: default
-
-            return try {
-                if (colorString.length == 1) {
-                    ChatColor.getByChar(colorString[0])
-                } else {
-                    ChatColor.of(colorString)
-                }
-            } catch (e: Exception) {
-                ChatColor.of(default)
-            }
-        }
+        get() = _logColor
 
     val forbiddenCommands: List<String>
         get() = config.getStringList("forbidden_commands")
@@ -47,7 +35,27 @@ object MainConfig : ConfigLoader("config.yml") {
         get() = _regexFilters
 
     init {
+        parseLogColor()
         validateRegexPatterns()
+    }
+
+    // The log color is used for every log line, so it is only parsed when the config is loaded.
+    private fun parseLogColor() {
+        val default = ChatColor.GRAY
+        val colorString = config.getString("log_color")?.trim() ?: "GRAY"
+
+        val color: ChatColor? = try {
+            if (colorString.length == 1) {
+                ChatColor.getByChar(colorString[0].lowercaseChar())
+            } else {
+                ChatColor.of(colorString)
+            }
+        } catch (e: Exception) {
+            null
+        }
+
+        // Formatting codes like BOLD are not colors
+        _logColor = if (color?.color != null) color else default
     }
 
     private fun validateRegexPatterns() {
@@ -69,6 +77,7 @@ object MainConfig : ConfigLoader("config.yml") {
 
     fun reload() {
         config = loadConfig()
+        parseLogColor()
         validateRegexPatterns()
     }
 }

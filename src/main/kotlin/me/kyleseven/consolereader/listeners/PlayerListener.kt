@@ -10,10 +10,8 @@ import org.bukkit.event.player.PlayerQuitEvent
 class PlayerListener : Listener {
     @EventHandler
     fun removeReadingPlayer(e: PlayerQuitEvent) {
-        // Remove the appender if player is offline
-        if (LogAppenderManager.isReading(e.player)) {
-            LogAppenderManager.stopReadingTemp(e.player)
-        }
+        // Stop sending log lines if player is offline
+        LogAppenderManager.stopReadingTemp(e.player)
     }
 
     @EventHandler
