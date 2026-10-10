@@ -1,107 +1,73 @@
 package me.kyleseven.consolereader.logreader
 
-import me.kyleseven.consolereader.ConsoleReader
-import me.kyleseven.consolereader.config.MainConfig
-import me.kyleseven.consolereader.utils.parseANSI
-import net.md_5.bungee.api.ChatColor
-import net.md_5.bungee.api.chat.ComponentBuilder
-import net.md_5.bungee.api.chat.HoverEvent
-import net.md_5.bungee.api.chat.TextComponent
-import net.md_5.bungee.api.chat.hover.content.Text
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.core.LogEvent
 import org.apache.logging.log4j.core.appender.AbstractAppender
-import org.bukkit.entity.Player
-import java.util.regex.PatternSyntaxException
+import org.apache.logging.log4j.core.config.Property
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.atomic.AtomicInteger
 
-class LogAppender(private val player: Player) :
-    AbstractAppender("ConsoleReader-${player.uniqueId}", null, null, false, null) {
+// Copy of a log event. Log4j can reuse event objects, so what is needed is copied here.
+class LogLine(event: LogEvent) {
+    val timeMillis: Long = event.timeMillis
+    val level: Level = event.level
+    val loggerName: String = event.loggerName.orEmpty()
+    val threadName: String = event.threadName.orEmpty()
+    val message: String = event.message?.formattedMessage.orEmpty()
+}
 
+class LogAppender : AbstractAppender("ConsoleReader", null, null, true, Property.EMPTY_ARRAY) {
     companion object {
-        private val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault())
-        private val TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZoneId.systemDefault())
+        // Lines kept while waiting to be sent. The oldest lines are dropped beyond this.
+        private const val MAX_QUEUED_LINES = 500
     }
+
+    private val queue = ConcurrentLinkedQueue<LogLine>()
+    private val queuedCount = AtomicInteger()
+    private val droppedCount = AtomicInteger()
+
+    // Off while nobody is reading
+    @Volatile
+    var accepting = false
 
     init {
         start()
     }
 
+    /*
+    This can be called from any thread, so the log event is only queued here.
+    LogAppenderManager takes lines from the queue on the main thread and sends them to readers.
+     */
     override fun append(event: LogEvent?) {
-        val log = event!!.toImmutable()
-
-        // Log components
-        val logColor: ChatColor = MainConfig.logColor
-        var logMessage = log.message.formattedMessage
-        val instant = Instant.ofEpochMilli(log.timeMillis)
-        val logDate = DATE_FORMATTER.format(instant)
-        val logTime = TIME_FORMATTER.format(instant)
-        val logLevel = log.level.toString()
-        val loggerName = log.loggerName.ifBlank { "None" }
-        val threadName = log.threadName
-        var messagePrefix = "[$logTime $logLevel]: "
-
-        /*
-        When using Spigot, logger name is already included in the log message.
-        When using Paper, the logger name will need to be added here.
-         */
-        if (ConsoleReader.instance.isPaperMC) {
-            if (!(loggerName.contains("net.minecraft") || loggerName == "Minecraft" || loggerName == "None")) {
-                messagePrefix += "[$loggerName] "
-            }
+        if (!accepting || event == null) {
+            return
         }
 
-        when (logLevel) {
-            "WARN" -> {
-                messagePrefix = ChatColor.YELLOW.toString() + messagePrefix
-                logMessage = ChatColor.YELLOW.toString() + logMessage
-            }
+        queue.offer(LogLine(event))
 
-            "FATAL", "ERROR" -> {
-                messagePrefix = ChatColor.RED.toString() + messagePrefix
-                logMessage = ChatColor.RED.toString() + logMessage
-            }
-
-            else -> {
-                messagePrefix = logColor.toString() + messagePrefix
-                logMessage = logColor.toString() + logMessage
-            }
+        if (queuedCount.incrementAndGet() > MAX_QUEUED_LINES && queue.poll() != null) {
+            queuedCount.decrementAndGet()
+            droppedCount.incrementAndGet()
         }
+    }
 
-        logMessage = parseANSI(logMessage)
-
-        /*
-        Filtering console messages here.
-        - Go through regex filter.
-        - Showing logger name if it is not from the game itself.
-        - Adding color to WARN, FATAL, and ERROR messages.
-         */
-        for (regexString in MainConfig.regexFilters) {
-            val strippedMsg = ChatColor.stripColor(logMessage)
-            try {
-                val regexToMatch = regexString.replace("%PLAYERNAME%", player.name).toRegex()
-                if (regexToMatch.matches(strippedMsg)) {
-                    return
-                }
-            } catch (e: PatternSyntaxException) {
-                /*
-                Move onto next regex pattern.
-                Regex filters are validated at config load, so we shouldn't reach this point.
-                 */
-            }
+    fun poll(): LogLine? {
+        val line = queue.poll()
+        if (line != null) {
+            queuedCount.decrementAndGet()
         }
+        return line
+    }
 
-        // Creating Hover Text
-        val chatLogPrefix = TextComponent(TextComponent.fromLegacy(messagePrefix))
-        val chatLogMessage = TextComponent(TextComponent.fromLegacy(logMessage))
-        val hoverText = ComponentBuilder("")
-            .append("Time: ").color(ChatColor.GRAY).append("$logDate $logTime\n").color(ChatColor.WHITE)
-            .append("Log Level: ").color(ChatColor.GRAY).append(logLevel.trimIndent() + "\n").color(ChatColor.WHITE)
-            .append("Logger: ").color(ChatColor.GRAY).append(loggerName.trimIndent() + "\n").color(ChatColor.WHITE)
-            .append("Thread: ").color(ChatColor.GRAY).append(threadName).color(ChatColor.WHITE)
-        chatLogPrefix.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(hoverText.create()))
+    // Number of lines dropped since the last call
+    fun takeDroppedCount(): Int {
+        return droppedCount.getAndSet(0)
+    }
 
-        player.spigot().sendMessage(chatLogPrefix, chatLogMessage)
+    fun clear() {
+        while (poll() != null) {
+            // Emptying the queue
+        }
+        droppedCount.set(0)
     }
 }

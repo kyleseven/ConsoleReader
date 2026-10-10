@@ -18,13 +18,20 @@ repositories {
     maven("https://repo.codemc.org/repository/maven-public")
 }
 
+configurations {
+    testImplementation {
+        extendsFrom(compileOnly.get())
+    }
+}
+
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:26.1.2-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:26.3-R0.1-SNAPSHOT")
     compileOnly("org.apache.logging.log4j:log4j-api:2.25.2")
     compileOnly("org.apache.logging.log4j:log4j-core:2.25.2")
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation(kotlin("stdlib"))
+    testImplementation(kotlin("test"))
 }
 
 kotlin {
@@ -34,6 +41,10 @@ kotlin {
 tasks {
     withType<KotlinCompile>().configureEach {
         compilerOptions.javaParameters = true
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     named<ShadowJar>("shadowJar") {

@@ -1,4 +1,4 @@
-# ConsoleReader [ALPHA] by kyleseven
+# ConsoleReader by kyleseven
 
 # DO NOT CHANGE THIS
 version: '@version@'
@@ -7,7 +7,7 @@ version: '@version@'
 prefix: '&8[&3CR&8] &7'
 
 # Color of console log in chat
-# Use a color code or ChatColor enum.
+# Use a color code, a ChatColor enum, or a hex color like '#55FFFF'.
 log_color: 'GRAY'
 
 # Commands that cannot be executed with /cr exec
@@ -26,5 +26,5 @@ forbidden_commands:
 filters:
   - '<[a-zA-Z0-9_]*> .*'
   - '%PLAYERNAME% issued server command: .*'
-  - '%PLAYERNAME%\[\/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+\] logged in with entity id [0-9]+ at \(\[[a-zA-Z0-9_]+\]-?[0-9]+\.[0-9]+, [0-9]+\.[0-9]+, [0-9]+\.[0-9]+\)'
+  - '%PLAYERNAME%\[\/.+\] logged in with entity id [0-9]+ at \(\[[^\]]+\][-0-9.E]+, [-0-9.E]+, [-0-9.E]+\)'
   - '%PLAYERNAME% joined the game'

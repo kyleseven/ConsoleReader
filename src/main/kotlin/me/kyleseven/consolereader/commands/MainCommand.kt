@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.*
 import me.kyleseven.consolereader.ConsoleReader
 import me.kyleseven.consolereader.config.MainConfig
 import me.kyleseven.consolereader.logreader.LogAppenderManager
+import me.kyleseven.consolereader.utils.sendError
 import me.kyleseven.consolereader.utils.sendPrefixMsg
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ClickEvent
@@ -21,7 +22,7 @@ import org.bukkit.entity.Player
 class MainCommand : BaseCommand() {
     @CatchUnknown
     fun onInvalid(sender: CommandSender) {
-        sender.sendPrefixMsg("${ChatColor.RED}Unknown subcommand.")
+        sender.sendError("Unknown subcommand.")
     }
 
     @Subcommand("help|h")
@@ -139,7 +140,7 @@ class MainCommand : BaseCommand() {
                     sender.sendPrefixMsg("Console reading disabled.")
                 }
             } else {
-                sender.sendPrefixMsg("${ChatColor.RED}Error: Console must specify a player.")
+                sender.sendError("Error: Console must specify a player.")
             }
         }
 
@@ -155,7 +156,7 @@ class MainCommand : BaseCommand() {
                     otherPlayer.sendPrefixMsg("Console reading disabled.")
                 }
             } else {
-                sender.sendPrefixMsg("${ChatColor.RED}Error: ${otherPlayer.name} does not have permission to read console.")
+                sender.sendError("Error: ${otherPlayer.name} does not have permission to read console.")
             }
         }
 
@@ -175,19 +176,24 @@ class MainCommand : BaseCommand() {
                 Bukkit.getScheduler().runTaskAsynchronously(ConsoleReader.instance, Runnable {
                     // Use of deprecated function is necessary to get an OfflinePlayer from a name.
                     @Suppress("DEPRECATION") val otherOfflinePlayer = Bukkit.getOfflinePlayer(otherPlayerName)
-                    if (!otherOfflinePlayer.hasPlayedBefore()) {
-                        sender.sendPrefixMsg("${ChatColor.RED}Error: That player hasn't joined this server before.")
+                    // hasPlayedBefore() is false for a player that is online for the first time
+                    if (!otherOfflinePlayer.hasPlayedBefore() && !otherOfflinePlayer.isOnline) {
+                        sender.sendError("Error: That player hasn't joined this server before.")
                         return@Runnable
                     }
 
-                    if (otherOfflinePlayer.isOnline) {
-                        handleOtherOnlinePlayerToggle(sender, otherOfflinePlayer as Player)
-                    } else {
-                        handleOtherOfflinePlayerToggle(sender, otherOfflinePlayer)
-                    }
+                    // Only the player lookup is done async. Readers must be changed from the main thread.
+                    Bukkit.getScheduler().runTask(ConsoleReader.instance, Runnable {
+                        val otherPlayer = otherOfflinePlayer.player
+                        if (otherPlayer != null) {
+                            handleOtherOnlinePlayerToggle(sender, otherPlayer)
+                        } else {
+                            handleOtherOfflinePlayerToggle(sender, otherOfflinePlayer)
+                        }
+                    })
                 })
             } else {
-                sender.sendPrefixMsg("${ChatColor.RED}Error: You do not have permission to toggle console reading for other players.")
+                sender.sendError("Error: You do not have permission to toggle console reading for other players.")
             }
         }
 
@@ -205,13 +211,13 @@ class MainCommand : BaseCommand() {
     @Description("Execute a command as console.")
     fun onExecute(player: Player, @Optional command: String?) {
         if (command.isNullOrEmpty()) {
-            player.sendPrefixMsg("${ChatColor.RED}Error: You need to specify a command.")
+            player.sendError("Error: You need to specify a command.")
             return
         }
 
         for (forbiddenCommand in MainConfig.forbiddenCommands) {
             if (command.startsWith(forbiddenCommand, ignoreCase = true)) {
-                player.sendPrefixMsg("${ChatColor.RED}Error: The /$forbiddenCommand command may only be used in the real console.")
+                player.sendError("Error: The /$forbiddenCommand command may only be used in the real console.")
                 return
             }
         }
@@ -268,6 +274,7 @@ class MainCommand : BaseCommand() {
     @Description("Reload the plugin configuration.")
     fun onReload(sender: CommandSender) {
         MainConfig.reload()
+        LogAppenderManager.reloadFilters()
         sender.sendPrefixMsg("Configuration reloaded.")
     }
 
